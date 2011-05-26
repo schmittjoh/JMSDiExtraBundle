@@ -2,7 +2,7 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
-use Annotations\ReaderInterface;
+use Annotations\Reader;
 use JMS\DiExtraBundle\Annotation\Autowire;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
@@ -15,7 +15,7 @@ class AnnotationDriver implements DriverInterface
 {
     private $reader;
 
-    public function __construct(ReaderInterface $reader)
+    public function __construct(Reader $reader)
     {
         $this->reader = $reader;
     }

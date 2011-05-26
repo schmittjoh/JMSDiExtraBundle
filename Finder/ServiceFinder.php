@@ -2,8 +2,8 @@
 
 namespace JMS\DiExtraBundle\Finder;
 
-use Symfony\Component\Finder\Finder;
 use JMS\DiExtraBundle\Exception\RuntimeException;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\ExecutableFinder;
 
 class ServiceFinder
@@ -41,7 +41,7 @@ class ServiceFinder
             $dirs .= ';'.$bundle->getPath();
         }
 
-        $cmd = 'FINDSTR /M /S /L';
+        $cmd = 'FINDSTR /M /S /L /P';
         $cmd .= ' /D:'.escapeshellarg(substr($dirs, 1));
         $cmd .= ' '.escapeshellarg(self::PATTERN);
         $cmd .= ' *.php';
