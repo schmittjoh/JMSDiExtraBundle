@@ -2,7 +2,7 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
-use Annotations\Reader;
+use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation\Autowire;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
