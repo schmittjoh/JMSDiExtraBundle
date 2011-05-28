@@ -32,7 +32,7 @@ class JMSDiExtraExtension extends Extension
         }
 
         if ('file' === $config['cache']) {
-            $cacheDir = $container->getParameterBag()->resolve($config['cache']['file_cache']['dir']);
+            $cacheDir = $container->getParameterBag()->resolveValue($config['file_cache']['dir']);
             if (!file_exists($cacheDir)) {
                 if (false === @mkdir($cacheDir, 0777, true)) {
                     throw new \RuntimeException(sprintf('The cache dir "%s" could not be created.', $cacheDir));

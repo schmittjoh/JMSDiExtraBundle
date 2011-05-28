@@ -39,7 +39,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->tags,
             $this->properties,
             $parentStr
-        ) = $str;
+        ) = unserialize($str);
 
         parent::unserialize($parentStr);
     }

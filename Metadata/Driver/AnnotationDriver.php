@@ -40,17 +40,17 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        if (null === $metadata->id) {
-            return null;
-        }
-
-        foreach ($class->getProperties() as $name => $property) {
+        $hasPropertyInjection = false;
+        foreach ($class->getProperties() as $property) {
             if ($property->getDeclaringClass()->getName() !== $className) {
                 continue;
             }
+            $name = $property->getName();
 
             foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
                 if ($annot instanceof Autowire) {
+                    $hasPropertyInjection = true;
+
                     if (null === $annot->value) {
                         $metadata->properties[$name] = new Reference($this->generateId($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE);
                     } else if (false === strpos($annot->value, '%')) {
@@ -60,6 +60,10 @@ class AnnotationDriver implements DriverInterface
                     }
                 }
             }
+        }
+
+        if (null == $metadata->id && !$hasPropertyInjection) {
+            return null;
         }
 
         return $metadata;
