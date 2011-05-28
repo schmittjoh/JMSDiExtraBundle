@@ -23,6 +23,9 @@ class AnnotationDriver implements DriverInterface
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         $metadata = new ClassMetadata($className = $class->getName());
+        if (false !== $filename = $class->getFilename()) {
+            $metadata->fileResources[] = $filename;
+        }
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof Service) {
                 if (null === $annot->id) {

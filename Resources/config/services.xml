@@ -26,7 +26,7 @@
         <service id="jms_di_extra.metadata.metadata_factory" class="%jms_di_extra.metadata.metadata_factory.class%" public="false">
             <argument type="service" id="jms_di_extra.metadata_driver" />
             <argument>Metadata\ClassHierarchyMetadata</argument>
-            <argument />
+            <argument>%kernel.debug%</argument>
             <call method="setCache">
                 <argument type="service" id="jms_di_extra.metadata.cache" on-invalid="ignore" />
             </call>
