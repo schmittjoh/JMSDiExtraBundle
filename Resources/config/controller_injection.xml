@@ -8,7 +8,7 @@
         <service id="jms_di_extra.controller_injection_listener" class="JMS\DiExtraBundle\Listener\ControllerInjectionListener">
             <argument type="service" id="service_container" />
             <argument type="service" id="jms_di_extra.metadata.metadata_factory" />
-            <tag name="kernel.listener" event="onCoreController" />
+            <tag name="kernel.listener" event="core.controller" method="onCoreController" />
         </service>
     </services>
 </container>
