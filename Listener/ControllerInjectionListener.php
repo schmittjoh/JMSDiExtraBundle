@@ -36,6 +36,8 @@ class ControllerInjectionListener
 
                 if ($value instanceof Reference) {
                     $value = $this->container->get((string) $value, $value->getInvalidBehavior());
+                } else if ('%' === $value[0]) {
+                    $value = $this->container->getParameter(substr($value, 1, -1));
                 }
                 $property->setValue($controller[0], $value);
             }
