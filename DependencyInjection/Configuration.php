@@ -14,6 +14,30 @@ class Configuration implements ConfigurationInterface
         $tb
             ->root('jms_di_extra', 'array')
                 ->children()
+                    ->arrayNode('locations')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->booleanNode('all_bundles')->defaultFalse()->end()
+                            ->arrayNode('bundles')
+                                ->beforeNormalization()
+                                    ->ifString()
+                                    ->then(function($v) {
+                                        return preg_split('/\s*,\s*/', $v);
+                                    })
+                                ->end()
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('directories')
+                                ->beforeNormalization()
+                                    ->ifString()
+                                    ->then(function($v) {
+                                        return preg_split('/\s*,\s*/', $v);
+                                    })
+                                ->end()
+                                ->prototype('scalar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
                     ->arrayNode('metadata')
                         ->addDefaultsIfNotSet()
                         ->children()

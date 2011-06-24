@@ -3,11 +3,8 @@
 namespace JMS\DiExtraBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Alias;
-
 use Symfony\Component\Config\FileLocator;
-
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -21,6 +18,10 @@ class JMSDiExtraExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         $loader->load('controller_injection.xml');
+
+        $container->setParameter('jms_di_extra.all_bundles', $config['locations']['all_bundles']);
+        $container->setParameter('jms_di_extra.bundles', $config['locations']['bundles']);
+        $container->setParameter('jms_di_extra.directories', $config['locations']['directories']);
 
         $this->configureMetadata($config['metadata'], $container);
     }
