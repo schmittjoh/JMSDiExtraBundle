@@ -15,7 +15,7 @@ Then register the bundle with your kernel::
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new JMS\DiExtraBundle\JMSDiExtraBundle(),
+        new JMS\DiExtraBundle\JMSDiExtraBundle($this),
         // ...
     );
 
