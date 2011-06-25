@@ -4,7 +4,7 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-class Tag
+final class Tag
 {
     public $name;
     public $attributes = array();

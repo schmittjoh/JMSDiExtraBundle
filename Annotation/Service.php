@@ -4,7 +4,7 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-class Service
+final class Service
 {
     public $id;
     public $parent;

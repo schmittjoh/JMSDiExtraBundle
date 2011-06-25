@@ -65,6 +65,11 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 if (null !== $classMetadata->abstract) {
                     $definition->setAbstract($classMetadata->abstract);
                 }
+                if (null !== $classMetadata->arguments) {
+                    $definition->setArguments($classMetadata->arguments);
+                }
+
+                $definition->setMethodCalls($classMetadata->methodCalls);
                 $definition->setTags($classMetadata->tags);
                 $definition->setProperties($classMetadata->properties);
 

@@ -4,7 +4,7 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-class Autowire
+final class Autowire
 {
     public $value;
     public $required;
