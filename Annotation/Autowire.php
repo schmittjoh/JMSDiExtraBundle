@@ -28,11 +28,14 @@ final class Autowire
     public function __construct(array $values)
     {
         if (isset($values['value'])) {
-            if (!is_string($values['value'])) {
-                throw new InvalidTypeException('Autowire', 'value', 'string', $values['value']);
+
+            $value = $values['value'];
+
+            if(!is_string($value) && !is_array($value)) {
+                throw new InvalidTypeException('Autowire', 'value', 'string|array', $value);
             }
 
-            $this->value = $values['value'];
+            $this->value = $value;
         }
 
         if (isset($values['required'])) {
