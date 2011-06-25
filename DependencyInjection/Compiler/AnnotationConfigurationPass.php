@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
+use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Config\ServiceFilesResource;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -125,12 +126,12 @@ class AnnotationConfigurationPass implements CompilerPassInterface
         $src = file_get_contents($filename);
 
         if (!preg_match('/\bnamespace\s+([^;]+);/s', $src, $match)) {
-            throw new \RuntimeException(sprintf('Namespace could not be determined for file "%s".', $filename));
+            throw new RuntimeException(sprintf('Namespace could not be determined for file "%s".', $filename));
         }
         $namespace = $match[1];
 
         if (!preg_match('/\bclass\s+([^\s]+)\s+(?:extends|implements|{)/s', $src, $match)) {
-            throw new \RuntimeException(sprintf('Could not extract class name from file "%s".', $filename));
+            throw new RuntimeException(sprintf('Could not extract class name from file "%s".', $filename));
         }
 
         return $namespace.'\\'.$match[1];

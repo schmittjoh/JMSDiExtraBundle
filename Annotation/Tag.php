@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
+use JMS\DiExtraBundle\Exception\InvalidArgumentException;
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
 final class Tag
@@ -28,7 +29,7 @@ final class Tag
     public function __construct(array $values)
     {
         if (!isset($values['value'])) {
-            throw new \InvalidArgumentException('A value must be given for annotation "@Tag".');
+            throw new InvalidArgumentException('A value must be given for annotation "@Tag".');
         }
         if (!is_string($values['value'])) {
             throw new InvalidTypeException('Tag', 'value', 'string', $values['value']);

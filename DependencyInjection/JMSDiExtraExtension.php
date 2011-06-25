@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection;
 
+use JMS\DiExtraBundle\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -52,11 +53,11 @@ class JMSDiExtraExtension extends Extension
             $cacheDir = $container->getParameterBag()->resolveValue($config['file_cache']['dir']);
             if (!file_exists($cacheDir)) {
                 if (false === @mkdir($cacheDir, 0777, true)) {
-                    throw new \RuntimeException(sprintf('The cache dir "%s" could not be created.', $cacheDir));
+                    throw new RuntimeException(sprintf('The cache dir "%s" could not be created.', $cacheDir));
                 }
             }
             if (!is_writable($cacheDir)) {
-                throw new \RuntimeException(sprintf('The cache dir "%s" is not writable.', $cacheDir));
+                throw new RuntimeException(sprintf('The cache dir "%s" is not writable.', $cacheDir));
             }
 
             $container
