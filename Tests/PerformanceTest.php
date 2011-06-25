@@ -34,8 +34,12 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
             new TwigBundle(),
             new SensioFrameworkExtraBundle(),
             new JMSSecurityExtraBundle(),
-            new JMSDiExtraBundle(),
         );
+        $bundles = array_map(function($v) {
+            return $v->getPath();
+        }, $bundles);
+
+        $bundles[] = __DIR__.'/../';
 
         $time = microtime(true);
         for ($i=0,$c=5; $i<$c; $i++) {
