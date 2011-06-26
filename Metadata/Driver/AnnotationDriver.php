@@ -90,15 +90,20 @@ class AnnotationDriver implements DriverInterface
                         'method' => $name,
                         'priority' => $annot->priority,
                     );
-                } else if ($annot instanceof AutowireParams) {
+                } else if ($annot instanceof Autowire) {
                     $params = array();
+
+                    if(!is_array($annot->value)) {
+                        continue;
+                    }
+
                     foreach ($method->getParameters() as $param) {
-                        if (!isset($annot->params[$paramName = $param->getName()])) {
+                        if (!isset($annot->value[$paramName = $param->getName()])) {
                             $params[$paramName] = $this->convertAutowireValue($paramName, new Autowire(array('value' => null)));
                             continue;
                         }
 
-                        $params[$paramName] = $this->convertAutowireValue($paramName, $annot->params[$paramName]);
+                        $params[$paramName] = $this->convertAutowireValue($paramName, $annot->value[$paramName]);
                     }
 
                     if (!$params) {
