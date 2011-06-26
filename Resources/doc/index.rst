@@ -63,6 +63,8 @@ Annotations
 ~~~~~~~~~
 This marks a property, or parameter for injection::
 
+    use JMS\DiExtraBundle\Annotation\Inject;
+
     class Controller
     {
         /**
@@ -88,6 +90,10 @@ of the property or the parameter.
 ~~~~~~~~~~~~~~~
 This marks the parameters of a method for injection::
 
+    use JMS\DiExtraBundle\Annotation\Inject;
+    use JMS\DiExtraBundle\Annotation\InjectParams;
+    use JMS\DiExtraBundle\Annotation\Service;
+
     /**
      * @Service
      */
@@ -111,6 +117,8 @@ should be injected into the remaining parameters based on their name.
 ~~~~~~~~
 Marks a class as service::
 
+    use JMS\DiExtraBundle\Annotation\Service;
+
     /**
      * @Service("some.service.id", parent="another.service.id", public=false)
      */
@@ -125,6 +133,9 @@ based on the fully qualified class name for you.
 ~~~~
 Adds a tag to the service::
 
+    use JMS\DiExtraBundle\Annotation\Service;
+    use JMS\DiExtraBundle\Annotation\Tag;
+
     /**
      * @Service
      * @Tag("doctrine.event_listener", attributes = {"event" = "postGenerateSchema", lazy=true})
@@ -137,6 +148,9 @@ Adds a tag to the service::
 @Observe
 ~~~~~~~~
 Automatically registers a method as listener to a certain event::
+
+    use JMS\DiExtraBundle\Annotation\Observe;
+    use JMS\DiExtraBundle\Annotation\Service;
 
     /**
      * @Service
