@@ -18,27 +18,27 @@
 
 namespace JMS\DiExtraBundle\Tests\Fixture;
 
-use JMS\DiExtraBundle\Annotation\Autowire;
+use JMS\DiExtraBundle\Annotation\Inject;
 
 class LoginController
 {
     /**
-     * @Autowire("form.csrf_provider")
+     * @Inject("form.csrf_provider")
      */
     private $csrfProvider;
 
     /**
-     * @Autowire
+     * @Inject
      */
     private $rememberMeServices;
 
     /**
-     * @Autowire("security.context")
+     * @Inject("security.context")
      */
     private $securityContext;
 
     /**
-     * @Autowire("security.authentication.trust_resolver")
+     * @Inject("security.authentication.trust_resolver")
      */
     private $trustResolver;
 

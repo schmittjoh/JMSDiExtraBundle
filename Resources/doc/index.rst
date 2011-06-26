@@ -49,7 +49,7 @@ which should be scanned for service classes (by default no directory is scanned)
 Usage Tips
 ----------
 In general, it is recommend that you do **not** define your controllers as services
-(and all annotations except @Autowire won't work on controllers atm). This is
+(and all annotations except @Inject won't work on controllers atm). This is
 mainly for performance reasons as we would need to re-compile the entire DIC
 each time you modify a controller.
 
@@ -59,24 +59,24 @@ using annotations, but instead use one of the other formats (yml, xml, or php).
 Annotations
 -----------
 
-@Autowire
+@Inject
 ~~~~~~~~~
-This marks a property, or parameter for auto-wiring::
+This marks a property, or parameter for injection::
 
     class Controller
     {
         /**
-         * @Autowire("security.context", required = false)
+         * @Inject("security.context", required = false)
          */
         private $securityContext;
         
         /**
-         * @Autowire("%kernel.cache_dir%")
+         * @Inject("%kernel.cache_dir%")
          */
         private $cacheDir;
         
         /**
-         * @Autowire
+         * @Inject
          */
         private $session;
     }
@@ -84,9 +84,9 @@ This marks a property, or parameter for auto-wiring::
 If you do not specify the service explicitly, we will try to guess it based on the name
 of the property or the parameter.
 
-@AutowireParams
+@InjectParams
 ~~~~~~~~~~~~~~~
-This marks the parameters of a method for auto-wiring::
+This marks the parameters of a method for injection::
 
     /**
      * @Service
@@ -94,8 +94,8 @@ This marks the parameters of a method for auto-wiring::
     class Listener
     {
         /**
-         * @AutowireParams({
-         *     "em" = @Autowire("doctrine.entity_manager")
+         * @InjectParams({
+         *     "em" = @Inject("doctrine.entity_manager")
          * })
          */
         public function __construct(EntityManager $em, Session $session)

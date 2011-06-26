@@ -18,11 +18,11 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
-use JMS\DiExtraBundle\Annotation\AutowireParams;
+use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 use JMS\DiExtraBundle\Annotation\Observe;
 use Doctrine\Common\Annotations\Reader;
-use JMS\DiExtraBundle\Annotation\Autowire;
+use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
@@ -70,9 +70,9 @@ class AnnotationDriver implements DriverInterface
             $name = $property->getName();
 
             foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
-                if ($annot instanceof Autowire) {
+                if ($annot instanceof Inject) {
                     $hasPropertyInjection = true;
-                    $metadata->properties[$name] = $this->convertAutowireValue($name, $annot);
+                    $metadata->properties[$name] = $this->convertInjectValue($name, $annot);
                 }
             }
         }
@@ -90,15 +90,15 @@ class AnnotationDriver implements DriverInterface
                         'method' => $name,
                         'priority' => $annot->priority,
                     );
-                } else if ($annot instanceof AutowireParams) {
+                } else if ($annot instanceof InjectParams) {
                     $params = array();
                     foreach ($method->getParameters() as $param) {
                         if (!isset($annot->params[$paramName = $param->getName()])) {
-                            $params[$paramName] = $this->convertAutowireValue($paramName, new Autowire(array('value' => null)));
+                            $params[$paramName] = $this->convertInjectValue($paramName, new Inject(array('value' => null)));
                             continue;
                         }
 
-                        $params[$paramName] = $this->convertAutowireValue($paramName, $annot->params[$paramName]);
+                        $params[$paramName] = $this->convertInjectValue($paramName, $annot->params[$paramName]);
                     }
 
                     if (!$params) {
@@ -121,7 +121,7 @@ class AnnotationDriver implements DriverInterface
         return $metadata;
     }
 
-    private function convertAutowireValue($name, Autowire $annot)
+    private function convertInjectValue($name, Inject $annot)
     {
         if (null === $annot->value) {
             return new Reference($this->generateId($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE);

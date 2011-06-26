@@ -46,6 +46,7 @@ class JMSDiExtraExtension extends Extension
     private function configureMetadata(array $config, $container)
     {
         if ('none' === $config['cache']) {
+            $container->removeAlias('jms_di_extra.metadata.cache');
             return;
         }
 

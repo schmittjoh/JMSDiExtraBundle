@@ -20,27 +20,28 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-final class Autowire
+final class InjectParams
 {
-    public $value;
-    public $required;
+    public $params = array();
 
     public function __construct(array $values)
     {
-        if (isset($values['value'])) {
-            if (!is_string($values['value'])) {
-                throw new InvalidTypeException('Autowire', 'value', 'string', $values['value']);
-            }
-
-            $this->value = $values['value'];
+        if (isset($values['params'])) {
+            $values['value'] = $values['params'];
         }
 
-        if (isset($values['required'])) {
-            if (!is_bool($values['required'])) {
-                throw new InvalidTypeException('Autowire', 'required', 'boolean', $values['required']);
+        if (isset($values['value'])) {
+            if (!is_array($values['value'])) {
+                throw new InvalidTypeException('InjectParams', 'value', 'array', $values['value']);
             }
 
-            $this->required = $values['required'];
+            foreach ($values['value'] as $k => $v) {
+                if (!$v instanceof Inject) {
+                    throw new InvalidTypeException('InjectParams', sprintf('value[%s]', $k), '@Inject', $v);
+                }
+
+                $this->params[$k] = $v;
+            }
         }
     }
 }

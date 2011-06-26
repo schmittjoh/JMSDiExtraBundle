@@ -61,6 +61,9 @@ class AnnotationConfigurationPass implements CompilerPassInterface
             if (null === $metadata = $factory->getMetadataForClass($className)) {
                 continue;
             }
+            if (null === $metadata->getOutsideClassMetadata()->id) {
+                continue;
+            }
 
             $previous = null;
             foreach ($metadata->classMetadata as $classMetadata) {
