@@ -33,6 +33,27 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals('foo', 'table', $service);
     }
 
+    public function testProcessValidator()
+    {
+        $container = $this->getContainer(array(), array(
+            __DIR__.'/../../Fixture/Validator',
+        ));
+        $container->set('foo', $foo = new \stdClass);
+        $this->process($container);
+
+        $this->assertTrue($container->hasDefinition('j_m_s.di_extra_bundle.tests.fixture.validator.validator'));
+
+        $def = $container->getDefinition('j_m_s.di_extra_bundle.tests.fixture.validator.validator');
+        $this->assertEquals(array(
+            'validator.constraint_validator' => array(
+                array('alias' => 'foobar'),
+            )
+        ), $def->getTags());
+
+        $v = $container->get('j_m_s.di_extra_bundle.tests.fixture.validator.validator');
+        $this->assertAttributeEquals($foo, 'foo', $v);
+    }
+
     private function getContainer(array $bundles = array(), array $directories = array())
     {
         $container = new ContainerBuilder();

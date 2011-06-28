@@ -166,3 +166,32 @@ Automatically registers a method as listener to a certain event::
         }
     }
 
+@Validator
+~~~~~~~~~~
+Automatically registers the given class as constraint validator for the Validator component::
+
+    use JMS\DiExtraBundle\Annotation\Validator;
+    use Symfony\Component\Validator\Constraint;
+    use Symfony\Component\Validator\ConstraintValidator;
+    
+    /**
+     * @Validator("my_alias")
+     */
+    class MyValidator extends ConstraintValidator
+    {
+        // ...
+    }
+    
+    class MyConstraint extends Constraint
+    {
+        // ...
+        public function validatedBy()
+        {
+            return 'my_alias';
+        }
+    }
+
+The @Validator annotation also implies the @Service annotation if you do not specify it explicitly.
+The alias which is passed to the @Validator annotation must match the string that is returned from
+the ``validatedBy`` method of your constraint.
+

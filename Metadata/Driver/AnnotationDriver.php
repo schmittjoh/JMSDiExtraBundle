@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
+use JMS\DiExtraBundle\Annotation\Validator;
+
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 use JMS\DiExtraBundle\Annotation\Observe;
@@ -59,6 +61,15 @@ class AnnotationDriver implements DriverInterface
                 $metadata->abstract = $annot->abstract;
             } else if ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
+            } else if ($annot instanceof Validator) {
+                // automatically register as service if not done explicitly
+                if (null === $metadata->id) {
+                    $metadata->id = $this->generateId($className);
+                }
+
+                $metadata->tags['validator.constraint_validator'][] = array(
+                    'alias' => $annot->alias,
+                );
             }
         }
 
