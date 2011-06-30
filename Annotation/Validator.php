@@ -4,6 +4,7 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
+/** @Annotation */
 final class Validator
 {
     public $alias;
