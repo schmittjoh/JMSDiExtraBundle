@@ -15,7 +15,6 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer(array(), array(
             __DIR__.'/../../Fixture/',
         ));
-        $container->set('kernel', $kernel = new \stdClass);
         $container->set('doctrine.entity_manager', $em = new \stdClass);
         $container->set('session', $session = new \stdClass);
         $container->set('database_connection', $dbCon = new \stdClass);
@@ -25,7 +24,6 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($container->hasDefinition('j_m_s.di_extra_bundle.tests.fixture.request_listener'));
         $service = $container->get('j_m_s.di_extra_bundle.tests.fixture.request_listener');
-        $this->assertAttributeEquals($kernel, 'kernel', $service);
         $this->assertAttributeEquals($em, 'em', $service);
         $this->assertAttributeEquals($session, 'session', $service);
         $this->assertAttributeEquals($dbCon, 'con', $service);

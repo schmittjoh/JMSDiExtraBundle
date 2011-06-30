@@ -18,11 +18,6 @@ class RequestListener
     private $table;
 
     /**
-     * @DI\Inject
-     */
-    private $kernel;
-
-    /**
      * @DI\InjectParams({
      *     "em" = @DI\Inject("doctrine.entity_manager")
      * })
