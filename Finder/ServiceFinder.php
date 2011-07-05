@@ -78,6 +78,10 @@ class ServiceFinder
         }
         exec($cmd, $files, $exitCode);
 
+        if (1 === $exitCode) {
+            return array();
+        }
+
         if (0 !== $exitCode) {
             throw new RuntimeException(sprintf('Command "%s" exited with non-successful status code "%d".', $cmd, $exitCode));
         }
