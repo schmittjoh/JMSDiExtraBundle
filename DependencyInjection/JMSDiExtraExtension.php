@@ -41,6 +41,17 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.directories', $config['locations']['directories']);
 
         $this->configureMetadata($config['metadata'], $container);
+
+        $this->addClassesToCompile(array(
+            'Metadata\\MetadataFactory',
+            'Metadata\\ClassHierarchyMetadata',
+            'Metadata\\Driver\\DriverChain',
+            'Metadata\\Cache\\FileCache',
+
+            'JMS\\DiExtraBundle\\Metadata\\ClassMetadata',
+            'JMS\\DiExtraBundle\\Metadata\\Driver\\AnnotationDriver',
+            'JMS\\DiExtraBundle\\Listener\\ControllerInjectionListener',
+        ));
     }
 
     private function configureMetadata(array $config, $container)
