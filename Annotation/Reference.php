@@ -20,23 +20,27 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-/** @Annotation */
-final class Validator
+abstract class Reference
 {
-    public $alias;
+    public $value;
+    public $required;
 
-    public function __construct(array $values)
+    public final function __construct(array $values)
     {
-        if (isset($values['alias'])) {
-            $values['value'] = $values['alias'];
+        if (isset($values['value'])) {
+            if (!is_string($values['value'])) {
+                throw new InvalidTypeException('Inject', 'value', 'string', $values['value']);
+            }
+
+            $this->value = $values['value'];
         }
 
-        if (!isset($values['value'])) {
-            throw new \InvalidArgumentException('A value must be given for @Validator annotations.');
+        if (isset($values['required'])) {
+            if (!is_bool($values['required'])) {
+                throw new InvalidTypeException('Inject', 'required', 'boolean', $values['required']);
+            }
+
+            $this->required = $values['required'];
         }
-        if (!is_string($values['value'])) {
-            throw new InvalidTypeException('Validator', 'value', 'string', $values['value']);
-        }
-        $this->alias = $values['value'];
     }
 }

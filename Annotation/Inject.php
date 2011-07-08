@@ -18,30 +18,7 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
-
 /** @Annotation */
-final class Inject
+final class Inject extends Reference
 {
-    public $value;
-    public $required;
-
-    public function __construct(array $values)
-    {
-        if (isset($values['value'])) {
-            if (!is_string($values['value'])) {
-                throw new InvalidTypeException('Inject', 'value', 'string', $values['value']);
-            }
-
-            $this->value = $values['value'];
-        }
-
-        if (isset($values['required'])) {
-            if (!is_bool($values['required'])) {
-                throw new InvalidTypeException('Inject', 'required', 'boolean', $values['required']);
-            }
-
-            $this->required = $values['required'];
-        }
-    }
 }

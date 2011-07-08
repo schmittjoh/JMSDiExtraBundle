@@ -34,7 +34,6 @@ class JMSDiExtraExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
-        $loader->load('controller_injection.xml');
 
         $container->setParameter('jms_di_extra.all_bundles', $config['locations']['all_bundles']);
         $container->setParameter('jms_di_extra.bundles', $config['locations']['bundles']);
@@ -43,14 +42,7 @@ class JMSDiExtraExtension extends Extension
         $this->configureMetadata($config['metadata'], $container);
 
         $this->addClassesToCompile(array(
-            'Metadata\\MetadataFactory',
-            'Metadata\\ClassHierarchyMetadata',
-            'Metadata\\Driver\\DriverChain',
-            'Metadata\\Cache\\FileCache',
-
-            'JMS\\DiExtraBundle\\Metadata\\ClassMetadata',
-            'JMS\\DiExtraBundle\\Metadata\\Driver\\AnnotationDriver',
-            'JMS\\DiExtraBundle\\Listener\\ControllerInjectionListener',
+            'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
         ));
     }
 

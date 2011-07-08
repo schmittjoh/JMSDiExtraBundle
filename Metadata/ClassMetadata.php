@@ -30,6 +30,7 @@ class ClassMetadata extends BaseClassMetadata
     public $tags = array();
     public $arguments;
     public $methodCalls = array();
+    public $lookupMethods = array();
     public $properties = array();
 
     public function serialize()
@@ -43,6 +44,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->tags,
             $this->arguments,
             $this->methodCalls,
+            $this->lookupMethods,
             $this->properties,
             parent::serialize(),
         ));
@@ -59,6 +61,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->tags,
             $this->arguments,
             $this->methodCalls,
+            $this->lookupMethods,
             $this->properties,
             $parentStr
         ) = unserialize($str);

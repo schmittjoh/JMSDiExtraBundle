@@ -61,7 +61,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('file_cache')
                                 ->addDefaultsIfNotSet()
                                 ->children()
-                                    ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/diextra')->end()
+                                    ->scalarNode('dir')->defaultValue('%kernel.cache_dir%/diextra/metadata')->end()
                                 ->end()
                             ->end()
                         ->end()

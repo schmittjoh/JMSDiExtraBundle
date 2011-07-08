@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
+use Symfony\Component\DependencyInjection\Alias;
+
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Config\ServiceFilesResource;
 use Symfony\Component\Config\Resource\FileResource;
@@ -43,6 +45,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
     {
         $reader = $container->get('annotation_reader');
         $factory = $container->get('jms_di_extra.metadata.metadata_factory');
+        $converter = $container->get('jms_di_extra.metadata.converter');
 
         $directories = $this->getScanDirectories($container);
         if (!$directories) {
@@ -65,36 +68,8 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 continue;
             }
 
-            $previous = null;
-            foreach ($metadata->classMetadata as $classMetadata) {
-                if (null === $previous && null === $classMetadata->parent) {
-                    $definition = new Definition();
-                } else {
-                    $definition = new DefinitionDecorator(
-                        $classMetadata->parent ?: $previous->id
-                    );
-                }
-
-                $definition->setClass($classMetadata->name);
-                if (null !== $classMetadata->scope) {
-                    $definition->setScope($classMetadata->scope);
-                }
-                if (null !== $classMetadata->public) {
-                    $definition->setPublic($classMetadata->public);
-                }
-                if (null !== $classMetadata->abstract) {
-                    $definition->setAbstract($classMetadata->abstract);
-                }
-                if (null !== $classMetadata->arguments) {
-                    $definition->setArguments($classMetadata->arguments);
-                }
-
-                $definition->setMethodCalls($classMetadata->methodCalls);
-                $definition->setTags($classMetadata->tags);
-                $definition->setProperties($classMetadata->properties);
-
-                $container->setDefinition($classMetadata->id, $definition);
-                $previous = $classMetadata;
+            foreach ($converter->convert($metadata) as $id => $definition) {
+                $container->setDefinition($id, $definition);
             }
         }
     }

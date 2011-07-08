@@ -16,30 +16,9 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Tests\Fixture\Validator;
+namespace JMS\DiExtraBundle\DependencyInjection;
 
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Validator as ValidatorAnnot;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
-
-/**
- * @ValidatorAnnot("foobar")
- */
-class Validator extends ConstraintValidator
+interface LookupMethodClassInterface
 {
-    private $foo;
-
-    /**
-     * @InjectParams
-     */
-    public function __construct($foo)
-    {
-        $this->foo = $foo;
-    }
-
-    public function isValid($value, Constraint $constraint)
-    {
-        return true;
-    }
+    function __jmsDiExtra_getOriginalClassName();
 }
