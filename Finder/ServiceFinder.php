@@ -70,7 +70,7 @@ class ServiceFinder
 
     private function findUsingGrep(array $dirs)
     {
-        $cmd = $this->grepPath.' --fixed-strings --directories=recurse --devices=skip --files-with-matches --with-filename --max-count=1 --color=never --exclude-dir=\.git --exclude-dir=Resources  --exclude-dir=Tests --exclude-dir=Controller --include=*.php';
+        $cmd = $this->grepPath.' --fixed-strings --directories=recurse --devices=skip --files-with-matches --with-filename --max-count=1 --color=never --include=*.php';
         $cmd .= ' '.escapeshellarg(self::PATTERN);
 
         foreach ($dirs as $dir) {
