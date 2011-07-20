@@ -42,7 +42,7 @@ class ServiceFinder
         }
 
         // use FINDSTR on Windows
-        if (false !== stripos(PHP_OS, 'win')) {
+        if (0 === stripos(PHP_OS, 'win')) {
             return $this->findUsingFindstr($dirs);
         }
 
