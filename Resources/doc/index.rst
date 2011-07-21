@@ -111,11 +111,7 @@ the DIC's features, and even some more.
         private $session;
     }
     
-- Method/Getter Injection:
-
-You can use this type of injection if you have a dependency that you do not
-always need in the controller, and which is costly to initialize, like the
-mailer for example.
+- Method/Getter Injection::
 
     <?php
     
@@ -134,6 +130,10 @@ mailer for example.
         /** @DI\LookupMethod("mailer")
         abstract protected function getMailer();
     }
+
+You can use this type of injection if you have a dependency that you do not
+always need in the controller, and which is costly to initialize, like the
+mailer in the example above.
 
 
 Annotations
