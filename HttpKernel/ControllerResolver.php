@@ -60,8 +60,7 @@ class ControllerResolver extends BaseControllerResolver
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-        $containerClass = str_replace('\\', '', $class).'Container';
-        $filename = $this->container->getParameter('kernel.cache_dir').'/diextra/controller_containers/'.$containerClass.'.php';
+        $filename = $this->container->getParameter('jms_di_extra.cache_dir').'/controller_injectors/'.str_replace('\\', '', $class).'.php';
         $cache = new ConfigCache($filename, $this->container->getParameter('kernel.debug'));
 
         if (!$cache->isFresh()) {
@@ -151,7 +150,7 @@ class ControllerResolver extends BaseControllerResolver
             $lookupClassName = str_replace('\\', '', $outsideClass->getName());
             $code = $generator->generate($outsideClass, $lookupMethods, $lookupClassName);
 
-            $filename = $this->container->getParameter('kernel.cache_dir').'/diextra/lookup_method_classes/'.$lookupClassName.'.php';
+            $filename = $this->container->getParameter('jms_di_extra.cache_dir').'/lookup_method_classes/'.$lookupClassName.'.php';
             if (!file_exists($dir = dirname($filename))) {
                 if (false === @mkdir($dir, 0777, true)) {
                     throw new \RuntimeException(sprintf('Could not create directory "%s".', $dir));

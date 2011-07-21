@@ -38,15 +38,16 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.all_bundles', $config['locations']['all_bundles']);
         $container->setParameter('jms_di_extra.bundles', $config['locations']['bundles']);
         $container->setParameter('jms_di_extra.directories', $config['locations']['directories']);
+        $container->setParameter('jms_di_extra.cache_dir', $config['cache_dir']);
 
-        $this->configureMetadata($config['metadata'], $container);
+        $this->configureMetadata($config['metadata'], $container, $config['cache_dir'].'/metadata');
 
         $this->addClassesToCompile(array(
             'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
         ));
     }
 
-    private function configureMetadata(array $config, $container)
+    private function configureMetadata(array $config, $container, $cacheDir)
     {
         if ('none' === $config['cache']) {
             $container->removeAlias('jms_di_extra.metadata.cache');
@@ -54,7 +55,7 @@ class JMSDiExtraExtension extends Extension
         }
 
         if ('file' === $config['cache']) {
-            $cacheDir = $container->getParameterBag()->resolveValue($config['file_cache']['dir']);
+            $cacheDir = $container->getParameterBag()->resolveValue($cacheDir);
             if (!file_exists($cacheDir)) {
                 if (false === @mkdir($cacheDir, 0777, true)) {
                     throw new RuntimeException(sprintf('The cache dir "%s" could not be created.', $cacheDir));

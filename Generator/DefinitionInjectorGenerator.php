@@ -25,9 +25,6 @@ use Symfony\Component\DependencyInjection\Definition;
 /**
  * Generates lightweight code for injecting a single definition.
  *
- * This only supports a subset of the DIC's feature (only those that are also
- * supported by the AnnotationDriver).
- *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 class DefinitionInjectorGenerator
