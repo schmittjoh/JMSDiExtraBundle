@@ -49,12 +49,12 @@ class %s extends \%s implements LookupMethodClassInterface
     public final function __jmsDiExtra_getOriginalClassName()
     {
     	return %s;
-    }
-%s
+    }%s
 }
 EOF;
 
         $lookupMethod = <<<'EOF'
+
 
     %s function %s()
     {
