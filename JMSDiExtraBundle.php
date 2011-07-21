@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle;
 
+use JMS\DiExtraBundle\DependencyInjection\Compiler\IntegrationPass;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\AnnotationConfigurationPass;
@@ -39,5 +40,7 @@ class JMSDiExtraBundle extends Bundle
         $passes = $config->getBeforeOptimizationPasses();
         array_unshift($passes, new AnnotationConfigurationPass($this->kernel));
         $config->setBeforeOptimizationPasses($passes);
+
+        $container->addCompilerPass(new IntegrationPass());
     }
 }

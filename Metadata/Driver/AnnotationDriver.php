@@ -18,8 +18,9 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
+use JMS\DiExtraBundle\Annotation\Reference as AnnotReference;
+use JMS\DiExtraBundle\Annotation\LookupMethod;
 use JMS\DiExtraBundle\Annotation\Validator;
-
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 use JMS\DiExtraBundle\Annotation\Observe;
@@ -73,7 +74,7 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        $hasPropertyInjection = false;
+        $hasInjection = false;
         foreach ($class->getProperties() as $property) {
             if ($property->getDeclaringClass()->getName() !== $className) {
                 continue;
@@ -82,8 +83,8 @@ class AnnotationDriver implements DriverInterface
 
             foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
                 if ($annot instanceof Inject) {
-                    $hasPropertyInjection = true;
-                    $metadata->properties[$name] = $this->convertInjectValue($name, $annot);
+                    $hasInjection = true;
+                    $metadata->properties[$name] = $this->convertReferenceValue($name, $annot);
                 }
             }
         }
@@ -105,34 +106,48 @@ class AnnotationDriver implements DriverInterface
                     $params = array();
                     foreach ($method->getParameters() as $param) {
                         if (!isset($annot->params[$paramName = $param->getName()])) {
-                            $params[$paramName] = $this->convertInjectValue($paramName, new Inject(array('value' => null)));
+                            $params[$paramName] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)));
                             continue;
                         }
 
-                        $params[$paramName] = $this->convertInjectValue($paramName, $annot->params[$paramName]);
+                        $params[$paramName] = $this->convertReferenceValue($paramName, $annot->params[$paramName]);
                     }
 
                     if (!$params) {
                         continue;
                     }
 
+                    $hasInjection = true;
+
                     if ('__construct' === $name) {
                         $metadata->arguments = $params;
                     } else {
                         $metadata->methodCalls[] = array($name, $params);
                     }
+                } else if ($annot instanceof LookupMethod) {
+                    if ($method->isFinal()) {
+                        throw new \RuntimeException(sprintf('The method "%s::%s" is marked as final and cannot be declared as lookup-method.', $className, $name));
+                    }
+                    if ($method->isPrivate()) {
+                        throw new \RuntimeException(sprintf('The method "%s::%s" is marked as private and cannot be declared as lookup-method.', $className, $name));
+                    }
+                    if ($method->getParameters()) {
+                        throw new \RuntimeException(sprintf('The method "%s::%s" must have a no-arguments signature if you want to use it as lookup-method.', $className, $name));
+                    }
+
+                    $metadata->lookupMethods[$name] = $this->convertReferenceValue('get' === substr($name, 0, 3) ? substr($name, 3) : $name, $annot);
                 }
             }
         }
 
-        if (null == $metadata->id && !$hasPropertyInjection) {
+        if (null == $metadata->id && !$hasInjection) {
             return null;
         }
 
         return $metadata;
     }
 
-    private function convertInjectValue($name, Inject $annot)
+    private function convertReferenceValue($name, AnnotReference $annot)
     {
         if (null === $annot->value) {
             return new Reference($this->generateId($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE);

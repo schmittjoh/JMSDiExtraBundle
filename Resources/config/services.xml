@@ -9,6 +9,11 @@
         
         <parameter key="jms_di_extra.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="jms_di_extra.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
+        
+        <parameter key="jms_di_extra.metadata.converter.class">JMS\DiExtraBundle\Metadata\MetadataConverter</parameter>
+        <parameter key="jms_di_extra.controller_resolver.class">JMS\DiExtraBundle\HttpKernel\ControllerResolver</parameter>
+        
+        <parameter key="jms_di_extra.template_listener.class">JMS\DiExtraBundle\EventListener\TemplateListener</parameter>
     </parameters>
 
     <services>
@@ -23,13 +28,22 @@
             <argument /><!-- Directory -->
         </service>
         <service id="jms_di_extra.metadata.cache" alias="jms_di_extra.metadata.cache.file_cache" public="false" />
-        <service id="jms_di_extra.metadata.metadata_factory" class="%jms_di_extra.metadata.metadata_factory.class%" public="false">
+        <service id="jms_di_extra.metadata.metadata_factory" class="%jms_di_extra.metadata.metadata_factory.class%">
             <argument type="service" id="jms_di_extra.metadata_driver" />
             <argument>Metadata\ClassHierarchyMetadata</argument>
             <argument>%kernel.debug%</argument>
             <call method="setCache">
                 <argument type="service" id="jms_di_extra.metadata.cache" on-invalid="ignore" />
             </call>
+        </service>
+        
+        <service id="jms_di_extra.metadata.converter" class="%jms_di_extra.metadata.converter.class%" />
+        
+        <service id="jms_di_extra.controller_resolver" class="%jms_di_extra.controller_resolver.class%" public="false">
+            <tag name="monolog.logger" channel="request" />
+            <argument type="service" id="service_container" />
+            <argument type="service" id="controller_name_converter" />
+            <argument type="service" id="logger" on-invalid="ignore" />
         </service>
     </services>
 </container>
