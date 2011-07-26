@@ -52,17 +52,37 @@ class ServiceFinder
 
     private function findUsingFindstr(array $dirs)
     {
-        $dirs = implode(';', $dirs);
+        $tmp = implode(';', $dirs);
 
         $cmd = 'FINDSTR /M /S /L /P';
-        $cmd .= ' /D:'.escapeshellarg(substr($dirs, 1));
+        $cmd .= ' /D:'.escapeshellarg($tmp);
         $cmd .= ' '.escapeshellarg(self::PATTERN);
         $cmd .= ' *.php';
 
-        exec($cmd, $files, $exitCode);
+        exec($cmd, $lines, $exitCode);
 
         if (0 !== $exitCode) {
             throw new RuntimeException(sprintf('Command "%s" exited with non-successful status code. "%d".', $cmd, $exitCode));
+        }
+
+        // Expecting following findstr output format:
+        //     C:\matched\dir1:
+        // Relative\Path\To\File1.php
+        // Relative\Path\To\File2.php
+        //     C:\matched\dir2:
+        // Relative\Path\To\File3.php
+        // Relative\Path\To\File4.php
+
+        $files = array();
+        $currentDir = '';
+        foreach ($lines as $line) {
+            if (in_array($dir = trim($line, ' :'), $dirs)) {
+                $currentDir = $dir;
+            } elseif ($currentDir && false !== ($file = realpath($currentDir . DIRECTORY_SEPARATOR . $line))) {
+                $files[] = $file;
+            } else {
+                throw new RuntimeException(sprintf('Unexpected output of "%s" command', $cmd));
+            }
         }
 
         return $files;
