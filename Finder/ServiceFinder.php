@@ -26,23 +26,39 @@ class ServiceFinder
 {
     const PATTERN = 'JMS\DiExtraBundle\Annotation';
 
+    const METHOD_GREP = 1;
+    const METHOD_FINDSTR = 2;
+    const METHOD_FINDER = 3;
+    
     private $grepPath;
+    private $method;
 
     public function __construct()
     {
         $finder = new ExecutableFinder();
-        $this->grepPath = $finder->find('grep');
+        
+        if ($this->grepPath = $finder->find('grep')) {
+            $this->method = self::METHOD_GREP;
+        } else {
+            $uname = php_uname();
+            
+            if (false !== strpos($uname, 'Windows') && false === stripos($uname, 'Windows XP')) {
+                $this->method = self::METHOD_FINDSTR;
+            } else {
+                $this->method = self::METHOD_FINDER;
+            }
+        }
     }
 
     public function findFiles(array $dirs)
     {
         // check for grep availability
-        if (null !== $this->grepPath) {
+        if (self::METHOD_GREP === $this->method) {
             return $this->findUsingGrep($dirs);
         }
 
         // use FINDSTR on Windows
-        if (0 === stripos(PHP_OS, 'win')) {
+        if (self::METHOD_FINDSTR === $this->method) {
             return $this->findUsingFindstr($dirs);
         }
 
@@ -52,15 +68,13 @@ class ServiceFinder
 
     private function findUsingFindstr(array $dirs)
     {
-        $dirs = implode(';', $dirs);
-
         $cmd = 'FINDSTR /M /S /L /P';
-        $cmd .= ' /D:'.escapeshellarg(substr($dirs, 1));
+        $cmd .= ' /D:'.escapeshellarg(implode(';', $dirs));
         $cmd .= ' '.escapeshellarg(self::PATTERN);
         $cmd .= ' *.php';
 
         exec($cmd, $files, $exitCode);
-
+        
         if (0 !== $exitCode) {
             throw new RuntimeException(sprintf('Command "%s" exited with non-successful status code. "%d".', $cmd, $exitCode));
         }

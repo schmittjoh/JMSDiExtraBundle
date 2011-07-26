@@ -21,18 +21,24 @@ namespace JMS\DiExtraBundle\Tests\Finder;
 use JMS\DiExtraBundle\Finder\ServiceFinder;
 use Symfony\Component\Process\ExecutableFinder;
 
-class ServiceFinderTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractServiceFinderTest extends \PHPUnit_Framework_TestCase
 {
+    public function testFindFiles()
+    {
+        $finder = $this->getFinder();
+        
+        $this->assertEquals(array(
+            realpath(__DIR__.'/../Fixture/NonEmptyDirectory/Service1.php'),
+            realpath(__DIR__.'/../Fixture/NonEmptyDirectory/SubDir1/Service2.php'),
+            realpath(__DIR__.'/../Fixture/NonEmptyDirectory/SubDir2/Service3.php'),
+        ), array_map('realpath', $finder->findFiles(array(__DIR__.'/../Fixture/NonEmptyDirectory'))));
+    }
+    
     public function testFindFilesUsingGrepReturnsEmptyArrayWhenNoMatchesAreFound()
     {
-        $executableFinder = new ExecutableFinder();
-        if (null === $executableFinder->find('grep')) {
-            $this->markTestSkipped('grep is not available.');
-        }
-
-        $finder = new ServiceFinder();
-        $ref = new  \ReflectionMethod($finder, 'findUsingGrep');
-        $ref->setAccessible(true);
-        $this->assertEquals(array(), $ref->invoke($finder, array(__DIR__.'/../Fixture/EmptyDirectory')));
+        $finder = $this->getFinder();
+        $this->assertEquals(array(), $finder->findFiles(array(__DIR__.'/../Fixture/EmptyDirectory')));
     }
+    
+    abstract protected function getFinder();
 }

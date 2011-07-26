@@ -48,7 +48,7 @@ class %s extends \%s implements LookupMethodClassInterface
 
     public final function __jmsDiExtra_getOriginalClassName()
     {
-    	return %s;
+        return %s;
     }%s
 }
 EOF;
