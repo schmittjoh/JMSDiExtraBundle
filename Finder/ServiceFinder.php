@@ -39,14 +39,10 @@ class ServiceFinder
         
         if ($this->grepPath = $finder->find('grep')) {
             $this->method = self::METHOD_GREP;
+        } else if (0 === stripos(PHP_OS, 'win')) {
+            $this->method = self::METHOD_FINDSTR;
         } else {
-            $uname = php_uname();
-            
-            if (false !== strpos($uname, 'Windows') && false === stripos($uname, 'Windows XP')) {
-                $this->method = self::METHOD_FINDSTR;
-            } else {
-                $this->method = self::METHOD_FINDER;
-            }
+            $this->method = self::METHOD_FINDER;
         }
     }
 
@@ -73,10 +69,41 @@ class ServiceFinder
         $cmd .= ' '.escapeshellarg(self::PATTERN);
         $cmd .= ' *.php';
 
-        exec($cmd, $files, $exitCode);
+        exec($cmd, $lines, $exitCode);
+
+        if (1 === $exitCode) {
+            return array();
+        }
         
         if (0 !== $exitCode) {
             throw new RuntimeException(sprintf('Command "%s" exited with non-successful status code. "%d".', $cmd, $exitCode));
+        }
+
+        // Looks like FINDSTR has different versions with different output formats. 
+        // 
+        // Supported format #1:
+        //     C:\matched\dir1:
+        // Relative\Path\To\File1.php
+        // Relative\Path\To\File2.php
+        //     C:\matched\dir2:
+        // Relative\Path\To\File3.php
+        // Relative\Path\To\File4.php
+        //
+        // Supported format #2:
+        // C:\matched\dir1\Relative\Path\To\File1.php
+        // C:\matched\dir1\Relative\Path\To\File2.php
+        // C:\matched\dir2\Relative\Path\To\File3.php
+        // C:\matched\dir2\Relative\Path\To\File4.php
+
+        $files = array();
+        $currentDir = '';
+        foreach ($lines as $line) {
+            if (':' === substr($line, -1)) {
+                $currentDir = trim($line, ' :/').'/';
+                continue;
+            }
+            
+            $files[] = $currentDir.$line;
         }
 
         return $files;
