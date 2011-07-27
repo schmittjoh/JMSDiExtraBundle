@@ -52,10 +52,8 @@ class ServiceFinder
 
     private function findUsingFindstr(array $dirs)
     {
-        $tmp = implode(';', $dirs);
-
         $cmd = 'FINDSTR /M /S /L /P';
-        $cmd .= ' /D:'.escapeshellarg($tmp);
+        $cmd .= ' /D:'.escapeshellarg(implode(';', $dirs));
         $cmd .= ' '.escapeshellarg(self::PATTERN);
         $cmd .= ' *.php';
 
@@ -65,23 +63,31 @@ class ServiceFinder
             throw new RuntimeException(sprintf('Command "%s" exited with non-successful status code. "%d".', $cmd, $exitCode));
         }
 
-        // Expecting following findstr output format:
+        // Looks like FINDSTR has different versions with different output formats. 
+        // 
+        // Supported format #1:
         //     C:\matched\dir1:
         // Relative\Path\To\File1.php
         // Relative\Path\To\File2.php
         //     C:\matched\dir2:
         // Relative\Path\To\File3.php
         // Relative\Path\To\File4.php
+        //
+        // Supported format #2:
+        // C:\matched\dir1\Relative\Path\To\File1.php
+        // C:\matched\dir1\Relative\Path\To\File2.php
+        // C:\matched\dir2\Relative\Path\To\File3.php
+        // C:\matched\dir2\Relative\Path\To\File4.php
 
         $files = array();
         $currentDir = '';
         foreach ($lines as $line) {
             if (in_array($dir = trim($line, ' :'), $dirs)) {
-                $currentDir = $dir;
-            } elseif ($currentDir && false !== ($file = realpath($currentDir . DIRECTORY_SEPARATOR . $line))) {
+                $currentDir = rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            } elseif (false !== ($file = realpath($currentDir . trim($line)))) {
                 $files[] = $file;
             } else {
-                throw new RuntimeException(sprintf('Unexpected output of "%s" command', $cmd));
+                throw new RuntimeException(sprintf('Unexpected output of command "%s"', $cmd));
             }
         }
 
