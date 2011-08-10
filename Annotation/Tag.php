@@ -21,7 +21,10 @@ namespace JMS\DiExtraBundle\Annotation;
 use JMS\DiExtraBundle\Exception\InvalidArgumentException;
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("CLASS")
+ */
 final class Tag
 {
     public $name;

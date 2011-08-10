@@ -20,7 +20,10 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("METHOD")
+ */
 final class InjectParams
 {
     public $params = array();

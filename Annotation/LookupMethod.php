@@ -18,7 +18,10 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("METHOD")
+ */
 final class LookupMethod extends Reference
 {
 }

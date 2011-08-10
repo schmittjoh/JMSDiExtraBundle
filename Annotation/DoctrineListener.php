@@ -4,7 +4,10 @@ namespace JMS\DiExtraBundle\Annotation;
 
 use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
-/** @Annotation */
+/**
+ * @Annotation
+ * @Target("CLASS")
+ */
 class DoctrineListener
 {
     public $events;
