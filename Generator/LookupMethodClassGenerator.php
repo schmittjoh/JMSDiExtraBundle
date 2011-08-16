@@ -19,9 +19,7 @@
 namespace JMS\DiExtraBundle\Generator;
 
 use Symfony\Component\DependencyInjection\Parameter;
-
 use Symfony\Component\DependencyInjection\Reference;
-
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
 
 class LookupMethodClassGenerator
@@ -40,7 +38,7 @@ use JMS\DiExtraBundle\DependencyInjection\LookupMethodClassInterface;
  *
  * Manual changes to it will be lost.
  *
- * You can modify this class by changing your @LookupMethod configuration.
+ * You can modify this class by changing your "@LookupMethod" configuration.
  */
 class %s extends \%s implements LookupMethodClassInterface
 {
