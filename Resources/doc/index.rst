@@ -36,8 +36,9 @@ Make sure that you also register the namespaces with the autoloader::
 
 Configuration
 -------------
-For optimal performance, we recommend to explicitly configure the directories
-which should be scanned for service classes (by default no directory is scanned)::
+For optimal development performance (in production there is no difference either way), 
+it is recommended to explicitly configure the directories which should be scanned for 
+service classes (by default no directory is scanned)::
 
     jms_di_extra:
         locations:
