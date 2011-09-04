@@ -26,7 +26,7 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class Observe
 {
-    /** @var string */
+    /** @var string @Required */
     public $event;
 
     /** @var integer */

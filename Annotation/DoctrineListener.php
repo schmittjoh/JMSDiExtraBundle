@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 class DoctrineListener
 {
-    /** @var array<string> */
+    /** @var array<string> @Required */
     public $events;
 
     /** @var string */

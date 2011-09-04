@@ -27,7 +27,7 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class Tag
 {
-    /** @var string */
+    /** @var string @Required */
     public $name;
 
     /** @var array */

@@ -26,7 +26,7 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class Validator
 {
-    /** @var string */
+    /** @var string @Required */
     public $alias;
 
     public function __construct()
