@@ -26,10 +26,16 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class InjectParams
 {
+    /** @var array<JMS\DiExtraBundle\Annotation\Inject> */
     public $params = array();
 
-    public function __construct(array $values)
+    public function __construct()
     {
+        if (0 === func_num_args()) {
+            return;
+        }
+        $values = func_get_arg(0);
+
         if (isset($values['params'])) {
             $values['value'] = $values['params'];
         }

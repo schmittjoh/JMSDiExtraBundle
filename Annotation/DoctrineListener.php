@@ -10,12 +10,22 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 class DoctrineListener
 {
+    /** @var array<string> */
     public $events;
+
+    /** @var string */
     public $connection;
+
+    /** @var boolean */
     public $lazy = true;
 
-    public function __construct(array $values)
+    public function __construct()
     {
+        if (0 === func_num_args()) {
+            return;
+        }
+        $values = func_get_arg(0);
+
         if (!isset($values['value'])) {
             throw new InvalidTypeException('DoctrineListener', 'value', 'array or string', null);
         }

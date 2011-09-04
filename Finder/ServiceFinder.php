@@ -29,14 +29,14 @@ class ServiceFinder
     const METHOD_GREP = 1;
     const METHOD_FINDSTR = 2;
     const METHOD_FINDER = 3;
-    
+
     private $grepPath;
     private $method;
 
     public function __construct()
     {
         $finder = new ExecutableFinder();
-        
+
         if ($this->grepPath = $finder->find('grep')) {
             $this->method = self::METHOD_GREP;
         } else if (0 === stripos(PHP_OS, 'win')) {
@@ -74,13 +74,13 @@ class ServiceFinder
         if (1 === $exitCode) {
             return array();
         }
-        
+
         if (0 !== $exitCode) {
             throw new RuntimeException(sprintf('Command "%s" exited with non-successful status code. "%d".', $cmd, $exitCode));
         }
 
-        // Looks like FINDSTR has different versions with different output formats. 
-        // 
+        // Looks like FINDSTR has different versions with different output formats.
+        //
         // Supported format #1:
         //     C:\matched\dir1:
         // Relative\Path\To\File1.php
@@ -102,7 +102,7 @@ class ServiceFinder
                 $currentDir = trim($line, ' :/').'/';
                 continue;
             }
-            
+
             $files[] = $currentDir.$line;
         }
 

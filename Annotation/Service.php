@@ -26,14 +26,28 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class Service
 {
+    /** @var string */
     public $id;
+
+    /** @var string */
     public $parent;
+
+    /** @var boolean */
     public $public;
+
+    /** @var string */
     public $scope;
+
+    /** @var boolean */
     public $abstract;
 
-    public function __construct(array $values)
+    public function __construct()
     {
+        if (0 === func_num_args()) {
+            return;
+        }
+        $values = func_get_arg(0);
+
         if (isset($values['value'])) {
             if (!is_string($values['value'])) {
                 throw new InvalidTypeException('Service', 'value', 'string', $values['value']);

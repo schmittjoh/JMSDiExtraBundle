@@ -22,11 +22,19 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
 
 abstract class Reference
 {
+    /** @var string */
     public $value;
+
+    /** @var boolean */
     public $required;
 
-    public final function __construct(array $values)
+    public final function __construct()
     {
+        if (0 === func_num_args()) {
+            return;
+        }
+        $values = func_get_arg(0);
+
         if (isset($values['value'])) {
             if (!is_string($values['value'])) {
                 throw new InvalidTypeException('Inject', 'value', 'string', $values['value']);

@@ -27,11 +27,19 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class Tag
 {
+    /** @var string */
     public $name;
+
+    /** @var array */
     public $attributes = array();
 
-    public function __construct(array $values)
+    public function __construct()
     {
+        if (0 === func_num_args()) {
+            return;
+        }
+        $values = func_get_arg(0);
+
         if (!isset($values['value'])) {
             throw new InvalidArgumentException('A value must be given for annotation "@Tag".');
         }

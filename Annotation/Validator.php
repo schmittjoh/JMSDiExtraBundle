@@ -26,10 +26,16 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class Validator
 {
+    /** @var string */
     public $alias;
 
-    public function __construct(array $values)
+    public function __construct()
     {
+        if (0 === func_num_args()) {
+            return;
+        }
+        $values = func_get_arg(0);
+
         if (isset($values['alias'])) {
             $values['value'] = $values['alias'];
         }

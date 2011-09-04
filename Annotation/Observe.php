@@ -26,11 +26,19 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  */
 final class Observe
 {
+    /** @var string */
     public $event;
+
+    /** @var integer */
     public $priority = 0;
 
-    public function __construct(array $values)
+    public function __construct()
     {
+        if (0 === func_num_args()) {
+            return;
+        }
+        $values = func_get_arg(0);
+
         if (isset($values['event'])) {
             $values['value'] = $values['event'];
         }
