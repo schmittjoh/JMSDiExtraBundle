@@ -82,6 +82,7 @@ class AnnotationDriver implements DriverInterface
                         'event' => $event,
                         'connection' => $annot->connection ?: 'default',
                         'lazy' => $annot->lazy,
+                        'priority' => $annot->priority,
                     );
                 }
             }
