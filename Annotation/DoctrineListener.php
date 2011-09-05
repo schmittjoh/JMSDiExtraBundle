@@ -19,6 +19,9 @@ class DoctrineListener
     /** @var boolean */
     public $lazy = true;
 
+    /** @var integer */
+    public $priority = 0;
+
     public function __construct()
     {
         if (0 === func_num_args()) {
@@ -43,6 +46,13 @@ class DoctrineListener
                 throw new InvalidTypeException('DoctrineListener', 'lazy', 'boolean', $values['lazy']);
             }
             $this->lazy = $values['lazy'];
+        }
+
+        if (isset($values['priority'])) {
+            if (!is_integer($values['priority'])) {
+                throw new InvalidTypeException('DoctrineListener', 'priority', 'integer', $values['priority']);
+            }
+            $this->priority = $values['priority'];
         }
     }
 }
