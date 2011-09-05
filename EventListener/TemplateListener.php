@@ -25,10 +25,10 @@ use Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener as Framewo
 
 class TemplateListener extends FrameworkExtraTemplateListener
 {
-    protected function guessTemplateName($controller, Request $request)
+    protected function guessTemplateName($controller, Request $request, $engine = 'twig')
     {
         if (!$controller[0] instanceof LookupMethodClassInterface) {
-            return parent::guessTemplateName($controller, $request);
+            return parent::guessTemplateName($controller, $request, $engine);
         }
 
         if (!preg_match('/Controller\\\(.+)Controller$/', $controller[0]->__jmsDiExtra_getOriginalClassName(), $matchController)) {
@@ -41,6 +41,6 @@ class TemplateListener extends FrameworkExtraTemplateListener
 
         $bundle = $this->getBundleForClass($controller[0]->__jmsDiExtra_getOriginalClassName());
 
-        return new TemplateReference($bundle->getName(), $matchController[1], $matchAction[1], $request->getRequestFormat(), 'twig');
+        return new TemplateReference($bundle->getName(), $matchController[1], $matchAction[1], $request->getRequestFormat(), $engine);
     }
 }
