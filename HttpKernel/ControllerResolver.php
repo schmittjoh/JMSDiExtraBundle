@@ -18,19 +18,26 @@
 
 namespace JMS\DiExtraBundle\HttpKernel;
 
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+use Metadata\ClassHierarchyMetadata;
 
+use JMS\DiExtraBundle\Metadata\ClassMetadata;
+
+use CG\Core\DefaultNamingStrategy;
+use CG\Proxy\Enhancer;
+use JMS\AopBundle\DependencyInjection\Compiler\PointcutMatchingPass;
 use JMS\DiExtraBundle\Generator\DefinitionInjectorGenerator;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use JMS\DiExtraBundle\Generator\LookupMethodClassGenerator;
 use JMS\DiExtraBundle\DependencyInjection\Dumper\PhpDumper;
+use Metadata\MetadataFactory;
+use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\ConfigCache;
-use Metadata\MetadataFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControllerResolver;
 
 class ControllerResolver extends BaseControllerResolver
@@ -64,26 +71,34 @@ class ControllerResolver extends BaseControllerResolver
         $cache = new ConfigCache($filename, $this->container->getParameter('kernel.debug'));
 
         if (!$cache->isFresh()) {
-            if (null === $metadata = $this->container->get('jms_di_extra.metadata.metadata_factory')->getMetadataForClass($class)) {
-                $controller = new $class();
-                if ($controller instanceof ContainerAwareInterface) {
-                    $controller->setContainer($this->container);
-                }
-
-                return array($controller, $method);
+            $metadata = $this->container->get('jms_di_extra.metadata.metadata_factory')->getMetadataForClass($class);
+            if (null === $metadata) {
+                $metadata = new ClassHierarchyMetadata();
+                $metadata->addClassMetadata(new ClassMetadata($class));
             }
 
             $this->prepareContainer($cache, $filename, $metadata);
         }
 
         $inject = require $filename;
+        $controller = $inject($this->container);
 
-        return array($inject($this->container), $method);
+        if ($controller instanceof ContainerAwareInterface) {
+            $controller->setContainer($this->container);
+        }
+
+        return array($controller, $method);
     }
 
     private function prepareContainer($cache, $containerFilename, $metadata)
     {
         $container = new ContainerBuilder();
+        $container->setParameter('jms_aop.cache_dir', $this->container->getParameter('jms_di_extra.cache_dir'));
+        $def = $container
+            ->register('jms_aop.interceptor_loader', 'JMS\AopBundle\Aop\InterceptorLoader')
+            ->addArgument(new Reference('service_container'))
+            ->setPublic(false)
+        ;
 
         // add resources
         $ref = $metadata->getOutsideClassMetadata()->reflection;
@@ -105,8 +120,13 @@ class ControllerResolver extends BaseControllerResolver
 
         $this->generateLookupMethods($controllerDef, $metadata);
 
-        $pass = new ResolveDefinitionTemplatesPass();
-        $pass->process($container);
+        $config = $container->getCompilerPassConfig();
+        $config->setOptimizationPasses(array());
+        $config->setRemovingPasses(array());
+        $config->addPass(new ResolveDefinitionTemplatesPass());
+        $config->addPass(new PointcutMatchingPass($this->container->get('jms_aop.pointcut_container')->getEvaluators()));
+        $config->addPass(new InlineServiceDefinitionsPass());
+        $container->compile();
 
         if (!file_exists($dir = dirname($containerFilename))) {
             if (false === @mkdir($dir, 0777, true)) {
@@ -124,44 +144,38 @@ class ControllerResolver extends BaseControllerResolver
 
     private function generateLookupMethods($def, $metadata)
     {
-        // generate lookup methods where requested
-        $lookupMethods = array();
-        $outsideClass = $metadata->getOutsideClassMetadata()->reflection;
-        foreach ($metadata->classMetadata as $classMetadata) {
-            if (!$classMetadata->lookupMethods) {
-                continue;
-            }
-
-            foreach ($classMetadata->lookupMethods as $name => $value) {
-                if ($outsideClass->getMethod($name)->getDeclaringClass()->getName() !== $classMetadata->name) {
-                    continue;
-                }
-
-                $lookupMethods[$name] = $value;
+        $found = false;
+        foreach ($metadata->classMetadata as $cMetadata) {
+            if (!empty($cMetadata->lookupMethods)) {
+                $found = true;
+                break;
             }
         }
 
-        if ($lookupMethods) {
-            static $generator;
-            if (null === $generator) {
-                $generator = new LookupMethodClassGenerator();
-            }
-
-            $lookupClassName = str_replace('\\', '', $outsideClass->getName());
-            $code = $generator->generate($outsideClass, $lookupMethods, $lookupClassName);
-
-            $filename = $this->container->getParameter('jms_di_extra.cache_dir').'/lookup_method_classes/'.$lookupClassName.'.php';
-            if (!file_exists($dir = dirname($filename))) {
-                if (false === @mkdir($dir, 0777, true)) {
-                    throw new \RuntimeException(sprintf('Could not create directory "%s".', $dir));
-                }
-            }
-            file_put_contents($filename, $code);
-            require_once $filename;
-
-            $def->setFile($filename);
-            $def->setClass('JMS\DiExtraBundle\DependencyInjection\LookupMethodClass\\'.$lookupClassName);
-            $def->setProperty('__symfonyDependencyInjectionContainer', new Reference('service_container'));
+        if (!$found) {
+            return;
         }
+
+        $generator = new LookupMethodClassGenerator($metadata);
+        $outerClass = $metadata->getOutsideClassMetadata()->reflection;
+
+        if ($file = $def->getFile()) {
+            $generator->setRequiredFile($file);
+        }
+
+        $enhancer = new Enhancer(
+            $outerClass,
+            array(),
+            array(
+                $generator,
+            )
+        );
+
+        $filename = $this->container->getParameter('jms_di_extra.cache_dir').'/lookup_method_classes/'.str_replace('\\', '-', $outerClass->name).'.php';
+        $enhancer->writeClass($filename);
+
+        $def->setFile($filename);
+        $def->setClass($enhancer->getClassName($outerClass));
+        $def->addMethodCall('__jmsDiExtra_setContainer', array(new Reference('service_container')));
     }
 }

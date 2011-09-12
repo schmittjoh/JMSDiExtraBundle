@@ -43,5 +43,13 @@ class IntegrationPass implements CompilerPassInterface
                 $def->setClass('%jms_di_extra.template_listener.class%');
             }
         }
+
+        if ($container->hasDefinition('sensio_framework_extra.controller.listener')) {
+            $def = $container->getDefinition('sensio_framework_extra.controller.listener');
+
+            if ('%sensio_framework_extra.controller.listener.class%' === $def->getClass()) {
+                $def->setClass('%jms_di_extra.controller_listener.class%');
+            }
+        }
     }
 }

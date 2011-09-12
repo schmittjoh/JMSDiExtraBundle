@@ -139,6 +139,8 @@ class AnnotationDriver implements DriverInterface
                         $metadata->methodCalls[] = array($name, $params);
                     }
                 } else if ($annot instanceof LookupMethod) {
+                    $hasInjection = true;
+
                     if ($method->isFinal()) {
                         throw new \RuntimeException(sprintf('The method "%s::%s" is marked as final and cannot be declared as lookup-method.', $className, $name));
                     }

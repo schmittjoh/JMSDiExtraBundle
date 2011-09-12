@@ -14,6 +14,7 @@
         <parameter key="jms_di_extra.controller_resolver.class">JMS\DiExtraBundle\HttpKernel\ControllerResolver</parameter>
         
         <parameter key="jms_di_extra.template_listener.class">JMS\DiExtraBundle\EventListener\TemplateListener</parameter>
+        <parameter key="jms_di_extra.controller_listener.class">JMS\DiExtraBundle\EventListener\ControllerListener</parameter>
     </parameters>
 
     <services>

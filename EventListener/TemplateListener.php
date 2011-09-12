@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\EventListener;
 
+use CG\Core\ClassUtils;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\DiExtraBundle\DependencyInjection\LookupMethodClassInterface;
@@ -27,19 +28,22 @@ class TemplateListener extends FrameworkExtraTemplateListener
 {
     protected function guessTemplateName($controller, Request $request, $engine = 'twig')
     {
-        if (!$controller[0] instanceof LookupMethodClassInterface) {
+        $controllerClass = get_class($controller[0]);
+        $userClass = ClassUtils::getUserClass($controllerClass);
+
+        if ($controllerClass === $userClass) {
             return parent::guessTemplateName($controller, $request, $engine);
         }
 
-        if (!preg_match('/Controller\\\(.+)Controller$/', $controller[0]->__jmsDiExtra_getOriginalClassName(), $matchController)) {
-            throw new \InvalidArgumentException(sprintf('The "%s" class does not look like a controller class (it must be in a "Controller" sub-namespace and the class name must end with "Controller")', $controller[0]->__jmsDiExtra_getOriginalClassName()));
+        if (!preg_match('/Controller\\\(.+)Controller$/', $userClass, $matchController)) {
+            throw new \InvalidArgumentException(sprintf('The "%s" class does not look like a controller class (it must be in a "Controller" sub-namespace and the class name must end with "Controller")', $userClass));
         }
 
         if (!preg_match('/^(.+)Action$/', $controller[1], $matchAction)) {
             throw new \InvalidArgumentException(sprintf('The "%s" method does not look like an action method (it does not end with Action)', $controller[1]));
         }
 
-        $bundle = $this->getBundleForClass($controller[0]->__jmsDiExtra_getOriginalClassName());
+        $bundle = $this->getBundleForClass($userClass);
 
         return new TemplateReference($bundle->getName(), $matchController[1], $matchAction[1], $request->getRequestFormat(), $engine);
     }

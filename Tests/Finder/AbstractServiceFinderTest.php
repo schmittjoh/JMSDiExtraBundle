@@ -26,19 +26,25 @@ abstract class AbstractServiceFinderTest extends \PHPUnit_Framework_TestCase
     public function testFindFiles()
     {
         $finder = $this->getFinder();
-        
-        $this->assertEquals(array(
+
+        $expectedFiles = array(
             realpath(__DIR__.'/../Fixture/NonEmptyDirectory/Service1.php'),
             realpath(__DIR__.'/../Fixture/NonEmptyDirectory/SubDir1/Service2.php'),
             realpath(__DIR__.'/../Fixture/NonEmptyDirectory/SubDir2/Service3.php'),
-        ), array_map('realpath', $finder->findFiles(array(__DIR__.'/../Fixture/NonEmptyDirectory'))));
+        );
+
+        $foundFiles = $finder->findFiles(array(__DIR__.'/../Fixture/NonEmptyDirectory'));
+        $foundFiles = array_map('realpath', $foundFiles);
+
+        $this->assertEquals(array(), array_diff($expectedFiles, $foundFiles));
+        $this->assertEquals(array(), array_diff($foundFiles, $expectedFiles));
     }
-    
+
     public function testFindFilesUsingGrepReturnsEmptyArrayWhenNoMatchesAreFound()
     {
         $finder = $this->getFinder();
         $this->assertEquals(array(), $finder->findFiles(array(__DIR__.'/../Fixture/EmptyDirectory')));
     }
-    
+
     abstract protected function getFinder();
 }

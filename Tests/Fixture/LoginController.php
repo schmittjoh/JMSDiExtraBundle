@@ -20,6 +20,11 @@ namespace JMS\DiExtraBundle\Tests\Fixture;
 
 use JMS\DiExtraBundle\Annotation\Inject;
 
+/**
+ * Login Controller.
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
 class LoginController
 {
     /**
