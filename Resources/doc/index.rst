@@ -23,6 +23,12 @@ This bundle also requires the Metadata library::
 
     git submodule add https://github.com/schmittjoh/metadata.git vendor/metadata
 
+In addition, this bundle also requires the JMSAopBundle. See its documentation for
+installation instructions:
+
+    https://github.com/schmittjoh/JMSAopBundle/blob/master/Resources/doc/index.rst
+
+
 Make sure that you also register the namespaces with the autoloader::
 
     // app/autoload.php
