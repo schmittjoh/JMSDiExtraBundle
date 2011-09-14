@@ -18,7 +18,7 @@
 
 namespace JMS\DiExtraBundle\Config;
 
-use JMS\DiExtraBundle\Finder\ServiceFinder;
+use JMS\DiExtraBundle\Finder\PatternFinder;
 use Symfony\Component\Config\Resource\ResourceInterface;
 
 class ServiceFilesResource implements ResourceInterface
@@ -34,7 +34,7 @@ class ServiceFilesResource implements ResourceInterface
 
     public function isFresh($timestamp)
     {
-        $finder = new ServiceFinder();
+        $finder = new PatternFinder('JMS\DiExtraBundle\Annotation');
         $files = $finder->findFiles($this->dirs);
 
         return !array_diff($files, $this->files) && !array_diff($this->files, $files);

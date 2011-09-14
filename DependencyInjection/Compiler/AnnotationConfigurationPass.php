@@ -25,7 +25,7 @@ use JMS\DiExtraBundle\Config\ServiceFilesResource;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
-use JMS\DiExtraBundle\Finder\ServiceFinder;
+use JMS\DiExtraBundle\Finder\PatternFinder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -38,7 +38,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
     public function __construct(KernelInterface $kernel)
     {
         $this->kernel = $kernel;
-        $this->finder = new ServiceFinder();
+        $this->finder = new PatternFinder('JMS\DiExtraBundle\Annotation');
     }
 
     public function process(ContainerBuilder $container)

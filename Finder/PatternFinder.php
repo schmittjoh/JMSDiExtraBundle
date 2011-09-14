@@ -22,39 +22,49 @@ use JMS\DiExtraBundle\Exception\RuntimeException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\ExecutableFinder;
 
-class ServiceFinder
+class PatternFinder
 {
-    const PATTERN = 'JMS\DiExtraBundle\Annotation';
-
     const METHOD_GREP = 1;
     const METHOD_FINDSTR = 2;
     const METHOD_FINDER = 3;
 
-    private $grepPath;
-    private $method;
+    private static $method;
+    private static $grepPath;
 
-    public function __construct()
+    private $pattern;
+    private $filePattern;
+    private $recursive = true;
+    private $regexPattern = false;
+
+    public function __construct($pattern, $filePattern = '*.php')
     {
-        $finder = new ExecutableFinder();
-
-        if ($this->grepPath = $finder->find('grep')) {
-            $this->method = self::METHOD_GREP;
-        } else if (0 === stripos(PHP_OS, 'win')) {
-            $this->method = self::METHOD_FINDSTR;
-        } else {
-            $this->method = self::METHOD_FINDER;
+        if (null === self::$method) {
+            self::determineMethod();
         }
+
+        $this->pattern = $pattern;
+        $this->filePattern = $filePattern;
+    }
+
+    public function setRecursive($bool)
+    {
+        $this->recursive = (Boolean) $bool;
+    }
+
+    public function setRegexPattern($bool)
+    {
+        $this->regexPattern = (Boolean) $bool;
     }
 
     public function findFiles(array $dirs)
     {
         // check for grep availability
-        if (self::METHOD_GREP === $this->method) {
+        if (self::METHOD_GREP === self::$method) {
             return $this->findUsingGrep($dirs);
         }
 
         // use FINDSTR on Windows
-        if (self::METHOD_FINDSTR === $this->method) {
+        if (self::METHOD_FINDSTR === self::$method) {
             return $this->findUsingFindstr($dirs);
         }
 
@@ -64,10 +74,15 @@ class ServiceFinder
 
     private function findUsingFindstr(array $dirs)
     {
-        $cmd = 'FINDSTR /M /S /L /P';
+        $cmd = 'FINDSTR /M /S /P';
+
+        if (!$this->recursive) {
+            $cmd .= ' /L';
+        }
+
         $cmd .= ' /D:'.escapeshellarg(implode(';', $dirs));
-        $cmd .= ' '.escapeshellarg(self::PATTERN);
-        $cmd .= ' *.php';
+        $cmd .= ' '.escapeshellarg($this->pattern);
+        $cmd .= ' '.$this->filePattern;
 
         exec($cmd, $lines, $exitCode);
 
@@ -111,8 +126,22 @@ class ServiceFinder
 
     private function findUsingGrep(array $dirs)
     {
-        $cmd = $this->grepPath.' --fixed-strings --directories=recurse --devices=skip --files-with-matches --with-filename --max-count=1 --color=never --include=*.php';
-        $cmd .= ' '.escapeshellarg(self::PATTERN);
+        $cmd = self::$grepPath;
+
+        if (!$this->regexPattern) {
+            $cmd .= ' --fixed-strings';
+        } else {
+            $cmd .= ' --extended-regexp';
+        }
+
+        if ($this->recursive) {
+            $cmd .= ' --directories=recurse';
+        } else {
+            $cmd .= ' --directories=skip';
+        }
+
+        $cmd .= ' --devices=skip --files-with-matches --with-filename --max-count=1 --color=never --include='.$this->filePattern;
+        $cmd .= ' '.escapeshellarg($this->pattern);
 
         foreach ($dirs as $dir) {
             $cmd .= ' '.escapeshellarg($dir);
@@ -133,17 +162,39 @@ class ServiceFinder
     private function findUsingFinder(array $dirs)
     {
         $finder = new Finder();
-        $pattern = self::PATTERN;
+        $pattern = $this->pattern;
+        $regex = $this->regexPattern;
         $finder
             ->files()
-            ->name('*.php')
+            ->name($this->filePattern)
             ->in($dirs)
             ->ignoreVCS(true)
-            ->filter(function($file) use ($pattern) {
-                return false !== strpos(file_get_contents($file->getPathName()), $pattern);
+            ->filter(function($file) use ($pattern, $regex) {
+                if (!$regex) {
+                    return false !== strpos(file_get_contents($file->getPathName()), $pattern);
+                }
+
+                return 0 < preg_match('#'.$pattern.'#', file_get_contents($file->getPathName()));
             })
         ;
 
+        if (!$this->recursive) {
+            $finder->depth('<= 0');
+        }
+
         return array_keys(iterator_to_array($finder));
+    }
+
+    private static function determineMethod()
+    {
+        $finder = new ExecutableFinder();
+
+        if (self::$grepPath = $finder->find('grep')) {
+            self::$method = self::METHOD_GREP;
+        } else if (0 === stripos(PHP_OS, 'win')) {
+            self::$method = self::METHOD_FINDSTR;
+        } else {
+            self::$method = self::METHOD_FINDER;
+        }
     }
 }

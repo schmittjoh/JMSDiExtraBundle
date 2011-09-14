@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle;
 
+use JMS\DiExtraBundle\DependencyInjection\Compiler\ResourceOptimizationPass;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\IntegrationPass;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -42,5 +43,6 @@ class JMSDiExtraBundle extends Bundle
         $config->setBeforeOptimizationPasses($passes);
 
         $container->addCompilerPass(new IntegrationPass());
+        $container->addCompilerPass(new ResourceOptimizationPass(), PassConfig::TYPE_AFTER_REMOVING);
     }
 }

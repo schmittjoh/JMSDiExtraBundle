@@ -16,29 +16,22 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Annotation;
+namespace JMS\DiExtraBundle\Tests\Finder;
 
-/**
- * @Annotation
- * @Target("CLASS")
- */
-final class FormType
+use JMS\DiExtraBundle\Finder\PatternFinder;
+
+class GrepPatternFinderTest extends AbstractPatternFinderTest
 {
-    /** @var string */
-    public $alias;
-
-    public function __construct()
+    protected function getFinder()
     {
-        if (0 === func_num_args()) {
-            return;
-        }
-        $values = func_get_arg(0);
+        $finder = new PatternFinder('JMS\DiExtraBundle\Annotation');
 
-        if (isset($values['value'])) {
-            if (!is_string($values['value'])) {
-                throw new \RuntimeException(sprintf('"value" must be a string.'));
-            }
-            $this->alias = $values['value'];
+        $ref = new \ReflectionProperty($finder, 'grepPath');
+        $ref->setAccessible(true);
+        if (null === $v = $ref->getValue($finder)) {
+            $this->markTestSkipped('grep is not available on your system.');
         }
+
+        return $finder;
     }
 }

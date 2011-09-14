@@ -18,10 +18,10 @@
 
 namespace JMS\DiExtraBundle\Tests\Finder;
 
-use JMS\DiExtraBundle\Finder\ServiceFinder;
+use JMS\DiExtraBundle\Finder\PatternFinder;
 use Symfony\Component\Process\ExecutableFinder;
 
-abstract class AbstractServiceFinderTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractPatternFinderTest extends \PHPUnit_Framework_TestCase
 {
     public function testFindFiles()
     {
