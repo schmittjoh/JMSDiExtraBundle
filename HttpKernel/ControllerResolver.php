@@ -19,9 +19,7 @@
 namespace JMS\DiExtraBundle\HttpKernel;
 
 use Metadata\ClassHierarchyMetadata;
-
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
-
 use CG\Core\DefaultNamingStrategy;
 use CG\Proxy\Enhancer;
 use JMS\AopBundle\DependencyInjection\Compiler\PointcutMatchingPass;
@@ -124,7 +122,7 @@ class ControllerResolver extends BaseControllerResolver
         $config->setOptimizationPasses(array());
         $config->setRemovingPasses(array());
         $config->addPass(new ResolveDefinitionTemplatesPass());
-        $config->addPass(new PointcutMatchingPass($this->container->get('jms_aop.pointcut_container')->getEvaluators()));
+        $config->addPass(new PointcutMatchingPass($this->container->get('jms_aop.pointcut_container')->getPointcuts()));
         $config->addPass(new InlineServiceDefinitionsPass());
         $container->compile();
 
