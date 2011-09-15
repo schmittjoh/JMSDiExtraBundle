@@ -52,11 +52,6 @@ service classes (by default no directory is scanned)::
             bundles: [FooBundle, AcmeBlogBundle, etc.]
             directories: [%kernel.root_dir%/../src, some/other/dir]
 
-Tip: This bundle leverages native system tools to search for service files. If ``grep``
-is available on your system, it will be used. If you're on Windows, it is recommended that
-you install cygwin, otherwise it will use FINDSTR, or a plain PHP search implementation
-(note though that your performance experience in dev mode may suffer then).
-
 Usage
 -----
 

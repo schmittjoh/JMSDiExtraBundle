@@ -188,10 +188,11 @@ class PatternFinder
     private static function determineMethod()
     {
         $finder = new ExecutableFinder();
+        $isWindows = 0 === stripos(PHP_OS, 'win');
 
-        if (self::$grepPath = $finder->find('grep')) {
+        if (!$isWindows && self::$grepPath = $finder->find('grep')) {
             self::$method = self::METHOD_GREP;
-        } else if (0 === stripos(PHP_OS, 'win')) {
+        } else if ($isWindows) {
             self::$method = self::METHOD_FINDSTR;
         } else {
             self::$method = self::METHOD_FINDER;
