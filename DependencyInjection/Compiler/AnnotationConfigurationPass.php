@@ -86,6 +86,10 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 continue;
             }
 
+            if ('JMSDiExtraBundle' === $name) {
+                continue;
+            }
+
             $directories[] = $bundle->getPath();
         }
 
