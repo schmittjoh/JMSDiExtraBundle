@@ -89,7 +89,9 @@ class DefinitionInjectorGenerator
             }
         }
 
-        // FIXME: Add support for configurators (also needs to be added to AnnotationDriver)
+        if (method_exists($def, 'getInitMethod') && $def->getInitMethod()) {
+            $writer->writeln('$instance->'.$def->getInitMethod().'();');
+        }
 
         $writer
             ->writeln('return $instance;')

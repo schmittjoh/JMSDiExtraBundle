@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
+use JMS\DiExtraBundle\Annotation\AfterSetup;
+
 use JMS\DiExtraBundle\Annotation\FormType;
 
 use JMS\DiExtraBundle\Annotation\DoctrineListener;
@@ -170,6 +172,12 @@ class AnnotationDriver implements DriverInterface
                     }
 
                     $metadata->lookupMethods[$name] = $this->convertReferenceValue('get' === substr($name, 0, 3) ? substr($name, 3) : $name, $annot);
+                } else if ($annot instanceof AfterSetup) {
+                    if (!$method->isPublic()) {
+                        throw new \RuntimeException(sprintf('The init method "%s::%s" must be public.', $method->class, $method->name));
+                    }
+
+                    $metadata->initMethod = $method->name;
                 }
             }
         }

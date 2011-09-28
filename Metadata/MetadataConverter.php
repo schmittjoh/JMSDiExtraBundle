@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\Metadata;
 
+use Symfony\Component\DependencyInjection\Reference;
+
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
 use Metadata\ClassHierarchyMetadata;
@@ -65,6 +67,14 @@ class MetadataConverter
 
             if (null === $classMetadata->id) {
                 $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
+            }
+
+            if ($classMetadata->initMethod) {
+                if (!method_exists($definition, 'setInitMethod')) {
+                    throw new \RuntimeException(sprintf('@AfterSetup is not available on your Symfony version.'));
+                }
+
+                $definition->setInitMethod($classMetadata->initMethod);
             }
 
             $definitions[$classMetadata->id] = $definition;
