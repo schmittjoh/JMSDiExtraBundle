@@ -53,6 +53,15 @@ class AnnotationDriver implements DriverInterface
         if (false !== $filename = $class->getFilename()) {
             $metadata->fileResources[] = $filename;
         }
+
+        // this is a bit of a hack, but avoids any timeout issues when a class
+        // is moved into one of the compiled classes files, and Doctrine
+        // Common 2.1 is used.
+        if (false !== strpos($filename, '/classes.php')
+            || false !== strpos($filename, '/bootstrap.php')) {
+            return null;
+        }
+
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof Service) {
                 if (null === $annot->id) {
