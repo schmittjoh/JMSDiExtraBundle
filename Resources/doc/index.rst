@@ -6,9 +6,17 @@ This bundle allows you to configure dependency injection using annotations.
 
 Installation
 ------------
-Checkout a copy of the code::
+Add the following to your ``deps`` file::
 
-    git submodule add https://github.com/schmittjoh/DiExtraBundle.git src/JMS/DiExtraBundle
+    [JMSDiExtraBundle]
+        git=https://github.com/schmittjoh/JMSDiExtraBundle.git
+        target=/bundles/JMS/DiExtraBundle
+        
+    ; Dependencies:
+    ;--------------
+    [metadata]
+        git=https://github.com/schmittjoh/metadata.git
+        version=1.1.0 ; <- make sure to get 1.1, not 1.0
 
 Then register the bundle with your kernel::
 
@@ -19,12 +27,8 @@ Then register the bundle with your kernel::
         // ...
     );
 
-This bundle also requires the Metadata library::
-
-    git submodule add https://github.com/schmittjoh/metadata.git vendor/metadata
-
 In addition, this bundle also requires the JMSAopBundle. See its documentation for
-installation instructions:
+installation instructions::
 
     https://github.com/schmittjoh/JMSAopBundle/blob/master/Resources/doc/index.rst
 
@@ -123,7 +127,7 @@ the DIC's features, and even some more.
     
     use JMS\DiExtraBundle\Annotation as DI;
     
-    abstract class Controller
+    class Controller
     {
         public function myAction()
         {
@@ -133,8 +137,8 @@ the DIC's features, and even some more.
             }
         }
     
-        /** @DI\LookupMethod("mailer")
-        abstract protected function getMailer();
+        /** @DI\LookupMethod("mailer") */
+        protected function getMailer() { /* empty body here */ }
     }
 
 You can use this type of injection if you have a dependency that you do not
