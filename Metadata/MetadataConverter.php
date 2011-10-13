@@ -19,7 +19,6 @@
 namespace JMS\DiExtraBundle\Metadata;
 
 use Symfony\Component\DependencyInjection\Reference;
-
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
 use Metadata\ClassHierarchyMetadata;

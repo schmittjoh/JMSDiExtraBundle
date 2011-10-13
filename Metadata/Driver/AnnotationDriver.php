@@ -149,11 +149,11 @@ class AnnotationDriver implements DriverInterface
                     $params = array();
                     foreach ($method->getParameters() as $param) {
                         if (!isset($annot->params[$paramName = $param->getName()])) {
-                            $params[$paramName] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)));
+                            $params[] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)));
                             continue;
                         }
 
-                        $params[$paramName] = $this->convertReferenceValue($paramName, $annot->params[$paramName]);
+                        $params[] = $this->convertReferenceValue($paramName, $annot->params[$paramName]);
                     }
 
                     if (!$params) {

@@ -19,7 +19,6 @@
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Alias;
-
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Config\ServiceFilesResource;
 use Symfony\Component\Config\Resource\FileResource;

@@ -18,6 +18,10 @@
 
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Compiler;
 
+use Symfony\Component\DependencyInjection\Reference;
+
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\DiExtraBundle\DependencyInjection\JMSDiExtraExtension;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -66,6 +70,26 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
 
         $v = $container->get('j_m_s.di_extra_bundle.tests.fixture.validator.validator');
         $this->assertAttributeEquals($foo, 'foo', $v);
+    }
+
+    public function testConstructorWithInheritance()
+    {
+        $container = $this->getContainer(array(), array(
+            __DIR__.'/../../Functional/Bundle/TestBundle/Inheritance',
+        ));
+        $container->set('foo', $foo = new \stdClass);
+        $container->set('bar', $bar = new \stdClass);
+        $this->process($container);
+
+        $this->assertTrue($container->hasDefinition('concrete_class'));
+        $this->assertTrue($container->hasDefinition('abstract_class'));
+
+        $def = new DefinitionDecorator('abstract_class');
+        $def->setClass('JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Inheritance\ConcreteClass');
+        $def->addArgument(new Reference('foo'));
+        $def->addArgument(new Reference('bar'));
+
+        $this->assertEquals($def, $container->getDefinition('concrete_class'));
     }
 
     private function getContainer(array $bundles = array(), array $directories = array())

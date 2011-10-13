@@ -6,3 +6,7 @@ imports:
 jms_di_extra:
     locations:
         bundles: [JMSDiExtraTestBundle]
+        
+services:
+    foo: { class: stdClass }
+    bar: { class: stdClass }

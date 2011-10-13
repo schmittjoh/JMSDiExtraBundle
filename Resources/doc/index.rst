@@ -105,6 +105,9 @@ the DIC's features, and even some more.
         }
         // ... some actions
     }
+    
+  **Note:** Constructor Injection is not possible when a parent definition
+  also defines a constructor which is configured for injection.
 
 - Property Injection::
 
