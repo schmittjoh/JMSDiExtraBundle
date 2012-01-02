@@ -28,7 +28,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class JMSDiExtraBundle extends Bundle
 {
-	const VERSION = '1.1.0-DEV';
+    const VERSION = '1.1.0-DEV';
 
     private $kernel;
 
