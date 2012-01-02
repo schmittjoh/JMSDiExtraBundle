@@ -28,6 +28,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class JMSDiExtraBundle extends Bundle
 {
+	const VERSION = '1.0.0';
+
     private $kernel;
 
     public function __construct(KernelInterface $kernel)
