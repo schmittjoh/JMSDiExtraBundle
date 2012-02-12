@@ -54,7 +54,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                    ->scalarNode('cache_dir')->defaultValue('%kernel.cache_dir%/diextra')->end()
+                    ->scalarNode('cache_dir')->defaultValue('%kernel.cache_dir%/jms_diextra')->end()
                     ->arrayNode('metadata')
                         ->addDefaultsIfNotSet()
                         ->children()
