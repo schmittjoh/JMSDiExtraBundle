@@ -18,6 +18,9 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\Definition;
+
+use Symfony\Component\Filesystem\Filesystem;
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\Config\FileLocator;
@@ -41,10 +44,50 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.cache_dir', $config['cache_dir']);
 
         $this->configureMetadata($config['metadata'], $container, $config['cache_dir'].'/metadata');
+        $this->configureAutomaticControllerInjections($config, $container);
 
         $this->addClassesToCompile(array(
             'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
         ));
+    }
+
+    private function configureAutomaticControllerInjections(array $config, ContainerBuilder $container)
+    {
+        if (!isset($config['automatic_controller_injections'])) {
+            $container->setAlias('jms_di_extra.metadata_driver', 'jms_di_extra.metadata.driver.annotation_driver');
+
+            return;
+        }
+
+        $propertyInjections = array();
+        foreach ($config['automatic_controller_injections']['properties'] as $name => $value) {
+            $propertyInjections[$name] = $this->convertValue($value);
+        }
+
+        $methodInjections = array();
+        foreach ($config['automatic_controller_injections']['method_calls'] as $name => $args) {
+            foreach ($args as $i => $arg) {
+                $args[$i] = $this->convertValue($arg);
+            }
+
+            $methodInjections[$name] = $args;
+        }
+
+        $container->getDefinition('jms_di_extra.metadata.driver.configured_controller_injections')
+            ->addArgument($propertyInjections)
+            ->addArgument($methodInjections);
+    }
+
+    private function convertValue($value)
+    {
+        if (is_string($value) && '@' === $value[0]) {
+            $def = new Definition('Symfony\Component\DependencyInjection\Reference');
+            $def->addArgument(substr($value, 1));
+
+            return $def;
+        }
+
+        return $value;
     }
 
     private function configureMetadata(array $config, $container, $cacheDir)
@@ -56,6 +99,11 @@ class JMSDiExtraExtension extends Extension
 
         if ('file' === $config['cache']) {
             $cacheDir = $container->getParameterBag()->resolveValue($cacheDir);
+
+            // clear the cache if container is re-build, needed for correct controller injections
+            $fs = new Filesystem();
+            $fs->remove($cacheDir);
+
             if (!file_exists($cacheDir)) {
                 if (false === @mkdir($cacheDir, 0777, true)) {
                     throw new RuntimeException(sprintf('The cache dir "%s" could not be created.', $cacheDir));

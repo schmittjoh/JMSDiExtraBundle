@@ -1,8 +1,9 @@
 security:
     providers:
         in_memory:
-            users:
-                johannes: { password: login }
+            memory:
+                users:
+                    johannes: { password: login }
                 
     encoders:
         Symfony\Component\Security\Core\User\UserInterface: plaintext

@@ -20,7 +20,7 @@ namespace JMS\DiExtraBundle\Tests\Functional;
 
 require_once __DIR__.'/../bootstrap.php';
 
-use Symfony\Component\HttpKernel\Util\Filesystem;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
 

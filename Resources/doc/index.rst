@@ -148,6 +148,30 @@ You can use this type of injection if you have a dependency that you do not
 always need in the controller, and which is costly to initialize, like the
 mailer in the example above.
 
+Automatic Controller Injections
+-------------------------------
+This bundle allows you to configure injection for certain properties, and methods
+of controllers automatically. This is most useful for commonly needed services 
+which then do not need to be annotated explicitly anymore.
+
+::
+
+    jms_di_extra:
+        automatic_controller_injections:
+            properties:
+                request: @request
+                router: @router
+                # ...
+                
+            method_calls:
+                setRouter: [@router]
+                # ...
+
+If you controller has any of the above properties, or methods, then you do not need
+to add an @Inject annotation anymore, but we will automatically inject the configured
+services for you. However, if you do declare an @Inject annotation it will automatically
+overwrite whatever you have configured in the above section.
+
 
 Annotations
 -----------

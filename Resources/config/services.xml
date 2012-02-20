@@ -6,6 +6,8 @@
 
     <parameters>
         <parameter key="jms_di_extra.metadata.driver.annotation_driver.class">JMS\DiExtraBundle\Metadata\Driver\AnnotationDriver</parameter>
+        <parameter key="jms_di_extra.metadata.driver.configured_controller_injections.class">JMS\DiExtraBundle\Metadata\Driver\ConfiguredControllerInjectionsDriver</parameter>
+        <parameter key="jms_di_extra.metadata.driver.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
         
         <parameter key="jms_di_extra.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="jms_di_extra.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
@@ -22,7 +24,14 @@
         <service id="jms_di_extra.metadata.driver.annotation_driver" class="%jms_di_extra.metadata.driver.annotation_driver.class%" public="false">
             <argument type="service" id="annotation_reader" />
         </service>
-        <service id="jms_di_extra.metadata_driver" alias="jms_di_extra.metadata.driver.annotation_driver" public="false" />
+        <service id="jms_di_extra.metadata.driver.configured_controller_injections" class="%jms_di_extra.metadata.driver.configured_controller_injections.class%" public="false">
+            <argument type="service" id="jms_di_extra.metadata.driver.annotation_driver" />
+        </service>
+        <service id="jms_di_extra.metadata.driver.lazy_loading_driver" class="%jms_di_extra.metadata.driver.lazy_loading_driver.class%" public="false">
+            <argument type="service" id="service_container" />
+            <argument>jms_di_extra.metadata_driver</argument>
+        </service>
+        <service id="jms_di_extra.metadata_driver" alias="jms_di_extra.metadata.driver.configured_controller_injections" />
 
         <!-- Metadata Factory -->
         <service id="jms_di_extra.metadata.cache.file_cache" class="%jms_di_extra.metadata.cache.file_cache.class%" public="false">
@@ -30,7 +39,7 @@
         </service>
         <service id="jms_di_extra.metadata.cache" alias="jms_di_extra.metadata.cache.file_cache" public="false" />
         <service id="jms_di_extra.metadata.metadata_factory" class="%jms_di_extra.metadata.metadata_factory.class%">
-            <argument type="service" id="jms_di_extra.metadata_driver" />
+            <argument type="service" id="jms_di_extra.metadata.driver.lazy_loading_driver" />
             <argument>Metadata\ClassHierarchyMetadata</argument>
             <argument>%kernel.debug%</argument>
             <call method="setCache">
