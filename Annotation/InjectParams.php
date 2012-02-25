@@ -28,30 +28,4 @@ final class InjectParams
 {
     /** @var array<JMS\DiExtraBundle\Annotation\Inject> */
     public $params = array();
-
-    public function __construct()
-    {
-        if (0 === func_num_args()) {
-            return;
-        }
-        $values = func_get_arg(0);
-
-        if (isset($values['params'])) {
-            $values['value'] = $values['params'];
-        }
-
-        if (isset($values['value'])) {
-            if (!is_array($values['value'])) {
-                throw new InvalidTypeException('InjectParams', 'value', 'array', $values['value']);
-            }
-
-            foreach ($values['value'] as $k => $v) {
-                if (!$v instanceof Inject) {
-                    throw new InvalidTypeException('InjectParams', sprintf('value[%s]', $k), '@Inject', $v);
-                }
-
-                $this->params[$k] = $v;
-            }
-        }
-    }
 }

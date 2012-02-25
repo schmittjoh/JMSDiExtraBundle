@@ -28,24 +28,4 @@ final class Validator
 {
     /** @var string @Required */
     public $alias;
-
-    public function __construct()
-    {
-        if (0 === func_num_args()) {
-            return;
-        }
-        $values = func_get_arg(0);
-
-        if (isset($values['alias'])) {
-            $values['value'] = $values['alias'];
-        }
-
-        if (!isset($values['value'])) {
-            throw new \InvalidArgumentException('A value must be given for @Validator annotations.');
-        }
-        if (!is_string($values['value'])) {
-            throw new InvalidTypeException('Validator', 'value', 'string', $values['value']);
-        }
-        $this->alias = $values['value'];
-    }
 }
