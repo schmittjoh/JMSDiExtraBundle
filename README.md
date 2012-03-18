@@ -2,7 +2,7 @@ JMSDiExtraBundle
 ===================
 
 Documentation: 
-[Resources/doc](https://github.com/schmittjoh/JMSDiExtraBundle/blob/master/Resources/doc/index.rst)
+[Resources/doc](http://jmsyst.com/bundles/JMSDiExtraBundle)
     
 
 Code License:
