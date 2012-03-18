@@ -64,10 +64,10 @@ Property Injection
     
     class Controller
     {
-        /** @DI\Inject("doctrine.orm.entity_manager")
+        /** @DI\Inject("doctrine.orm.entity_manager") */
         private $em;
         
-        /** @DI\Inject("session")
+        /** @DI\Inject("session") */
         private $session;
     }
     
