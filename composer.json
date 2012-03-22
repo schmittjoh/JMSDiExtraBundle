@@ -1,5 +1,6 @@
 {
     "name": "jms/di-extra-bundle",
+    "type": "symfony-bundle",
     "description": "Allows to configure dependency injection using annotations",
     "keywords": ["annotations","dependency injection"],
     "homepage": "http://jmsyst.com/bundles/JMSDiExtraBundle",
