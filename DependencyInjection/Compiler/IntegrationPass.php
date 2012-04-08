@@ -75,7 +75,8 @@ class IntegrationPass implements CompilerPassInterface
 
             $definition->setPublic(false);
             $container->setDefinition($id.'.delegate', $definition);
-            $container->register($id, 'JMS\DiExtraBundle\DependencyInjection\DiAwareObjectManager')
+            $container->register($id, $container->getParameter('jms_di_extra.doctrine_integration.entity_manager.class'))
+                ->setFile($container->getParameter('jms_di_extra.doctrine_integration.entity_manager.file'))
                 ->addArgument(new Reference($id.'.delegate'))
                 ->addArgument(new Reference('service_container'));
         }

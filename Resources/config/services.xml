@@ -16,8 +16,6 @@
         <parameter key="jms_di_extra.controller_resolver.class">JMS\DiExtraBundle\HttpKernel\ControllerResolver</parameter>
         
         <parameter key="jms_di_extra.controller_listener.class">JMS\DiExtraBundle\EventListener\ControllerListener</parameter>
-        
-        <parameter key="jms_di_extra.di_aware_object_manager.class">JMS\DiExtraBundle\DependencyInjection\DiAwareObjectManager</parameter>
     </parameters>
 
     <services>

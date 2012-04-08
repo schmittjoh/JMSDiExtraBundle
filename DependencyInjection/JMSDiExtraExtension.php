@@ -18,6 +18,10 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection;
 
+use JMS\DiExtraBundle\Generator\RepositoryInjectionGenerator;
+
+use CG\Proxy\Enhancer;
+
 use Symfony\Component\DependencyInjection\Definition;
 
 use Symfony\Component\Filesystem\Filesystem;
@@ -47,9 +51,29 @@ class JMSDiExtraExtension extends Extension
         $this->configureMetadata($config['metadata'], $container, $config['cache_dir'].'/metadata');
         $this->configureAutomaticControllerInjections($config, $container);
 
+        if ($config['doctrine_integration']) {
+            $this->generateEntityManagerProxyClass($config, $container);
+        }
+
         $this->addClassesToCompile(array(
             'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
         ));
+    }
+
+    private function generateEntityManagerProxyClass(array $config, ContainerBuilder $container)
+    {
+        $cacheDir = $container->getParameterBag()->resolveValue($config['cache_dir']);
+
+        if (!is_dir($cacheDir.'/doctrine')) {
+            if (false === @mkdir($cacheDir.'/doctrine', 0777, true)) {
+                throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cacheDir.'/doctrine'));
+            }
+        }
+
+        $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
+        $enhancer->writeClass($file = $cacheDir.'/doctrine/EntityManager.php');
+        $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.file', $file);
+        $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.class', $enhancer->getClassName($ref));
     }
 
     private function configureAutomaticControllerInjections(array $config, ContainerBuilder $container)
