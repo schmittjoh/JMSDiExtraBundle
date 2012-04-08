@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection;
 
+use Doctrine\Common\Version;
+
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -85,6 +87,17 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
+                    ->booleanNode('doctrine_integration')
+                        ->validate()
+                            ->always(function($v) {
+                                if ($v && version_compare(Version::VERSION, '2.1.0', '<')) {
+                                    throw new \Exception('For Doctrine integration, you need at least version 2.1.0 of Doctrine Common, and supported ORM/DBAL packages.');
+                                }
+
+                                return $v;
+                            })
+                        ->end()
+                        ->defaultFalse()->end()
                 ->end()
             ->end();
 

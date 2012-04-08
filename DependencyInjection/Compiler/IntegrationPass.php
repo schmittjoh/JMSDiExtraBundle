@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -34,22 +36,48 @@ class IntegrationPass implements CompilerPassInterface
         // replace Symfony2's default controller resolver
         $container->setAlias('controller_resolver', new Alias('jms_di_extra.controller_resolver', false));
 
-        // replace SensioFrameworkExtraBundle's default template listener
-        if ($container->hasDefinition('sensio_framework_extra.view.listener')) {
-            $def = $container->getDefinition('sensio_framework_extra.view.listener');
-
-            // only overwrite if it has the default class otherwise the user has to do the integration manually
-            if ('%sensio_framework_extra.view.listener.class%' === $def->getClass()) {
-                $def->setClass('%jms_di_extra.template_listener.class%');
-            }
-        }
-
         if ($container->hasDefinition('sensio_framework_extra.controller.listener')) {
             $def = $container->getDefinition('sensio_framework_extra.controller.listener');
 
             if ('%sensio_framework_extra.controller.listener.class%' === $def->getClass()) {
                 $def->setClass('%jms_di_extra.controller_listener.class%');
             }
+        }
+
+        if (true === $container->getParameter('jms_di_extra.doctrine_integration')) {
+            $this->integrateWithDoctrine($container);
+        }
+    }
+
+    /**
+     * Integrates the DiAwareObjectManager with Doctrine.
+     *
+     * This is a bit trickier... mostly because Doctrine uses many factories,
+     * and we cannot directly inject the EntityManager. We circumvent this
+     * problem by renaming the original entity manager definition, and then
+     * placing our definition in its place.
+     *
+     * Note that this also currently only supports the ORM, for the ODM flavors
+     * a similar integration should be possible.
+     *
+     * @param ContainerBuilder $container
+     */
+    private function integrateWithDoctrine($container)
+    {
+        foreach ($container->getDefinitions() as $id => $definition) {
+            if (!$definition instanceof DefinitionDecorator) {
+                continue;
+            }
+
+            if ('doctrine.orm.entity_manager.abstract' !== $definition->getParent()) {
+                continue;
+            }
+
+            $definition->setPublic(false);
+            $container->setDefinition($id.'.delegate', $definition);
+            $container->register($id, 'JMS\DiExtraBundle\DependencyInjection\DiAwareObjectManager')
+                ->addArgument(new Reference($id.'.delegate'))
+                ->addArgument(new Reference('service_container'));
         }
     }
 }

@@ -24,6 +24,7 @@ Documentation
 - :doc:`Installation <installation>`
 - :doc:`Configuration <configuration>`
 - :doc:`Usage <usage>`
+- :doc:`Doctrine Integration <doctrine>`
 - :doc:`Annotations <annotations>`
 
 License

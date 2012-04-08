@@ -42,6 +42,7 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.bundles', $config['locations']['bundles']);
         $container->setParameter('jms_di_extra.directories', $config['locations']['directories']);
         $container->setParameter('jms_di_extra.cache_dir', $config['cache_dir']);
+        $container->setParameter('jms_di_extra.doctrine_integration', $config['doctrine_integration']);
 
         $this->configureMetadata($config['metadata'], $container, $config['cache_dir'].'/metadata');
         $this->configureAutomaticControllerInjections($config, $container);
