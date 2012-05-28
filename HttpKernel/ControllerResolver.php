@@ -65,6 +65,18 @@ class ControllerResolver extends BaseControllerResolver
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
+        $inject = $this->createInjector($class);
+        $controller = $inject($this->container);
+
+        if ($controller instanceof ContainerAwareInterface) {
+            $controller->setContainer($this->container);
+        }
+
+        return array($controller, $method);
+    }
+
+    public function createInjector($class)
+    {
         $filename = $this->container->getParameter('jms_di_extra.cache_dir').'/controller_injectors/'.str_replace('\\', '', $class).'.php';
         $cache = new ConfigCache($filename, $this->container->getParameter('kernel.debug'));
 
@@ -78,14 +90,7 @@ class ControllerResolver extends BaseControllerResolver
             $this->prepareContainer($cache, $filename, $metadata);
         }
 
-        $inject = require $filename;
-        $controller = $inject($this->container);
-
-        if ($controller instanceof ContainerAwareInterface) {
-            $controller->setContainer($this->container);
-        }
-
-        return array($controller, $method);
+        return require $filename;
     }
 
     private function prepareContainer($cache, $containerFilename, $metadata)
