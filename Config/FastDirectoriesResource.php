@@ -71,6 +71,41 @@ class FastDirectoriesResource implements ResourceInterface
         return true;
     }
 
+    public function exists()
+    {
+        return true;
+    }
+
+    public function getId()
+    {
+        return md5('jms_di_extra'.$this->filePattern.$this->files);
+    }
+
+    public function getModificationTime()
+    {
+        return -1;
+    }
+
+    public function serialize()
+    {
+        $resourceMap = array(
+            'finder'      => $this->finder,
+            'filePattern' => $this->filePattern,
+            'files'       => $this->files,
+        );
+
+        return serialize($resourceMap);
+    }
+
+    public function unserialize($serialized)
+    {
+        $resourceMap = unserialize($serialized);
+
+        $this->finder = $resourceMap['finder'];
+        $this->filePattern = $resourceMap['filePattern'];
+        $this->files = $resourceMap['files'];
+    }
+
     private function getFiles()
     {
         return $this->finder->findFiles($this->directories);

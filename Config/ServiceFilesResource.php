@@ -40,6 +40,21 @@ class ServiceFilesResource implements ResourceInterface
         return !array_diff($files, $this->files) && !array_diff($this->files, $files);
     }
 
+    public function exists()
+    {
+        return true;
+    }
+
+    public function getId()
+    {
+        return md5('jms_di_extra'.$this->files.$this->dirs);
+    }
+
+    public function getModificationTime()
+    {
+        return -1;
+    }
+
     public function __toString()
     {
         return implode(', ', $this->files);
