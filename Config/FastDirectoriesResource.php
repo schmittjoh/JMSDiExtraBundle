@@ -32,8 +32,7 @@ class FastDirectoriesResource implements ResourceInterface
 
     public function __construct(array $directories, $filePattern = null)
     {
-        $this->finder = new PatternFinder('.*', '*.php');
-        $this->finder->setRegexPattern(true);
+        $this->createFinder();
 
         $this->directories = $directories;
         $this->filePattern = $filePattern ?: '*';
@@ -71,8 +70,51 @@ class FastDirectoriesResource implements ResourceInterface
         return true;
     }
 
+    public function exists()
+    {
+        return true;
+    }
+
+    public function getId()
+    {
+        return md5('jms_di_extra'.$this->filePattern.$this->files);
+    }
+
+    public function getModificationTime()
+    {
+        return -1;
+    }
+
+    public function serialize()
+    {
+        $resourceMap = array(
+            'directories' => $this->directories,
+            'filePattern' => $this->filePattern,
+            'files'       => $this->files,
+        );
+
+        return serialize($resourceMap);
+    }
+
+    public function unserialize($serialized)
+    {
+        $resourceMap = unserialize($serialized);
+
+        $this->directories = $resourceMap['directories'];
+        $this->filePattern = $resourceMap['filePattern'];
+        $this->files = $resourceMap['files'];
+
+        $this->createFinder();
+    }
+
     private function getFiles()
     {
         return $this->finder->findFiles($this->directories);
+    }
+
+    private function createFinder()
+    {
+        $this->finder = new PatternFinder('.*', '*.php');
+        $this->finder->setRegexPattern(true);
     }
 }
