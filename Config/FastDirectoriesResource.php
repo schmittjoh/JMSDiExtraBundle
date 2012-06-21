@@ -90,6 +90,7 @@ class FastDirectoriesResource implements ResourceInterface
     {
         $resourceMap = array(
             'finder'      => $this->finder,
+            'directories' => $this->directories,
             'filePattern' => $this->filePattern,
             'files'       => $this->files,
         );
@@ -102,6 +103,7 @@ class FastDirectoriesResource implements ResourceInterface
         $resourceMap = unserialize($serialized);
 
         $this->finder = $resourceMap['finder'];
+        $this->directories = $resourceMap['directories'];
         $this->filePattern = $resourceMap['filePattern'];
         $this->files = $resourceMap['files'];
     }
