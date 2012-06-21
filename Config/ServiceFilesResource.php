@@ -64,4 +64,23 @@ class ServiceFilesResource implements ResourceInterface
     {
         return array($this->files, $this->dirs);
     }
+
+    public function serialize()
+    {
+        $resourceMap = array(
+            'files' => $this->files,
+            'dirs'  => $this->dirs,
+        );
+
+        return serialize($resourceMap);
+    }
+
+    public function unserialize($serialized)
+    {
+        $resourceMap = unserialize($serialized);
+
+        $this->files = $resourceMap['files'];
+        $this->dirs = $resourceMap['dirs'];
+    }
+
 }
