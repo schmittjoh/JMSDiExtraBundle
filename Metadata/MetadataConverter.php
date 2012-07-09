@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\Metadata;
 
+use JMS\DiExtraBundle\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -64,6 +65,16 @@ class MetadataConverter
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);
 
+            foreach (array_keys($classMetadata->properties) as $propertyName) {
+                if ( ! $classMetadata->reflection->hasProperty($propertyName)
+                        || $classMetadata->reflection->getProperty($propertyName)->isPublic()) {
+                    continue;
+                }
+
+                throw new RuntimeException(sprintf('The @Inject annotation can only be used on non-public properties when the class is a non-service controller. For services, @Inject is only supported on public properties. '
+                                                  .'The offending annotation is on %s::$%s in %s.', $classMetadata->name, $propertyName, $classMetadata->reflection->getFilename()));
+            }
+            
             if (null === $classMetadata->id) {
                 $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
             }
