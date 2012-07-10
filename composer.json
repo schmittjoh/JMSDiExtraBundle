@@ -13,6 +13,7 @@
     ],
     "require": {
         "symfony/framework-bundle": "2.1.*",
+        "jms/aop-bundle": "1.0.*",
         "jms/metadata": "1.1.*"
     },
     "autoload": {
