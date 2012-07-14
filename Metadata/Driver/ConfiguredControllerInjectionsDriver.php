@@ -23,7 +23,7 @@ class ConfiguredControllerInjectionsDriver implements DriverInterface
     {
         $metadata = $this->delegate->loadMetadataForClass($class);
 
-        if (!preg_match('#\\\\Controller\\\\[^\\\\]+Controller$#', $class->name)) {
+        if (!preg_match('/Controller\\\(.+)Controller$/', $class->name)) {
             return $metadata;
         }
 
