@@ -50,7 +50,7 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
         // the current configuration nor whether they are actually controllers.
         // Important is only that we do not miss any classes.
         return array_filter(get_declared_classes(), function($name) {
-            return preg_match('/Controller$/', $name) > 0;
+            return preg_match('/Controller\\\(.+)Controller$/', $name) > 0;
         });
     }
 }
