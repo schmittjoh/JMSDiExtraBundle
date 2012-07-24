@@ -19,5 +19,10 @@
     "autoload": {
         "psr-0": { "JMS\\DiExtraBundle": "" }
     },
-    "target-dir": "JMS/DiExtraBundle"
+    "target-dir": "JMS/DiExtraBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        }
+    }
 }
