@@ -4,6 +4,9 @@ namespace JMS\DiExtraBundle\Tests\Functional;
 
 class Issue11Test extends BaseTestCase
 {
+    /**
+     * @runInSeparateProcess
+     */
     public function testConstructorInjectionWithInheritance()
     {
         $this->createClient();

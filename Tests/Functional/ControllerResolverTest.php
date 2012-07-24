@@ -20,6 +20,9 @@ namespace JMS\DiExtraBundle\Tests\Functional;
 
 class ControllerResolverTest extends BaseTestCase
 {
+    /**
+     * @runInSeparateProcess
+     */
     public function testLookupMethodIsCorrectlyImplemented()
     {
         $client = $this->createClient();
@@ -28,6 +31,9 @@ class ControllerResolverTest extends BaseTestCase
         $this->assertEquals('foo@bar.de', $client->getResponse()->getContent());
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testLookupMethodAndAopProxy()
     {
         $client = $this->createClient();
@@ -40,6 +46,9 @@ class ControllerResolverTest extends BaseTestCase
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'), substr((string) $client->getResponse(), 0, 512));
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function testAopProxyWhenNoDiMetadata()
     {
         $client = $this->createClient();

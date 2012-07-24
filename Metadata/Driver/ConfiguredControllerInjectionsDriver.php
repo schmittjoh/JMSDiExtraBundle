@@ -69,6 +69,6 @@ class ConfiguredControllerInjectionsDriver implements DriverInterface
             $metadata->methodCalls[] = array($method->name, $this->methodInjections[$method->name]);
         }
 
-        return $metadata->properties || $metadata->methodCalls ? $metadata : null;
+        return $metadata->properties || $metadata->methodCalls || $metadata->lookupMethods ? $metadata : null;
     }
 }

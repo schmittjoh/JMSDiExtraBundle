@@ -4,6 +4,9 @@ namespace JMS\DiExtraBundle\Tests\Functional;
 
 class AutomaticControllerInjectionsTest extends BaseTestCase
 {
+    /**
+     * @runInSeparateProcess
+     */
     public function testInjections()
     {
         $client = $this->createClient(array('config' => 'automatic_controller_injections.yml'));
