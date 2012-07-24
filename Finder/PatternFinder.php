@@ -189,7 +189,7 @@ class PatternFinder
     {
         $finder = new ExecutableFinder();
         $isWindows = 0 === stripos(PHP_OS, 'win');
-		$execAvailable = function_exists('exec');
+        $execAvailable = function_exists('exec');
 
         if (!$isWindows && $execAvailable && self::$grepPath = $finder->find('grep')) {
             self::$method = self::METHOD_GREP;
