@@ -65,8 +65,7 @@ class ControllerResolver extends BaseControllerResolver
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-        $inject = $this->createInjector($class);
-        $controller = $inject($this->container);
+        $controller = call_user_func($this->createInjector($class), $this->container);
 
         if ($controller instanceof ContainerAwareInterface) {
             $controller->setContainer($this->container);
@@ -142,7 +141,7 @@ class ControllerResolver extends BaseControllerResolver
             $generator = new DefinitionInjectorGenerator();
         }
 
-        $cache->write($generator->generate($container->getDefinition('controller')), $container->getResources());
+        $cache->write($generator->generate($container->getDefinition('controller'), sha1($filename)), $container->getResources());
     }
 
     private function generateLookupMethods($def, $metadata)

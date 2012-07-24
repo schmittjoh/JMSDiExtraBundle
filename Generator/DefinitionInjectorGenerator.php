@@ -39,7 +39,7 @@ class DefinitionInjectorGenerator
         $this->inlinedDefinitions = new \SplObjectStorage();
     }
 
-    public function generate(Definition $def)
+    public function generate(Definition $def, $id)
     {
         $writer = new Writer();
 
@@ -50,7 +50,11 @@ class DefinitionInjectorGenerator
             ->writeln(' *')
             ->writeln(' * Manual changes to it will be lost.')
             ->writeln(' */')
-            ->writeln('return function($container) {')
+            ->write('if ( ! function_exists(')
+            ->write(var_export('jms_inject_'.$id, true))
+            ->writeln(')) {')
+            ->indent()
+            ->writeln('function jms_inject_'.$id.'($container) {')
             ->indent()
         ;
 
@@ -96,7 +100,13 @@ class DefinitionInjectorGenerator
         $writer
             ->writeln('return $instance;')
             ->outdent()
-            ->writeln('};')
+            ->writeln('}')
+            ->outdent()
+            ->writeln('}')
+            ->writeln('')
+            ->write('return ')
+            ->write(var_export('jms_inject_'.$id, true))
+            ->writeln(";")
         ;
 
         return $writer->getContent();
