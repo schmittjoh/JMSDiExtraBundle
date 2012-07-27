@@ -36,14 +36,6 @@ class IntegrationPass implements CompilerPassInterface
         // replace Symfony2's default controller resolver
         $container->setAlias('controller_resolver', new Alias('jms_di_extra.controller_resolver', false));
 
-        if ($container->hasDefinition('sensio_framework_extra.controller.listener')) {
-            $def = $container->getDefinition('sensio_framework_extra.controller.listener');
-
-            if ('%sensio_framework_extra.controller.listener.class%' === $def->getClass()) {
-                $def->setClass('%jms_di_extra.controller_listener.class%');
-            }
-        }
-
         if (true === $container->getParameter('jms_di_extra.doctrine_integration')) {
             $this->integrateWithDoctrine($container);
         }

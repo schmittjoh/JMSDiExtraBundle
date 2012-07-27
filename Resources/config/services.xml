@@ -8,15 +8,13 @@
         <parameter key="jms_di_extra.metadata.driver.annotation_driver.class">JMS\DiExtraBundle\Metadata\Driver\AnnotationDriver</parameter>
         <parameter key="jms_di_extra.metadata.driver.configured_controller_injections.class">JMS\DiExtraBundle\Metadata\Driver\ConfiguredControllerInjectionsDriver</parameter>
         <parameter key="jms_di_extra.metadata.driver.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
-        
+
         <parameter key="jms_di_extra.metadata.metadata_factory.class">Metadata\MetadataFactory</parameter>
         <parameter key="jms_di_extra.metadata.cache.file_cache.class">Metadata\Cache\FileCache</parameter>
-        
+
         <parameter key="jms_di_extra.metadata.converter.class">JMS\DiExtraBundle\Metadata\MetadataConverter</parameter>
         <parameter key="jms_di_extra.controller_resolver.class">JMS\DiExtraBundle\HttpKernel\ControllerResolver</parameter>
-        
-        <parameter key="jms_di_extra.controller_listener.class">JMS\DiExtraBundle\EventListener\ControllerListener</parameter>
-        
+
         <parameter key="jms_di_extra.controller_injectors_warmer.class">JMS\DiExtraBundle\HttpKernel\ControllerInjectorsWarmer</parameter>
     </parameters>
 
@@ -47,16 +45,16 @@
                 <argument type="service" id="jms_di_extra.metadata.cache" on-invalid="ignore" />
             </call>
         </service>
-        
+
         <service id="jms_di_extra.metadata.converter" class="%jms_di_extra.metadata.converter.class%" />
-        
+
         <service id="jms_di_extra.controller_resolver" class="%jms_di_extra.controller_resolver.class%" public="false">
             <tag name="monolog.logger" channel="request" />
             <argument type="service" id="service_container" />
             <argument type="service" id="controller_name_converter" />
             <argument type="service" id="logger" on-invalid="ignore" />
         </service>
-        
+
         <service id="jms_di_extra.controller_injectors_warmer" class="%jms_di_extra.controller_injectors_warmer.class%" public="false">
             <tag name="kernel.cache_warmer" />
             <argument type="service" id="kernel" />
