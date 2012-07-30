@@ -140,7 +140,7 @@ class PatternFinder
             $cmd .= ' --directories=skip';
         }
 
-        $cmd .= ' --devices=skip --files-with-matches --with-filename --max-count=1 --color=never --include='.$this->filePattern;
+        $cmd .= ' --devices=skip --files-with-matches --with-filename --color=never --include='.$this->filePattern;
         $cmd .= ' '.escapeshellarg($this->pattern);
 
         foreach ($dirs as $dir) {
