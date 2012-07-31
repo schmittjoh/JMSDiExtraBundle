@@ -44,7 +44,7 @@ class RepositoryInjectionGenerator implements GeneratorInterface
 
         $proxy->setMethod(PhpMethod::create('__construct')
             ->setVisibility('public')
-            ->addParameter(PhpParameter::create('objectManager')->setType('Doctrine\\Common\\Persistence\\ObjectManager'))
+            ->addParameter(PhpParameter::create('objectManager'))
             ->addParameter(PhpParameter::create('container')->setType('Symfony\\Component\\DependencyInjection\\ContainerInterface'))
             ->setBody($writer->reset()->writeln('$this->delegate = $objectManager;')->writeln('$this->container = $container;')->getContent())
         );
@@ -52,6 +52,12 @@ class RepositoryInjectionGenerator implements GeneratorInterface
         $proxy->setMethod(PhpMethod::fromReflection($original->getMethod('getRepository'))
             ->setParameters(array(PhpParameter::create('className')))
             ->setBody($writer->reset()->writeln('$repository = $this->delegate->getRepository($className);'."\n")
+                ->writeln('if ($repository instanceof \Symfony\Component\DependencyInjection\ContainerAwareInterface) {')
+                ->indent()
+                    ->writeln('$repository->setContainer($this->container);'."\n")
+                    ->writeln('return $repository;')
+                ->outdent()
+                ->writeln("}\n")
                 ->writeln('if (null !== $metadata = $this->container->get("jms_di_extra.metadata.metadata_factory")->getMetadataForClass(get_class($repository))) {')
                 ->indent()
                     ->writeln('foreach ($metadata->classMetadata as $classMetadata) {')

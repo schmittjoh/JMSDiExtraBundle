@@ -18,15 +18,13 @@
 
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Reference;
-
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
-
 use Doctrine\Common\Annotations\AnnotationReader;
-use JMS\DiExtraBundle\DependencyInjection\JMSDiExtraExtension;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\AnnotationConfigurationPass;
+use JMS\DiExtraBundle\DependencyInjection\JMSDiExtraExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Filesystem\Filesystem;
 
 class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
 {
@@ -92,11 +90,24 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($def, $container->getDefinition('concrete_class'));
     }
 
+    protected function setUp()
+    {
+        $fs = new Filesystem();
+        $fs->remove(sys_get_temp_dir().'/JMSDiExtraBundle-Test-AnnotationCFG');
+    }
+
+    protected function tearDown()
+    {
+        $fs = new Filesystem();
+        $fs->remove(sys_get_temp_dir().'/JMSDiExtraBundle-Test-AnnotationCFG');
+    }
+
     private function getContainer(array $bundles = array(), array $directories = array())
     {
         $container = new ContainerBuilder();
         $container->set('annotation_reader', new AnnotationReader());
         $container->setParameter('kernel.debug', false);
+        $container->setParameter('kernel.cache_dir', sys_get_temp_dir().'/JMSDiExtraBundle-Test-AnnotationCFG');
 
         $extension = new JMSDiExtraExtension();
         $extension->load(array(array(

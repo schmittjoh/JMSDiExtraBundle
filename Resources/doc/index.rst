@@ -15,10 +15,11 @@ Documentation
 
 .. toctree ::
     :hidden:
-    
+
     installation
     configuration
     usage
+    doctrine
     annotations
 
 - :doc:`Installation <installation>`
@@ -30,7 +31,7 @@ Documentation
 License
 -------
 
-The code is released under the business-friendly `Apache2 license`_. 
+The code is released under the business-friendly `Apache2 license`_.
 
 Documentation is subject to the `Attribution-NonCommercial-NoDerivs 3.0 Unported
 license`_.

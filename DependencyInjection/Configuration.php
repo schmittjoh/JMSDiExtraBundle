@@ -90,14 +90,14 @@ class Configuration implements ConfigurationInterface
                     ->booleanNode('doctrine_integration')
                         ->validate()
                             ->always(function($v) {
-                                if ($v && version_compare(Version::VERSION, '2.1.0', '<')) {
-                                    throw new \Exception('For Doctrine integration, you need at least version 2.1.0 of Doctrine Common, and supported ORM/DBAL packages.');
+                                if ($v && !class_exists('Doctrine\ORM\EntityManager')) {
+                                    throw new \Exception('Doctrine integration is only available for the Doctrine ORM at the moment.');
                                 }
 
                                 return $v;
                             })
                         ->end()
-                        ->defaultFalse()->end()
+                        ->defaultValue(class_exists('Doctrine\ORM\EntityManager'))->end()
                 ->end()
             ->end();
 
