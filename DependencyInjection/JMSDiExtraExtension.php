@@ -18,19 +18,17 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection;
 
-use JMS\DiExtraBundle\Generator\RepositoryInjectionGenerator;
-
+use CG\Core\DefaultNamingStrategy;
 use CG\Proxy\Enhancer;
-
-use Symfony\Component\DependencyInjection\Definition;
-
-use Symfony\Component\Filesystem\Filesystem;
 use JMS\DiExtraBundle\Exception\RuntimeException;
-use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use JMS\DiExtraBundle\Generator\RepositoryInjectionGenerator;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class JMSDiExtraExtension extends Extension
@@ -71,6 +69,7 @@ class JMSDiExtraExtension extends Extension
         }
 
         $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
+        $enhancer->setNamingStrategy(new DefaultNamingStrategy('EM'.uniqid())); // We do have to use a non-static id to avoid problems with cache:clear.
         $enhancer->writeClass($file = $cacheDir.'/doctrine/EntityManager.php');
         $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.file', $file);
         $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.class', $enhancer->getClassName($ref));

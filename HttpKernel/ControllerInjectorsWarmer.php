@@ -20,6 +20,12 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
+        // This avoids class-being-declared twice errors when the cache:clear
+        // command is called. The controllers are not pre-generated in that case.
+        if (basename($cacheDir) === $this->kernel->getEnvironment().'_new') {
+            return;
+        }
+
         $classes = $this->findControllerClasses();
         foreach ($classes as $class) {
             $this->controllerResolver->createInjector($class);
