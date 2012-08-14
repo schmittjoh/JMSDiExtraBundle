@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\AnnotationConfigurationPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use JMS\DiExtraBundle\DependencyInjection\Compiler\RedirectRequiresPass;
 
 class JMSDiExtraBundle extends Bundle
 {
@@ -46,5 +47,7 @@ class JMSDiExtraBundle extends Bundle
 
         $container->addCompilerPass(new IntegrationPass());
         $container->addCompilerPass(new ResourceOptimizationPass(), PassConfig::TYPE_AFTER_REMOVING);
+        $container->addCompilerPass(new RedirectRequiresPass($this->kernel), PassConfig::TYPE_REMOVE);
+        
     }
 }
