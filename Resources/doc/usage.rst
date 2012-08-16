@@ -70,6 +70,10 @@ Property Injection
         /** @DI\Inject("session") */
         private $session;
     }
+
+.. note ::
+
+    Injecting into private, or protected properties is only supported on controllers.
     
 Method/Getter Injection
 ~~~~~~~~~~~~~~~~~~~~~~~
