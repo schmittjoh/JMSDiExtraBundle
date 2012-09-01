@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
+use JMS\DiExtraBundle\Annotation\SecurityFunction;
+
 use JMS\DiExtraBundle\Annotation\AfterSetup;
 
 use JMS\DiExtraBundle\Annotation\FormType;
@@ -144,6 +146,11 @@ class AnnotationDriver implements DriverInterface
                         'event' => $annot->event,
                         'method' => $name,
                         'priority' => $annot->priority,
+                    );
+                } else if ($annot instanceof SecurityFunction) {
+                    $metadata->tags['security.expressions.function_evaluator'][] = array(
+                        'function' => $annot->function,
+                        'method' => $name,
                     );
                 } else if ($annot instanceof InjectParams) {
                     $params = array();

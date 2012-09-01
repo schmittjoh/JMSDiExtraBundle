@@ -1,5 +1,10 @@
 This document details all changes between different versions of JMSDiExtraBundle:
 
+1.2
+---
+
+- added @SecurityFunction annotation
+
 1.1
 ---
 
