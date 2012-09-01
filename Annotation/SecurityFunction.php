@@ -14,5 +14,5 @@ final class SecurityFunction
      * @Required
      * @var string
      */
-    private $function;
+    public $function;
 }
