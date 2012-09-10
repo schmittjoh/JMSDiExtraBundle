@@ -1,15 +1,14 @@
 <?php
 
-// this file searches for the autoload file of your project, and includes it
-$dir = __DIR__;
-$lastDir = null;
-while (($dir = dirname($dir)) && $dir !== $lastDir) {
-	$lastDir = $dir;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
-	if (file_exists($file = $dir.'/app/autoload.php')) {
-		require_once $file;
-		return;
-	}
+// Composer
+if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+    $loader = require_once __DIR__.'/../vendor/autoload.php';
+
+    AnnotationRegistry::registerLoader('class_exists');
+
+    return $loader;
 }
 
-throw new RuntimeException('Could not locate the project\'s bootstrap.php.cache. If your bundle is not inside a project, you need to replace this bootstrap file.');
+throw new \RuntimeException('Could not find vendor/autoload.php, make sure you ran composer.');
