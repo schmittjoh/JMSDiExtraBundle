@@ -13,8 +13,21 @@
     ],
     "require": {
         "symfony/framework-bundle": "2.1.*",
+        "symfony/process": "2.1.*",
+        "symfony/finder": "2.1.*",
         "jms/aop-bundle": "1.0.*",
         "jms/metadata": "1.1.*"
+    },
+    "require-dev": {
+        "symfony/validator": "2.1.*",
+        "symfony/form": "2.1.*",
+        "symfony/class-loader": "2.1.*",
+        "symfony/yaml": "2.1.*",
+        "symfony/browser-kit": "2.1.*",
+        "symfony/security-bundle": "2.1.*",
+        "symfony/twig-bundle": "2.1.*",
+        "sensio/framework-extra-bundle": "2.1.*",
+        "jms/security-extra-bundle": "1.*"
     },
     "autoload": {
         "psr-0": { "JMS\\DiExtraBundle": "" }
