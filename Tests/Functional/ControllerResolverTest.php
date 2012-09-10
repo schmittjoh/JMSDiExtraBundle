@@ -56,4 +56,15 @@ class ControllerResolverTest extends BaseTestCase
 
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
     }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testAnnotationControllerServiceExtendingClassicService()
+    {
+        $client = $this->createClient();
+        $client->request('GET', '/hello');
+
+        $this->assertEquals('hello', $client->getResponse()->getContent());
+    }
 }
