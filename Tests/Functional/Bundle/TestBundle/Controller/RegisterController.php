@@ -25,7 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 /**
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-abstract class RegisterController
+class RegisterController
 {
     /**
      * @Route("/register")
@@ -38,5 +38,5 @@ abstract class RegisterController
     }
 
     /** @DI\LookupMethod("test_mailer") */
-    abstract protected function getMailer();
+    protected function getMailer() {}
 }
