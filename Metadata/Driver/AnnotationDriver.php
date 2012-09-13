@@ -35,6 +35,7 @@ use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
+use JMS\DiExtraBundle\Annotation\Admin;
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -116,6 +117,32 @@ class AnnotationDriver implements DriverInterface
                 $metadata->tags['form.type'][] = array(
                     'alias' => $alias,
                 );
+            } else if ($annot instanceof Admin) {
+                if (null === $metadata->id) {
+                    $metadata->id = $this->generateId($className);
+                }
+
+                $properties = $this->generateAdminProperties($className);
+
+                if (!$properties && (!$annot->group || !$annot->label)) {
+                    throw new \RuntimeException(sprintf("Unable to generate admin group and label for class %s. Please define custom.", $className));
+                }
+
+                $metadata->tags['sonata.admin'][] = array(
+                    'manager_type' => $annot->managerType,
+                    'group' => $annot->group ?: $properties[0],
+                    'label' => $annot->label ?: $properties[1],
+                );
+
+                $metadata->arguments = array(
+                    $annot->code,
+                    $annot->class,
+                    $annot->baseControllerName,
+                );
+
+                if ($annot->translationDomain) {
+                    $metadata->methodCalls[] = array('setTranslationDomain', array($annot->translationDomain));
+                }
             }
         }
 
@@ -223,5 +250,18 @@ class AnnotationDriver implements DriverInterface
         $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
 
         return strtolower(strtr($name, '\\', '.'));
+    }
+
+    private function generateAdminProperties($name)
+    {
+        $matches = array();
+
+        preg_match('@[A-Za-z0-9]+\\\([A-Za-z0-9]+)Bundle\\\Admin\\\([A-Za-z0-9]+)Admin@', $name, $matches);
+
+        if (!$matches) {
+            return null;
+        }
+
+        return array($matches[1], $matches[2]);
     }
 }

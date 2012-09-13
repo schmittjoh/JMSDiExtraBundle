@@ -220,3 +220,32 @@ Automatically, registers the given class as a listener with the Doctrine ORM:
 
     ``@DoctrineListener`` implies ``@Service`` if not explicitly defined.    
 
+@Admin
+~~~~~~~~~~~~~~~~~
+Automatically, registers the given class as a admin with the Sonata Admin Bundle:
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\DiExtraBundle\Annotation\Admin;
+    use Sonata\AdminBundle\Admin\Admin;
+
+    /**
+     * @Admin(
+     *     class = "My\Entity\Class",
+     *     managerType = "orm",
+     *     group = "My Admin Group",
+     *     label = "My Admin Label",
+     *     code = "my_admin_code",
+     *     baseControllerName = "SonataAdminBundle:CRUD",
+     *     translationDomain = "messages",
+     * )
+    class MyAdmin extends Admin
+    {
+        // ...
+    }
+
+.. note ::
+
+    ``@Admin`` implies ``@Service`` if not explicitly defined.
