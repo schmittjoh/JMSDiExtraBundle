@@ -10,3 +10,6 @@ jms_di_extra:
 services:
     foo: { class: stdClass }
     bar: { class: stdClass }
+    controller.hello:
+        class: JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller\ServiceController
+        arguments: [ "@router" ]

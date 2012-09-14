@@ -25,7 +25,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 /**
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-abstract class SecuredController
+class SecuredController
 {
     /**
      * @Route("/lookup-method-and-aop")
@@ -37,5 +37,5 @@ abstract class SecuredController
     }
 
     /** @DI\LookupMethod */
-    abstract protected function getTestMailer();
+    protected function getTestMailer() {}
 }
