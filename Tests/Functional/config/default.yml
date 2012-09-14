@@ -12,4 +12,4 @@ services:
     bar: { class: stdClass }
     controller.hello:
         class: JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller\ServiceController
-        arguments: [ [ @router ] ]
+        arguments: [ "@router" ]

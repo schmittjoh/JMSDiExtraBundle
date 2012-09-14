@@ -12,12 +12,4 @@ abstract class ServiceController
     {
         // Dummy constructor injection, to make sure inheritance works
     }
-
-    /**
-     * @Route("hello")
-     */
-    public function helloAction()
-    {
-        return new Response('hello');
-    }
 }
