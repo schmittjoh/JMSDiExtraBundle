@@ -50,6 +50,7 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
+            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new \JMS\AopBundle\JMSAopBundle(),
             new \JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\JMSDiExtraTestBundle(),
@@ -65,7 +66,7 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
-        return sys_get_temp_dir().'/JMSDiExtraBundle';
+        return sys_get_temp_dir().'/JMSDiExtraBundle/'.substr(sha1($this->config), 0, 6);
     }
 
     public function serialize()
