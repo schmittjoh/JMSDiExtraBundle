@@ -69,8 +69,9 @@ class JMSDiExtraExtension extends Extension
         }
 
         $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
-        $enhancer->setNamingStrategy(new DefaultNamingStrategy('EM'.uniqid())); // We do have to use a non-static id to avoid problems with cache:clear.
-        $enhancer->writeClass($file = $cacheDir.'/doctrine/EntityManager.php');
+        $uniqid = uniqid(); // We do have to use a non-static id to avoid problems with cache:clear.
+        $enhancer->setNamingStrategy(new DefaultNamingStrategy('EntityManager'.$uniqid));
+        $enhancer->writeClass($file = $cacheDir.'/doctrine/EntityManager_'.$uniqid.'.php');
         $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.file', $file);
         $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.class', $enhancer->getClassName($ref));
     }

@@ -28,9 +28,9 @@ class AppKernel extends Kernel
 {
     private $config;
 
-    public function __construct($config)
+    public function __construct($config, $debug = true)
     {
-        parent::__construct('test', true);
+        parent::__construct('test', $debug);
 
         $fs = new Filesystem();
         if (!$fs->isAbsolutePath($config)) {
@@ -71,11 +71,11 @@ class AppKernel extends Kernel
 
     public function serialize()
     {
-        return $this->config;
+        return serialize(array($this->config, $this->isDebug()));
     }
 
-    public function unserialize($config)
+    public function unserialize($str)
     {
-        $this->__construct($config);
+        call_user_func_array(array($this, '__construct'), unserialize($str));
     }
 }
