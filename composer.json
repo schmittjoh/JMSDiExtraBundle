@@ -19,15 +19,17 @@
         "jms/metadata": "1.1.*"
     },
     "require-dev": {
-        "symfony/validator": "2.1.*",
-        "symfony/form": "2.1.*",
-        "symfony/class-loader": "2.1.*",
-        "symfony/yaml": "2.1.*",
-        "symfony/browser-kit": "2.1.*",
-        "symfony/security-bundle": "2.1.*",
-        "symfony/twig-bundle": "2.1.*",
-        "sensio/framework-extra-bundle": "2.1.*",
-        "jms/security-extra-bundle": "1.*"
+        "symfony/validator": "*",
+        "symfony/form": "*",
+        "symfony/class-loader": "*",
+        "symfony/yaml": "*",
+        "symfony/browser-kit": "*",
+        "symfony/security-bundle": "*",
+        "symfony/twig-bundle": "*",
+        "sensio/framework-extra-bundle": "*",
+        "jms/security-extra-bundle": "1.*",
+        "doctrine/doctrine-bundle": "*",
+        "doctrine/orm": "*"
     },
     "autoload": {
         "psr-0": { "JMS\\DiExtraBundle": "" }
