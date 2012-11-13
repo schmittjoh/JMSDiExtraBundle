@@ -18,13 +18,13 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
+use JMS\DiExtraBundle\Metadata\ClassMetadata;
 
 /**
  * @Annotation
  * @Target("CLASS")
  */
-class Admin
+class Admin implements MetadataProcessorInterface
 {
     /** @var string @Required */
     public $class;
@@ -46,4 +46,42 @@ class Admin
 
     /** @var string */
     public $translationDomain;
+
+    public function processMetadata(ClassMetadata $metadata)
+    {
+        $properties = $this->generateAdminProperties($this->class);
+
+        if (!$properties && (!$this->group || !$this->label)) {
+            throw new \RuntimeException(sprintf("Unable to generate admin group and label for class %s. Please define custom.", $metadata->name));
+        }
+
+        $metadata->tags['sonata.admin'][] = array(
+            'manager_type' => $this->managerType,
+            'group' => $this->group ?: $properties[0],
+            'label' => $this->label ?: $properties[1],
+        );
+
+        $metadata->arguments = array(
+            $this->code,
+            $this->class,
+            $this->baseControllerName,
+        );
+
+        if ($this->translationDomain) {
+            $metadata->methodCalls[] = array('setTranslationDomain', array($this->translationDomain));
+        }
+    }
+
+    private function generateAdminProperties($name)
+    {
+        $matches = array();
+
+        preg_match('@[A-Za-z0-9]+\\\([A-Za-z0-9]+)Bundle\\\(Document|Entity)\\\([A-Za-z0-9]+)@', $name, $matches);
+
+        if (!$matches) {
+            return null;
+        }
+
+        return array($matches[1], $matches[3]);
+    }
 }
