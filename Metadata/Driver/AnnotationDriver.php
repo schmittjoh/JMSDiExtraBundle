@@ -35,6 +35,7 @@ use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
+use JMS\DiExtraBundle\Annotation\MetadataProcessorInterface;
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -116,6 +117,12 @@ class AnnotationDriver implements DriverInterface
                 $metadata->tags['form.type'][] = array(
                     'alias' => $alias,
                 );
+            } else if ($annot instanceof MetadataProcessorInterface) {
+                if (null === $metadata->id) {
+                    $metadata->id = $this->generateId($className);
+                }
+
+                $annot->processMetadata($metadata);
             }
         }
 

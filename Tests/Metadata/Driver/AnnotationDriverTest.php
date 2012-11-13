@@ -30,6 +30,25 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
         ), $metadata->tags);
     }
 
+    public function testFormAdmin()
+    {
+        $metadata = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture\UserAdmin'));
+
+        $this->assertEquals(array(
+            'sonata.admin' => array(
+                array('manager_type' => 'orm', 'group' => 'Test', 'label' => 'User'),
+            )
+        ), $metadata->tags);
+        $this->assertEquals(array(
+            null,
+            'Acme\\TestBundle\\Entity\\User',
+            'SonataAdminBundle:CRUD',
+        ), $metadata->arguments);
+        $this->assertEquals(array(
+            array('setTranslationDomain', array('messages')),
+        ), $metadata->methodCalls);
+    }
+
     private function getDriver()
     {
         return new AnnotationDriver(new AnnotationReader());
