@@ -49,7 +49,7 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
         }
 
         foreach (Finder::create()->name('*Controller.php')->in($dirs)->files() as $file) {
-            require_once $file->getRealPath();
+            @include_once $file->getRealPath();
         }
 
         // It is not so important if these controllers never can be reached with
