@@ -59,6 +59,7 @@
             <tag name="kernel.cache_warmer" />
             <argument type="service" id="kernel" />
             <argument type="service" id="jms_di_extra.controller_resolver" />
+            <argument>%jms_di_extra.cache_warmer.controller_file_blacklist%</argument>
         </service>
     </services>
 </container>
