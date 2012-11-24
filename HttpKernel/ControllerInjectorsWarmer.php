@@ -11,11 +11,13 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
 {
     private $kernel;
     private $controllerResolver;
+    private $blackListedControllerFiles;
 
-    public function __construct(KernelInterface $kernel, ControllerResolver $resolver)
+    public function __construct(KernelInterface $kernel, ControllerResolver $resolver, array $blackListedControllerFiles)
     {
         $this->kernel = $kernel;
         $this->controllerResolver = $resolver;
+        $this->blackListedControllerFiles = $blackListedControllerFiles;
     }
 
     public function warmUp($cacheDir)
@@ -49,7 +51,10 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
         }
 
         foreach (Finder::create()->name('*Controller.php')->in($dirs)->files() as $file) {
-            require_once $file->getRealPath();
+            $filename = $file->getRealPath();
+            if (!in_array($filename, $this->blackListedControllerFiles)) {
+                require_once $filename;
+            }
         }
 
         // It is not so important if these controllers never can be reached with

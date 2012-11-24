@@ -33,6 +33,13 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class JMSDiExtraExtension extends Extension
 {
+    /**
+     * Controller blacklist, ie. php files names for controllers that should not be analyzed
+     *
+     * @var array
+     */
+    private $blackListedControllerFiles = array();
+
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $this->mergeConfigs($configs);
@@ -45,6 +52,14 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.directories', $config['locations']['directories']);
         $container->setParameter('jms_di_extra.cache_dir', $config['cache_dir']);
         $container->setParameter('jms_di_extra.doctrine_integration', $config['doctrine_integration']);
+        if ($config['cache_warmer']['enabled']) {
+            foreach ($config['cache_warmer']['controller_file_blacklist'] as $filename) {
+                $this->blackListControllerFile($filename);
+            }
+            $container->setParameter('jms_di_extra.cache_warmer.controller_file_blacklist', $this->blackListedControllerFiles);
+        } else {
+            $container->removeDefinition('jms_di_extra.controller_injectors_warmer');
+        }
 
         $this->configureMetadata($config['metadata'], $container, $config['cache_dir'].'/metadata');
         $this->configureAutomaticControllerInjections($config, $container);
@@ -56,6 +71,11 @@ class JMSDiExtraExtension extends Extension
         $this->addClassesToCompile(array(
             'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
         ));
+    }
+
+    public function blackListControllerFile($filename)
+    {
+        $this->blackListedControllerFiles[] = realpath($filename);
     }
 
     private function generateEntityManagerProxyClass(array $config, ContainerBuilder $container)
