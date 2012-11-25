@@ -19,6 +19,11 @@ This marks a property, or parameter for injection:
         private $securityContext;
         
         /**
+         * @Inject("request", strict = false)
+         */
+        private $request;
+        
+        /**
          * @Inject("%kernel.cache_dir%")
          */
         private $cacheDir;
@@ -33,6 +38,8 @@ This marks a property, or parameter for injection:
 
     If you do not specify the service explicitly, we will try to guess it based on the name
     of the property or the parameter.
+
+    The "strict" option can be passed to false to avoid exceptions of type ``Symfony\Component\DependencyInjection\Exception\ScopeCrossingInjectionException``, if the scope of the injected service is different than the current one (for example request, or prototype).
 
 @InjectParams
 ~~~~~~~~~~~~~~~
