@@ -90,6 +90,9 @@ class JMSDiExtraExtension extends Extension
 
         $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
         $uniqid = uniqid(); // We do have to use a non-static id to avoid problems with cache:clear.
+        if (strtoupper(PHP_OS)=='CYGWIN') {
+            $uniqid=preg_replace('/\./','_',$uniqid); // replace dot; cygwin always generates uniqid's with more_entropy
+        }
         $enhancer->setNamingStrategy(new DefaultNamingStrategy('EntityManager'.$uniqid));
         $enhancer->writeClass($file = $cacheDir.'/doctrine/EntityManager_'.$uniqid.'.php');
         $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.file', $file);
