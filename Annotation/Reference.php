@@ -27,4 +27,7 @@ abstract class Reference
 
     /** @var boolean */
     public $required;
+
+    /** @var boolean */
+    public $strict = true;
 }
