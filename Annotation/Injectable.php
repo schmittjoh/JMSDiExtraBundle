@@ -18,10 +18,6 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-/**
- * @Annotation
- * @Target({"ANNOTATION"})
- */
-final class InjectValue extends Injectable
+abstract class Injectable extends Reference
 {
 }
