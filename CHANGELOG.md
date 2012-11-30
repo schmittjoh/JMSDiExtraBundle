@@ -5,7 +5,7 @@ This document details all changes between different versions of JMSDiExtraBundle
 
 - added a general lazy service map implementation
 - added option to disable controller warming entirely, or for selected bundles
-- added support for strict flag to the @Inject annotation
+- added support for the strict flag to the @Inject annotation
 
 1.2
 ---
