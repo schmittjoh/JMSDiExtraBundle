@@ -16,7 +16,8 @@
         "symfony/process": ">=2.1.0,<2.3-dev",
         "symfony/finder": ">=2.1.0,<2.3-dev",
         "jms/aop-bundle": ">=1.0.0,<1.2-dev",
-        "jms/metadata": "1.1.*"
+        "jms/metadata": "1.1.*",
+        "phpcollection/phpcollection": "0.1.*@dev"
     },
     "require-dev": {
         "symfony/validator": "*",

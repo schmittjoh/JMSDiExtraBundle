@@ -1,5 +1,10 @@
 This document details all changes between different versions of JMSDiExtraBundle:
 
+1.3
+---
+
+- added a general lazy service map implementation
+
 1.2
 ---
 
