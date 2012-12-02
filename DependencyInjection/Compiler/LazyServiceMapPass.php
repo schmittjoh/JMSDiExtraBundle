@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class LazyServiceMapPass implements CompilerPassInterface
+class LazyServiceMapPass implements CompilerPassInterface, \Serializable
 {
     private $tagName;
     private $keyAttributeName;
@@ -40,6 +40,10 @@ class LazyServiceMapPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
+        if ( ! is_callable($this->callable)) {
+            throw new \RuntimeException('The callable is invalid. If you had serialized this pass, the original callable might not be available anymore.');
+        }
+
         $serviceMap = array();
         foreach ($container->findTaggedServiceIds($this->tagName) as $id => $attrs) {
             if ( ! isset($attrs[0][$this->keyAttributeName])) {
@@ -54,5 +58,15 @@ class LazyServiceMapPass implements CompilerPassInterface
         $def->addArgument($serviceMap);
 
         call_user_func($this->callable, $container, $def);
+    }
+
+    public function serialize()
+    {
+        return serialize(array($this->tagName, $this->keyAttributeName));
+    }
+
+    public function unserialize($str)
+    {
+        list($this->tagName, $this->keyAttributeName) = unserialize($str);
     }
 }
