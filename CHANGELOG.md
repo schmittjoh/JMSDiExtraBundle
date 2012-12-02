@@ -3,7 +3,7 @@ This document details all changes between different versions of JMSDiExtraBundle
 1.3
 ---
 
-- added a general lazy service map implementation
+- added a generic implementation for lazy service collections (maps, and sequences)
 - added option to disable controller warming entirely, or for selected bundles
 - added support for the strict flag to the @Inject annotation
 
