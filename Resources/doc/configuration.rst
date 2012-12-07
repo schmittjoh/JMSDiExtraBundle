@@ -73,7 +73,7 @@ which then do not need to be annotated explicitly anymore.
             </automatic-controller-injections>
         </jms-di-extra>                 
 
-If you controller has any of the above properties, or methods, then you do not need
+If your controller has any of the above properties, or methods, then you do not need
 to add an @Inject annotation anymore, but we will automatically inject the configured
 services for you. However, if you do declare an @Inject annotation it will automatically
 overwrite whatever you have configured in the above section.
