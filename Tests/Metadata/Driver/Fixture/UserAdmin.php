@@ -2,14 +2,13 @@
 
 namespace JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture;
 
-use Sonata\AdminBundle\Admin\Admin;
 use JMS\DiExtraBundle as DI;
 
 /**
  * @DI\Annotation\Service
  * @DI\Annotation\Tag("sonata.admin", attributes={"manager_type"="orm", "group"="User", "label"="User"})
  */
-class UserAdmin extends Admin
+class UserAdmin
 {
     /**
      * @DI\Annotation\InjectParams({
