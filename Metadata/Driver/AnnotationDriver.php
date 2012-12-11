@@ -33,6 +33,7 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
 use JMS\DiExtraBundle\Annotation\Observe;
 use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectValue;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
@@ -157,6 +158,11 @@ class AnnotationDriver implements DriverInterface
                     foreach ($method->getParameters() as $param) {
                         if (!isset($annot->params[$paramName = $param->getName()])) {
                             $params[] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)));
+                            continue;
+                        }
+
+                        if ($annot->params[$paramName] instanceof InjectValue) {
+                            $params[] = $annot->params[$paramName]->value;
                             continue;
                         }
 
