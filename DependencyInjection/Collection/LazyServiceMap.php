@@ -30,6 +30,11 @@ class LazyServiceMap extends Map
 
         return parent::get($key);
     }
+    
+    public function containsKey($key)
+    {
+        return isset($this->serviceIds[$key]) || parent::containsKey($key);
+    }
 
     public function remove($key)
     {
