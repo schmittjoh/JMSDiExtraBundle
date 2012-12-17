@@ -3,7 +3,7 @@
 namespace JMS\DiExtraBundle\HttpKernel;
 
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
@@ -24,7 +24,11 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
     {
         // This avoids class-being-declared twice errors when the cache:clear
         // command is called. The controllers are not pre-generated in that case.
-        if (basename($cacheDir) === $this->kernel->getEnvironment().'_new') {
+        $suffix = defined('Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate::NEW_CACHE_FOLDER_SUFFIX')
+            ? CacheWarmerAggregate::NEW_CACHE_FOLDER_SUFFIX
+            : '_new';
+
+        if (basename($cacheDir) === $this->kernel->getEnvironment().$suffix) {
             return;
         }
 
