@@ -30,7 +30,7 @@
         "jms/security-extra-bundle": "1.*",
         "doctrine/doctrine-bundle": "*",
         "doctrine/orm": "*",
-        "phpcollection/phpcollection": "0.1.*@dev"
+        "phpcollection/phpcollection": ">=0.1,<0.3-dev"
     },
     "autoload": {
         "psr-0": { "JMS\\DiExtraBundle": "" }
