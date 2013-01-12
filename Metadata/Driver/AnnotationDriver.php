@@ -25,6 +25,7 @@ use JMS\DiExtraBundle\Annotation\AfterSetup;
 use JMS\DiExtraBundle\Annotation\FormType;
 
 use JMS\DiExtraBundle\Annotation\DoctrineListener;
+use JMS\DiExtraBundle\Annotation\DoctrineMongoDBListener;
 use JMS\DiExtraBundle\Annotation\Reference as AnnotReference;
 use JMS\DiExtraBundle\Annotation\LookupMethod;
 use JMS\DiExtraBundle\Annotation\Validator;
@@ -94,6 +95,19 @@ class AnnotationDriver implements DriverInterface
 
                 foreach ($annot->events as $event) {
                     $metadata->tags['doctrine.event_listener'][] = array(
+                        'event' => $event,
+                        'connection' => $annot->connection ?: 'default',
+                        'lazy' => $annot->lazy,
+                        'priority' => $annot->priority,
+                    );
+                }
+            } else if ($annot instanceof DoctrineMongoDBListener) {
+                if (null === $metadata->id) {
+                    $metadata->id = $this->generateId($className);
+                }
+
+                foreach ($annot->events as $event) {
+                    $metadata->tags['doctrine_mongodb.odm.event_listener'][] = array(
                         'event' => $event,
                         'connection' => $annot->connection ?: 'default',
                         'lazy' => $annot->lazy,
