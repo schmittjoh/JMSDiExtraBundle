@@ -27,6 +27,7 @@ class ResourceOptimizationPassTest extends \PHPUnit_Framework_TestCase
     public function testProcess()
     {
         $container = new ContainerBuilder();
+        $container->setParameter('jms_di_extra.disable_grep', false);
         $container->addResource(new DirectoryResource(__DIR__.'/Fixtures/a'));
         $container->addResource(new DirectoryResource(__DIR__.'/Fixtures/a/b'));
         $container->addResource(new DirectoryResource(__DIR__.'/Fixtures/c'));

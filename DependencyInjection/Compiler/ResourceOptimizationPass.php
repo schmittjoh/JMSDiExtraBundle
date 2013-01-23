@@ -68,8 +68,10 @@ class ResourceOptimizationPass implements CompilerPassInterface
             $directories[$pattern] = $newResources;
         }
 
+        $disableGrep = $container->getParameter('jms_di_extra.disable_grep');
+
         foreach ($directories as $pattern => $pDirectories) {
-            $newResource = new FastDirectoriesResource($pDirectories, $pattern);
+            $newResource = new FastDirectoriesResource($pDirectories, $pattern, $disableGrep);
             $newResource->update();
             $resources[] = $newResource;
         }
