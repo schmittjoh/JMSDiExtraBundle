@@ -22,16 +22,41 @@ use JMS\DiExtraBundle\Finder\PatternFinder;
 
 class GrepPatternFinderTest extends AbstractPatternFinderTest
 {
+    protected $disableGrep = false;
+    protected $forceMethodReload = false;
+
     protected function getFinder()
     {
-        $finder = new PatternFinder('JMS\DiExtraBundle\Annotation');
+        $finder = new PatternFinder(
+            'JMS\DiExtraBundle\Annotation',
+            '*.php',
+            $this->disableGrep,
+            $this->forceMethodReload
+        );
 
-        $ref = new \ReflectionProperty($finder, 'grepPath');
-        $ref->setAccessible(true);
-        if (null === $v = $ref->getValue($finder)) {
-            $this->markTestSkipped('grep is not available on your system.');
+        if (!$this->disableGrep) {
+            $ref = new \ReflectionProperty($finder, 'grepPath');
+            $ref->setAccessible(true);
+            if (null === $v = $ref->getValue($finder)) {
+                $this->markTestSkipped('grep is not available on your system.');
+            }
         }
 
         return $finder;
+    }
+
+    public function testFinderMethodIsNotGrepIfDisableGrepParameterIsSetToTrue()
+    {
+        // Change the flag to disable grep
+        $this->disableGrep = true;
+        $this->forceMethodReload = true;
+
+        // Get the finder and a reflection object on its method property
+        $finder = $this->getFinder();
+        $ref = new \ReflectionProperty($finder, 'method');
+        $ref->setAccessible(true);
+
+        // Ensure the method is not grep
+        $this->assertNotEquals(PatternFinder::METHOD_GREP, $ref->getValue($finder));
     }
 }

@@ -36,10 +36,10 @@ class PatternFinder
     private $recursive = true;
     private $regexPattern = false;
 
-    public function __construct($pattern, $filePattern = '*.php')
+    public function __construct($pattern, $filePattern = '*.php', $disableGrep = false, $forceMethodReload = false)
     {
-        if (null === self::$method) {
-            self::determineMethod();
+        if (null === self::$method || $forceMethodReload) {
+            self::determineMethod($disableGrep);
         }
 
         $this->pattern = $pattern;
@@ -185,13 +185,13 @@ class PatternFinder
         return array_keys(iterator_to_array($finder));
     }
 
-    private static function determineMethod()
+    private static function determineMethod($disableGrep)
     {
         $finder = new ExecutableFinder();
         $isWindows = 0 === stripos(PHP_OS, 'win');
         $execAvailable = function_exists('exec');
 
-        if (!$isWindows && $execAvailable && self::$grepPath = $finder->find('grep')) {
+        if (!$isWindows && $execAvailable && !$disableGrep && self::$grepPath = $finder->find('grep')) {
             self::$method = self::METHOD_GREP;
         } else if ($isWindows && $execAvailable) {
             self::$method = self::METHOD_FINDSTR;

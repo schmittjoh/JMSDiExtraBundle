@@ -66,6 +66,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->scalarNode('cache_dir')->defaultValue('%kernel.cache_dir%/jms_diextra')->end()
+                    ->scalarNode('disable_grep')->defaultFalse()->end()
                     ->arrayNode('metadata')
                         ->addDefaultsIfNotSet()
                         ->children()
