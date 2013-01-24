@@ -24,7 +24,9 @@ use JMS\DiExtraBundle\Annotation\AfterSetup;
 
 use JMS\DiExtraBundle\Annotation\FormType;
 
+use JMS\DiExtraBundle\Annotation\AbstractDoctrineListener;
 use JMS\DiExtraBundle\Annotation\DoctrineListener;
+use JMS\DiExtraBundle\Annotation\DoctrineMongoDBListener;
 use JMS\DiExtraBundle\Annotation\Reference as AnnotReference;
 use JMS\DiExtraBundle\Annotation\LookupMethod;
 use JMS\DiExtraBundle\Annotation\Validator;
@@ -87,13 +89,13 @@ class AnnotationDriver implements DriverInterface
                 $metadata->tags['validator.constraint_validator'][] = array(
                     'alias' => $annot->alias,
                 );
-            } else if ($annot instanceof DoctrineListener) {
+            } else if ($annot instanceof AbstractDoctrineListener) {
                 if (null === $metadata->id) {
                     $metadata->id = $this->generateId($className);
                 }
 
                 foreach ($annot->events as $event) {
-                    $metadata->tags['doctrine.event_listener'][] = array(
+                    $metadata->tags[$annot->getTag()][] = array(
                         'event' => $event,
                         'connection' => $annot->connection ?: 'default',
                         'lazy' => $annot->lazy,

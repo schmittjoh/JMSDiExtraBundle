@@ -201,9 +201,9 @@ Automatically, registers the given class as a form type with Symfony2's Form Com
 
     ``@FormType`` implies ``@Service`` if not explicitly defined.
     
-@DoctrineListener
-~~~~~~~~~~~~~~~~~
-Automatically, registers the given class as a listener with the Doctrine ORM:
+@DoctrineListener or @DoctrineMongoDBListener
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Automatically, registers the given class as a listener with the Doctrine ORM or Doctrine MongoDB ODM:
 
 .. code-block :: php
 

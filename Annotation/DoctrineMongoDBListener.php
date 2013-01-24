@@ -25,10 +25,10 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  * @Annotation
  * @Target("CLASS")
  */
-class DoctrineListener extends AbstractDoctrineListener
+class DoctrineMongoDBListener extends AbstractDoctrineListener
 {
     public function getTag()
     {
-        return 'doctrine.event_listener';
+        return 'doctrine_mongodb.odm.event_listener';
     }
 }
