@@ -182,7 +182,7 @@ class PatternFinder
             $finder->depth('<= 0');
         }
 
-        return array_keys(iterator_to_array($finder));
+        return array_map(function ($file) { return $file->getPathName(); }, iterator_to_array($finder));
     }
 
     private static function determineMethod($disableGrep)
