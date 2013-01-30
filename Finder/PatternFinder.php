@@ -118,7 +118,7 @@ class PatternFinder
                 continue;
             }
 
-            $files[] = $currentDir.$line;
+            $files[] = realpath($currentDir.$line);
         }
 
         return $files;
@@ -156,7 +156,7 @@ class PatternFinder
             throw new RuntimeException(sprintf('Command "%s" exited with non-successful status code "%d".', $cmd, $exitCode));
         }
 
-        return $files;
+        return array_map('realpath', $files);
     }
 
     private function findUsingFinder(array $dirs)
@@ -182,7 +182,7 @@ class PatternFinder
             $finder->depth('<= 0');
         }
 
-        return array_keys(iterator_to_array($finder));
+        return array_map('realpath', array_keys(iterator_to_array($finder)));
     }
 
     private static function determineMethod($disableGrep)
