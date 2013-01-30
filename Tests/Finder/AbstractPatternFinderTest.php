@@ -18,9 +18,6 @@
 
 namespace JMS\DiExtraBundle\Tests\Finder;
 
-use JMS\DiExtraBundle\Finder\PatternFinder;
-use Symfony\Component\Process\ExecutableFinder;
-
 abstract class AbstractPatternFinderTest extends \PHPUnit_Framework_TestCase
 {
     public function testFindFiles()
@@ -34,7 +31,6 @@ abstract class AbstractPatternFinderTest extends \PHPUnit_Framework_TestCase
         );
 
         $foundFiles = $finder->findFiles(array(__DIR__.'/../Fixture/NonEmptyDirectory'));
-        $foundFiles = array_map('realpath', $foundFiles);
 
         $this->assertEquals(array(), array_diff($expectedFiles, $foundFiles));
         $this->assertEquals(array(), array_diff($foundFiles, $expectedFiles));
