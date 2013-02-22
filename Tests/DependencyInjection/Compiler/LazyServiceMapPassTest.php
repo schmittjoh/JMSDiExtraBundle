@@ -19,7 +19,7 @@ class LazyServiceMapPassTest extends \PHPUnit_Framework_TestCase
             $called = true;
 
             $self->assertEquals(new Reference('service_container'), $def->getArgument(0));
-            $self->assertEquals(array('json' => 'foo', 'xml' => 'bar'), $def->getArgument(1));
+            $self->assertEquals(array('json' => 'foo', 'xml' => 'bar', 'atom' => 'bar'), $def->getArgument(1));
         });
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')
@@ -30,7 +30,7 @@ class LazyServiceMapPassTest extends \PHPUnit_Framework_TestCase
         $container->expects($this->once())
             ->method('findTaggedServiceIds')
             ->with('tag')
-            ->will($this->returnValue(array('foo' => array(array('key' => 'json')), 'bar' => array(array('key' => 'xml')))));
+            ->will($this->returnValue(array('foo' => array(array('key' => 'json')), 'bar' => array(array('key' => 'xml'), array('key' => 'atom')))));
 
         $pass->process($container);
         $this->assertTrue($called);
