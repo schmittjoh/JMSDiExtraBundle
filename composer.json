@@ -12,9 +12,9 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "~2.1.0",
-        "symfony/process": "~2.1.0",
-        "symfony/finder": "~2.1.0",
+        "symfony/framework-bundle": "~2.1",
+        "symfony/process": "~2.1",
+        "symfony/finder": "~2.1",
         "jms/aop-bundle": ">=1.0.0,<1.2-dev",
         "jms/metadata": "1.*"
     },
