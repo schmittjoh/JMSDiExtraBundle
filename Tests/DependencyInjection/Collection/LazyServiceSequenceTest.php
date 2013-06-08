@@ -53,8 +53,8 @@ class LazyServiceSequenceTest extends \PHPUnit_Framework_TestCase
             ->with('baz')
             ->will($this->returnValue($baz = new \stdClass));
 
-        $this->assertEquals($baz, $this->seq->get(2)->get());
-        $this->assertEquals($baz, $this->seq->get(2)->get());
+        $this->assertEquals($baz, $this->seq->get(2));
+        $this->assertEquals($baz, $this->seq->get(2));
     }
 
     protected function setUp()
