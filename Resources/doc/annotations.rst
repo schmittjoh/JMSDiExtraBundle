@@ -75,21 +75,23 @@ Also you can inject raw value (required for SonataAdminBundle):
 
     <?php
 
+    use JMS\DiExtraBundle\Annotation\Service;
+    use JMS\DiExtraBundle\Annotation\Tag;
     use JMS\DiExtraBundle\Annotation\InjectValue;
     use JMS\DiExtraBundle\Annotation\InjectParams;
     use Sonata\AdminBundle\Admin\Admin;
 
     /**
-     * @DI\Service
-     * @DI\Tag("sonata.admin", attributes={"manager_type"="orm", "group"="Test", "label"="Test"})
+     * @Service
+     * @Tag("sonata.admin", attributes={"manager_type"="orm", "group"="Test", "label"="Test"})
      */
     class TestAdmin extends Admin
     {
         /**
-         * @DI\InjectParams({
-         *     "code"=@DI\InjectValue(null),
-         *     "class"=@DI\InjectValue("Acme\TestBundle\Entity\Test"),
-         *     "baseControllerName"=@DI\InjectValue("SonataAdminBundle:CRUD")
+         * @InjectParams({
+         *     "code"=@InjectValue(null),
+         *     "class"=@InjectValue("Acme\TestBundle\Entity\Test"),
+         *     "baseControllerName"=@InjectValue("SonataAdminBundle:CRUD")
          * })
          */
         public function __construct($code, $class, $baseControllerName)
