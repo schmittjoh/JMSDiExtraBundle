@@ -18,14 +18,10 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
-
 /**
  * @Annotation
- * @Target("METHOD")
+ * @Target({"ANNOTATION"})
  */
-final class InjectParams
+final class InjectValue extends Injectable
 {
-    /** @var array<JMS\DiExtraBundle\Annotation\Injectable> */
-    public $params = array();
 }
