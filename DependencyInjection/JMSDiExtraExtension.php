@@ -43,7 +43,6 @@ class JMSDiExtraExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $this->mergeConfigs($configs);
-
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
@@ -52,7 +51,7 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.directories', $config['locations']['directories']);
         $container->setParameter('jms_di_extra.cache_dir', $config['cache_dir']);
         $container->setParameter('jms_di_extra.disable_grep', $config['disable_grep']);
-        $container->setParameter('jms_di_extra.doctrine_integration', $config['doctrine_integration']);
+        $container->setParameter('jms_di_extra.doctrine_integration', $config['doctrine']['doctrine_integration']);
         if ($config['cache_warmer']['enabled']) {
             foreach ($config['cache_warmer']['controller_file_blacklist'] as $filename) {
                 $this->blackListControllerFile($filename);
@@ -65,7 +64,7 @@ class JMSDiExtraExtension extends Extension
         $this->configureMetadata($config['metadata'], $container, $config['cache_dir'].'/metadata');
         $this->configureAutomaticControllerInjections($config, $container);
 
-        if ($config['doctrine_integration']) {
+        if ($config['doctrine']['doctrine_integration']) {
             $this->generateEntityManagerProxyClass($config, $container);
         }
 
@@ -88,8 +87,7 @@ class JMSDiExtraExtension extends Extension
                 throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cacheDir.'/doctrine'));
             }
         }
-
-        $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
+        $enhancer = new Enhancer($ref = new \ReflectionClass($config['doctrine']['entity_manager_class']), array(), array(new RepositoryInjectionGenerator()));
         $uniqid = uniqid(); // We do have to use a non-static id to avoid problems with cache:clear.
         if (strtoupper(PHP_OS)=='CYGWIN') {
             $uniqid=preg_replace('/\./','_',$uniqid); // replace dot; cygwin always generates uniqid's with more_entropy

@@ -97,7 +97,21 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                    ->booleanNode('doctrine_integration')
+                    ->arrayNode('doctrine')
+                        ->addDefaultsIfNotSet()
+                        ->children()
+                            ->scalarNode('entity_manager_class')->defaultValue('Doctrine\ORM\EntityManager')
+                            ->validate()
+                                ->always(function($v) {
+                                    if(!is_subclass_of($v, 'Doctrine\ORM\EntityManager')) {
+                                        throw new \Exception('The entity manager class must extends Doctrine\ORM\EntityManager.');
+                                    }
+
+                                    return $v;
+                                })
+                            ->end()
+                        ->end()
+                        ->booleanNode('doctrine_integration')
                         ->validate()
                             ->always(function($v) {
                                 if ($v && !class_exists('Doctrine\ORM\EntityManager')) {
@@ -108,6 +122,7 @@ class Configuration implements ConfigurationInterface
                             })
                         ->end()
                         ->defaultValue(class_exists('Doctrine\ORM\EntityManager'))->end()
+                    ->end()
                 ->end()
             ->end();
 
