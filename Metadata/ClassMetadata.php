@@ -33,6 +33,9 @@ class ClassMetadata extends BaseClassMetadata
     public $lookupMethods = array();
     public $properties = array();
     public $initMethod;
+    public $factoryService;
+    public $factoryMethod;
+    public $factoryClass;
 
     public function serialize()
     {
@@ -48,6 +51,9 @@ class ClassMetadata extends BaseClassMetadata
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
+            $this->factoryService,
+            $this->factoryMethod,
+            $this->factoryClass,
             parent::serialize(),
         ));
     }
@@ -66,6 +72,9 @@ class ClassMetadata extends BaseClassMetadata
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
+            $this->factoryService,
+            $this->factoryMethod,
+            $this->fectoryClass,
             $parentStr
         ) = unserialize($str);
 

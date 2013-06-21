@@ -40,4 +40,16 @@ final class Service
 
     /** @var boolean */
     public $abstract;
+
+    /** @var string */
+    public $factoryService;
+
+    /** @var string */
+    public $factoryMethod;
+
+    /** @var string */
+    public $factoryClass;
+
+    /** @var  array */
+    public $factoryMethodArguments = array();
 }
