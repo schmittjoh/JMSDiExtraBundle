@@ -32,6 +32,10 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
             return;
         }
 
+        if (basename($cacheDir) === substr($this->kernel->getEnvironment(), 0, -1).'_') {
+            return;
+        }
+
         $classes = $this->findControllerClasses();
         foreach ($classes as $class) {
             $this->controllerResolver->createInjector($class);
