@@ -68,7 +68,9 @@ class DefinitionInjectorGenerator
         ;
 
         if ($file = $def->getFile()) {
-            require_once $file;
+            if (!class_exists($className.'__JMSInjector', false)) {
+                require_once $file;
+            }
 
             $writer->write('require_once ');
 
