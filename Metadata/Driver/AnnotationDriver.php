@@ -141,61 +141,64 @@ class AnnotationDriver implements DriverInterface
                 continue;
             }
             $name = $method->getName();
+            $method_annotations = $this->reader->getMethodAnnotations($method);
 
-            foreach ($this->reader->getMethodAnnotations($method) as $annot) {
-                if ($annot instanceof Observe) {
-                    $metadata->tags['kernel.event_listener'][] = array(
-                        'event' => $annot->event,
-                        'method' => $name,
-                        'priority' => $annot->priority,
-                    );
-                } else if ($annot instanceof SecurityFunction) {
-                    $metadata->tags['security.expressions.function_evaluator'][] = array(
-                        'function' => $annot->function,
-                        'method' => $name,
-                    );
-                } else if ($annot instanceof InjectParams) {
-                    $params = array();
-                    foreach ($method->getParameters() as $param) {
-                        if (!isset($annot->params[$paramName = $param->getName()])) {
-                            $params[] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)));
+            if(!empty($method_annotations)) {
+                foreach ($method_annotations as $annot) {
+                    if ($annot instanceof Observe) {
+                        $metadata->tags['kernel.event_listener'][] = array(
+                            'event' => $annot->event,
+                            'method' => $name,
+                            'priority' => $annot->priority,
+                        );
+                    } else if ($annot instanceof SecurityFunction) {
+                        $metadata->tags['security.expressions.function_evaluator'][] = array(
+                            'function' => $annot->function,
+                            'method' => $name,
+                        );
+                    } else if ($annot instanceof InjectParams) {
+                        $params = array();
+                        foreach ($method->getParameters() as $param) {
+                            if (!isset($annot->params[$paramName = $param->getName()])) {
+                                $params[] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)));
+                                continue;
+                            }
+
+                            $params[] = $this->convertReferenceValue($paramName, $annot->params[$paramName]);
+                        }
+
+                        if (!$params) {
                             continue;
                         }
 
-                        $params[] = $this->convertReferenceValue($paramName, $annot->params[$paramName]);
-                    }
+                        $hasInjection = true;
 
-                    if (!$params) {
-                        continue;
-                    }
+                        if ('__construct' === $name) {
+                            $metadata->arguments = $params;
+                        } else {
+                            $metadata->methodCalls[] = array($name, $params);
+                        }
+                    } else if ($annot instanceof LookupMethod) {
+                        $hasInjection = true;
 
-                    $hasInjection = true;
+                        if ($method->isFinal()) {
+                            throw new \RuntimeException(sprintf('The method "%s::%s" is marked as final and cannot be declared as lookup-method.', $className, $name));
+                        }
+                        if ($method->isPrivate()) {
+                            throw new \RuntimeException(sprintf('The method "%s::%s" is marked as private and cannot be declared as lookup-method.', $className, $name));
+                        }
+                        if ($method->getParameters()) {
+                            throw new \RuntimeException(sprintf('The method "%s::%s" must have a no-arguments signature if you want to use it as lookup-method.', $className, $name));
+                        }
 
-                    if ('__construct' === $name) {
-                        $metadata->arguments = $params;
-                    } else {
-                        $metadata->methodCalls[] = array($name, $params);
-                    }
-                } else if ($annot instanceof LookupMethod) {
-                    $hasInjection = true;
+                        $metadata->lookupMethods[$name] = $this->convertReferenceValue('get' === substr($name, 0, 3) ? substr($name, 3) : $name, $annot);
+                    } else if ($annot instanceof AfterSetup) {
+                        if (!$method->isPublic()) {
+                            throw new \RuntimeException(sprintf('The init method "%s::%s" must be public.', $method->class, $method->name));
+                        }
 
-                    if ($method->isFinal()) {
-                        throw new \RuntimeException(sprintf('The method "%s::%s" is marked as final and cannot be declared as lookup-method.', $className, $name));
+                        $metadata->initMethod = $method->name;
                     }
-                    if ($method->isPrivate()) {
-                        throw new \RuntimeException(sprintf('The method "%s::%s" is marked as private and cannot be declared as lookup-method.', $className, $name));
-                    }
-                    if ($method->getParameters()) {
-                        throw new \RuntimeException(sprintf('The method "%s::%s" must have a no-arguments signature if you want to use it as lookup-method.', $className, $name));
-                    }
-
-                    $metadata->lookupMethods[$name] = $this->convertReferenceValue('get' === substr($name, 0, 3) ? substr($name, 3) : $name, $annot);
-                } else if ($annot instanceof AfterSetup) {
-                    if (!$method->isPublic()) {
-                        throw new \RuntimeException(sprintf('The init method "%s::%s" must be public.', $method->class, $method->name));
-                    }
-
-                    $metadata->initMethod = $method->name;
                 }
             }
         }
