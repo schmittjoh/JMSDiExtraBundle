@@ -81,13 +81,12 @@ overwrite whatever you have configured in the above section.
 Disabling the usage of ``grep``
 -------------------------------
 The bundle uses different methods to find the annotations in your files, depending on
-your Operating System and available softwares. If you are using a Linux distribution
-with ``grep`` installed, it will use it instead of the default Symfony Finder to increase
-the performances.
+your Operating System and available software. If you are using a Linux distribution
+with ``grep`` installed, ``grep`` will be used by default instead of the Symfony Finder 
+to increase performance.
 
-But sometimes, you might not want to let the bundle use ``grep``, for example if your
-version of grep is too old and therefore does not have the required options (see
-[issue #61](schmittjoh/JMSDiExtraBundle/issues/61)).
+Sometimes, you might not want to let the bundle use ``grep``, for example if your
+version of grep is too old and therefore does not support some of the more recent options.
 In this case, you can disable the usage of ``grep`` with the following configuration.
 
 .. configuration-block ::
