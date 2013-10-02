@@ -137,6 +137,30 @@ Automatically registers a method as listener to a certain event:
         }
     }
 
+It's also possible to use constants:
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\DiExtraBundle\Annotation\Observe;
+    use JMS\DiExtraBundle\Annotation\Service;
+    use Symfony\Component\HttpKernel\KernelEvents;
+
+    /**
+     * @Service
+     */
+    class RequestListener
+    {
+        /**
+         * @Observe(KernelEvents::REQUEST, priority = 255)
+         */
+        public function onKernelRequest()
+        {
+            // ...
+        }
+    }
+
 @Validator
 ~~~~~~~~~~
 Automatically registers the given class as constraint validator for the Validator component:
