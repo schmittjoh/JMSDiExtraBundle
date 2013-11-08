@@ -70,7 +70,9 @@ class DefinitionInjectorGenerator
         if ($file = $def->getFile()) {
             $writer->writeln('require_once '.var_export($file, true).';');
 
-            require_once $file;
+            if (!class_exists($def->getClass(), false)) {
+                require_once $file;
+            }
         }
 
         foreach ($this->getInlineDefinitions($def) as $inlineDef) {
