@@ -52,9 +52,6 @@ final class Service
     public $environments = array();
 
     /** @var boolean */
-    public $alias;
-
-    /** @var boolean */
     public $lazy;
 
     /** @var string */
