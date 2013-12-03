@@ -50,4 +50,22 @@ final class Service
 
     /** @var array<string> */
     public $environments = array();
+
+    /** @var boolean */
+    public $alias;
+
+    /** @var boolean */
+    public $lazy;
+
+    /** @var string */
+    public $factoryService;
+
+    /** @var string */
+    public $factoryMethod;
+
+    /** @var string */
+    public $factoryClass;
+
+    /** @var  array */
+    public $factoryMethodArguments = array();
 }

@@ -44,6 +44,10 @@ class ClassMetadata extends BaseClassMetadata
     public $decorates;
     public $decoration_inner_name;
     public $deprecated;
+    public $lazy;
+    public $factoryService;
+    public $factoryMethod;
+    public $factoryClass;
 
     /**
      * @param string $env
@@ -76,6 +80,11 @@ class ClassMetadata extends BaseClassMetadata
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
+            $this->initMethods,
+            $this->lazy,
+            $this->factoryService,
+            $this->factoryMethod,
+            $this->factoryClass,
             parent::serialize(),
             $this->environments,
             $this->decorates,
@@ -104,11 +113,16 @@ class ClassMetadata extends BaseClassMetadata
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
+            $this->initMethods,
             $parentStr,
             $this->environments,
             $this->decorates,
             $this->decoration_inner_name,
             $this->deprecated,
+            $this->lazy,
+            $this->factoryService,
+            $this->factoryMethod,
+            $this->factoryClass,
         ) = $data;
 
         parent::unserialize($parentStr);
