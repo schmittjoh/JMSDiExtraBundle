@@ -154,6 +154,18 @@ class AnnotationDriver implements DriverInterface
                         'function' => $annot->function,
                         'method' => $name,
                     );
+                } else if ($annot instanceof Inject) {
+                    if ($method->getNumberOfParameters() > 1) {
+                        throw new \RuntimeException(sprintf('The method "%s::%s" has more than 1 parameter, use @InjectParam instead of @Inject.', $className, $name));
+                    }
+                    $params = $method->getParameters();
+                    $params = array($this->convertReferenceValue($params[0]->getName(), $annot));
+
+                    if ('__construct' === $name) {
+                        $metadata->arguments = $params;
+                    } else {
+                        $metadata->methodCalls[] = array($name, $params);
+                    }
                 } else if ($annot instanceof InjectParams) {
                     $params = array();
                     foreach ($method->getParameters() as $param) {
