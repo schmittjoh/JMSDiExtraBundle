@@ -82,6 +82,9 @@ class MetadataConverter
                 $definition->setDeprecated(true, $classMetadata->deprecated);
             }
             if (null !== $classMetadata->lazy) {
+	            if (!method_exists($definition, 'setLazy')) {
+		            throw new \RuntimeException(sprintf('the "lazy" attribute is not available on your Symfony version.'));
+	            }
 	            $definition->setLazy($classMetadata->lazy);
             }
             if (null !== $classMetadata->factoryClass) {
