@@ -90,6 +90,17 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($def, $container->getDefinition('concrete_class'));
     }
 
+    public function testLazyService()
+    {
+        $container = $this->getContainer(array(), array(
+            __DIR__.'/../../Functional/Bundle/TestBundle/Lazy',
+        ));
+        $this->process($container);
+
+        $this->assertTrue($container->hasDefinition('lazy_test_mailer'));
+        $this->assertTrue($container->getDefinition('lazy_test_mailer')->isLazy());
+    }
+
     protected function setUp()
     {
         $fs = new Filesystem();

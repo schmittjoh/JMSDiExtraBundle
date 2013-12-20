@@ -16,31 +16,19 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Annotation;
+namespace JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Mailer;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @Annotation
- * @Target("CLASS")
+ * @DI\Service("lazy_test_mailer", lazy=true)
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-final class Service
+class LazyTestMailer
 {
-    /** @var string */
-    public $id;
-
-    /** @var string */
-    public $parent;
-
-    /** @var boolean */
-    public $public;
-
-    /** @var string */
-    public $scope;
-
-    /** @var boolean */
-    public $abstract;
-
-    /** @var boolean */
-    public $lazy;
+    public function getFromMail()
+    {
+        return 'foo@bar.de';
+    }
 }
