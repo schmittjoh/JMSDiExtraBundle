@@ -52,7 +52,7 @@ class AnnotationDriver implements DriverInterface
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
-    {
+    { 
         $metadata = new ClassMetadata($className = $class->getName());
         if (false !== $filename = $class->getFilename()) {
             $metadata->fileResources[] = $filename;
@@ -122,18 +122,11 @@ class AnnotationDriver implements DriverInterface
         }
 
         $hasInjection = false;
-        foreach ($class->getProperties() as $property) {
-            if ($property->getDeclaringClass()->getName() !== $className) {
-                continue;
-            }
-            $name = $property->getName();
 
-            foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
-                if ($annot instanceof Inject) {
-                    $hasInjection = true;
-                    $metadata->properties[$name] = $this->convertReferenceValue($name, $annot);
-                }
-            }
+        $this->buildProperties($class, $metadata, $hasInjection);
+        
+        if($parentClass = $class->getParentClass()) {
+            $this->buildProperties($parentClass, $metadata, $hasInjection);  
         }
 
         foreach ($class->getMethods() as $method) {
@@ -225,5 +218,21 @@ class AnnotationDriver implements DriverInterface
         $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
 
         return strtolower(strtr($name, '\\', '.'));
+    }
+    
+    private function buildProperties($class, &$metadata, &$hasInjection) {
+        foreach ($class->getProperties() as $property) { 
+            if ($property->getDeclaringClass()->getName() !== $class->getName()) {
+                continue;
+            }
+            $name = $property->getName();
+
+            foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
+                if ($annot instanceof Inject) {
+                    $hasInjection = true;
+                    $metadata->properties[$name] = $this->convertReferenceValue($name, $annot);
+                }
+            }
+        }
     }
 }
