@@ -52,7 +52,7 @@ class AnnotationDriver implements DriverInterface
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
-    { 
+    {
         $metadata = new ClassMetadata($className = $class->getName());
         if (false !== $filename = $class->getFilename()) {
             $metadata->fileResources[] = $filename;
@@ -122,12 +122,12 @@ class AnnotationDriver implements DriverInterface
         }
 
         $hasInjection = false;
-
-        $this->buildProperties($class, $metadata, $hasInjection);
         
         if($parentClass = $class->getParentClass()) {
             $this->buildProperties($parentClass, $metadata, $hasInjection);  
         }
+        
+        $this->buildProperties($class, $metadata, $hasInjection);
 
         foreach ($class->getMethods() as $method) {
             if ($method->getDeclaringClass()->getName() !== $className) {
