@@ -66,71 +66,64 @@ class AnnotationDriver implements DriverInterface
             return null;
         }
 
-        foreach ($this->reader->getClassAnnotations($class) as $annot) {
-            if ($annot instanceof Service) {
-                if (null === $annot->id) {
-                    $metadata->id = $this->generateId($className);
-                } else {
-                    $metadata->id = $annot->id;
-                }
-
-                $metadata->parent = $annot->parent;
-                $metadata->public = $annot->public;
-                $metadata->scope = $annot->scope;
-                $metadata->abstract = $annot->abstract;
-            } else if ($annot instanceof Tag) {
-                $metadata->tags[$annot->name][] = $annot->attributes;
-            } else if ($annot instanceof Validator) {
-                // automatically register as service if not done explicitly
-                if (null === $metadata->id) {
-                    $metadata->id = $this->generateId($className);
-                }
-
-                $metadata->tags['validator.constraint_validator'][] = array(
-                    'alias' => $annot->alias,
-                );
-            } else if ($annot instanceof AbstractDoctrineListener) {
-                if (null === $metadata->id) {
-                    $metadata->id = $this->generateId($className);
-                }
-
-                foreach ($annot->events as $event) {
-                    $metadata->tags[$annot->getTag()][] = array(
-                        'event' => $event,
-                        'connection' => $annot->connection ?: 'default',
-                        'lazy' => $annot->lazy,
-                        'priority' => $annot->priority,
-                    );
-                }
-            } else if ($annot instanceof FormType) {
-                if (null === $metadata->id) {
-                    $metadata->id = $this->generateId($className);
-                }
-
-                $alias = $annot->alias;
-
-                // try to extract it from the class itself
-                if (null === $alias) {
-                    $instance = unserialize(sprintf('O:%d:"%s":0:{}', strlen($className), $className));
-                    $alias = $instance->getName();
-                }
-
-                $metadata->tags['form.type'][] = array(
-                    'alias' => $alias,
-                );
-            }
-        }
-
         $hasInjection = false;
         
         if($parentClass = $class->getParentClass()) {
-            $this->buildProperties($parentClass, $metadata, $hasInjection);  
+            $this->buildAnnotations($parentClass, $metadata);
+            $this->buildProperties($parentClass, $metadata, $hasInjection);
+            $this->buildMethods($parentClass, $metadata, $hasInjection);
         }
         
+        $this->buildAnnotations($class, $metadata);
         $this->buildProperties($class, $metadata, $hasInjection);
+        $this->buildMethods($class, $metadata, $hasInjection);
 
+        if (null == $metadata->id && !$hasInjection) {
+            return null;
+        }
+
+        return $metadata;
+    }
+
+    private function convertReferenceValue($name, AnnotReference $annot)
+    {
+        if (null === $annot->value) {
+            return new Reference($this->generateId($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE, $annot->strict);
+        }
+
+        if (false === strpos($annot->value, '%')) {
+            return new Reference($annot->value, false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE, $annot->strict);
+        }
+
+        return $annot->value;
+    }
+
+    private function generateId($name)
+    {
+        $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
+
+        return strtolower(strtr($name, '\\', '.'));
+    }
+    
+    private function buildProperties($class, &$metadata, &$hasInjection) {
+        foreach ($class->getProperties() as $property) { 
+            if ($property->getDeclaringClass()->getName() !== $class->getName()) {
+                continue;
+            }
+            $name = $property->getName();
+
+            foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
+                if ($annot instanceof Inject) {
+                    $hasInjection = true;
+                    $metadata->properties[$name] = $this->convertReferenceValue($name, $annot);
+                }
+            }
+        }
+    }
+    
+    private function buildMethods($class, &$metadata, &$hasInjection) {
         foreach ($class->getMethods() as $method) {
-            if ($method->getDeclaringClass()->getName() !== $className) {
+            if ($method->getDeclaringClass()->getName() !== $class->getName()) {
                 continue;
             }
             $name = $method->getName();
@@ -192,46 +185,61 @@ class AnnotationDriver implements DriverInterface
                 }
             }
         }
-
-        if (null == $metadata->id && !$hasInjection) {
-            return null;
-        }
-
-        return $metadata;
-    }
-
-    private function convertReferenceValue($name, AnnotReference $annot)
-    {
-        if (null === $annot->value) {
-            return new Reference($this->generateId($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE, $annot->strict);
-        }
-
-        if (false === strpos($annot->value, '%')) {
-            return new Reference($annot->value, false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE, $annot->strict);
-        }
-
-        return $annot->value;
-    }
-
-    private function generateId($name)
-    {
-        $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
-
-        return strtolower(strtr($name, '\\', '.'));
     }
     
-    private function buildProperties($class, &$metadata, &$hasInjection) {
-        foreach ($class->getProperties() as $property) { 
-            if ($property->getDeclaringClass()->getName() !== $class->getName()) {
-                continue;
-            }
-            $name = $property->getName();
-
-            foreach ($this->reader->getPropertyAnnotations($property) as $annot) {
-                if ($annot instanceof Inject) {
-                    $hasInjection = true;
-                    $metadata->properties[$name] = $this->convertReferenceValue($name, $annot);
+    private function buildAnnotations($class, &$metadata) {
+        foreach ($this->reader->getClassAnnotations($class) as $annot) {
+            if ($annot instanceof Service) {
+                if (null === $annot->id) {
+                    $metadata->id = $this->generateId($className);
+                } else {
+                    $metadata->id = $annot->id;
                 }
+
+                $metadata->parent = $annot->parent;
+                $metadata->public = $annot->public;
+                $metadata->scope = $annot->scope;
+                $metadata->abstract = $annot->abstract;
+            } else if ($annot instanceof Tag) {
+                $metadata->tags[$annot->name][] = $annot->attributes;
+            } else if ($annot instanceof Validator) {
+                // automatically register as service if not done explicitly
+                if (null === $metadata->id) {
+                    $metadata->id = $this->generateId($className);
+                }
+
+                $metadata->tags['validator.constraint_validator'][] = array(
+                    'alias' => $annot->alias,
+                );
+            } else if ($annot instanceof AbstractDoctrineListener) {
+                if (null === $metadata->id) {
+                    $metadata->id = $this->generateId($className);
+                }
+
+                foreach ($annot->events as $event) {
+                    $metadata->tags[$annot->getTag()][] = array(
+                        'event' => $event,
+                        'connection' => $annot->connection ?: 'default',
+                        'lazy' => $annot->lazy,
+                        'priority' => $annot->priority,
+                    );
+                }
+            } else if ($annot instanceof FormType) {
+                if (null === $metadata->id) {
+                    $metadata->id = $this->generateId($className);
+                }
+
+                $alias = $annot->alias;
+
+                // try to extract it from the class itself
+                if (null === $alias) {
+                    $instance = unserialize(sprintf('O:%d:"%s":0:{}', strlen($className), $className));
+                    $alias = $instance->getName();
+                }
+
+                $metadata->tags['form.type'][] = array(
+                    'alias' => $alias,
+                );
             }
         }
     }
