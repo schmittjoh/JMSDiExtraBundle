@@ -78,6 +78,22 @@ class AnnotationDriver implements DriverInterface
                 $metadata->public = $annot->public;
                 $metadata->scope = $annot->scope;
                 $metadata->abstract = $annot->abstract;
+                $metadata->factoryService = $annot->factoryService;
+                $metadata->factoryClass = $annot->factoryClass;
+                $metadata->factoryMethod = $annot->factoryMethod;
+                if (null !== $annot->factoryMethod) {
+                    if ($annot->factoryMethodArguments !== array()) {
+                        $params = array();
+                        foreach ($annot->factoryMethodArguments as $key => $argument) {
+                            if ($argument instanceof Inject) {
+                                $params[] = $this->convertReferenceValue($key, $argument);
+                            } else {
+                                $params[] = $argument;
+                            }
+                        }
+                        $metadata->arguments = $params;
+                    }
+                }
             } else if ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
             } else if ($annot instanceof Validator) {

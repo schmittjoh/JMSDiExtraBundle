@@ -64,6 +64,10 @@ class MetadataConverter
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);
 
+            $definition->setFactoryClass($classMetadata->factoryClass);
+            $definition->setFactoryMethod($classMetadata->factoryMethod);
+            $definition->setFactoryService($classMetadata->factoryService);
+
             if (null === $classMetadata->id) {
                 $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
             }
