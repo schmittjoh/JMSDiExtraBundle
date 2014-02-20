@@ -59,6 +59,9 @@ class MetadataConverter
             if (null !== $classMetadata->arguments) {
                 $definition->setArguments($classMetadata->arguments);
             }
+            if (null !== $classMetadata->lazy) {
+                $definition->setLazy($classMetadata->lazy);
+            }
 
             $definition->setMethodCalls($classMetadata->methodCalls);
             $definition->setTags($classMetadata->tags);
