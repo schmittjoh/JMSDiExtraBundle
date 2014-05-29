@@ -46,9 +46,12 @@ class AnnotationDriver implements DriverInterface
 {
     private $reader;
 
-    public function __construct(Reader $reader)
+    protected $skipParts = array();
+
+    public function __construct(Reader $reader, $skipParts = array())
     {
         $this->reader = $reader;
+        $this->skipParts = $skipParts;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -220,10 +223,31 @@ class AnnotationDriver implements DriverInterface
         return $annot->value;
     }
 
-    private function generateId($name)
+    protected function generateId($name)
     {
         $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
+        $name = strtolower(strtr($name, '\\', '.'));
 
-        return strtolower(strtr($name, '\\', '.'));
+        if (!empty($this->skipParts)) {
+            $search = array();
+            $replace = array();
+            foreach ($this->skipParts as $skipPart => $context) {
+                if (in_array('prefix', $context)) {
+                    $search[] = '/(.?\b'.$skipPart.'_)/';
+                    $replace[] = '.';
+                }
+                if (in_array('suffix', $context)) {
+                    $search[] = '/(_'.$skipPart.'\b.?)/';
+                    $replace[] = '.';
+                }
+                if (in_array('namespace', $context)) {
+                    $search[] = '/(.?\b'.$skipPart.'\b.?)/';
+                    $replace[] = '.';
+                }
+            }
+            $name = preg_replace($search, $replace, $name);
+        }
+
+        return $name;
     }
 }
