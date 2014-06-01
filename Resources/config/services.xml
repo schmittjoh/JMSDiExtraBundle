@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="jms_di_extra.metadata.driver.annotation_driver.class">JMS\DiExtraBundle\Metadata\Driver\AnnotationDriver</parameter>
-        <parameter type="collection" key="jms_di_extra.metadata.driver.annotation_driver.strip_from_service_id">
+        <parameter type="collection" key="jms_di_extra.metadata.driver.annotation_driver.service_id.strip">
             <parameter type="collection" key="bundle">
                 <parameter>prefix</parameter>
                 <parameter>suffix</parameter>
@@ -18,6 +18,7 @@
                 <parameter>namespace</parameter>
             </parameter>
         </parameter>
+        <parameter key="jms_di_extra.metadata.driver.annotation_driver.service_id.underscore">false</parameter>
         <parameter key="jms_di_extra.metadata.driver.configured_controller_injections.class">JMS\DiExtraBundle\Metadata\Driver\ConfiguredControllerInjectionsDriver</parameter>
         <parameter key="jms_di_extra.metadata.driver.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
 
@@ -34,7 +35,8 @@
         <!-- Metadata Drivers -->
         <service id="jms_di_extra.metadata.driver.annotation_driver" class="%jms_di_extra.metadata.driver.annotation_driver.class%" public="false">
             <argument type="service" id="annotation_reader" />
-            <argument>%jms_di_extra.metadata.driver.annotation_driver.strip_from_service_id%</argument>
+            <argument>%jms_di_extra.metadata.driver.annotation_driver.service_id.strip%</argument>
+            <argument>%jms_di_extra.metadata.driver.annotation_driver.service_id.underscore%</argument>
         </service>
         <service id="jms_di_extra.metadata.driver.configured_controller_injections" class="%jms_di_extra.metadata.driver.configured_controller_injections.class%" public="false">
             <argument type="service" id="jms_di_extra.metadata.driver.annotation_driver" />

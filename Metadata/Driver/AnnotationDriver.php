@@ -47,11 +47,13 @@ class AnnotationDriver implements DriverInterface
     private $reader;
 
     protected $skipParts = array();
+    protected $underscore = false;
 
-    public function __construct(Reader $reader, $skipParts = array())
+    public function __construct(Reader $reader, $skipParts = array(), $underscore)
     {
         $this->reader = $reader;
         $this->skipParts = $skipParts;
+        $this->underscore = $underscore;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -225,29 +227,41 @@ class AnnotationDriver implements DriverInterface
 
     protected function generateId($name)
     {
-        $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
-        $name = strtolower(strtr($name, '\\', '.'));
-
         if (!empty($this->skipParts)) {
             $search = array();
             $replace = array();
+
+            /* remove prefix/suffix/namespace items */
             foreach ($this->skipParts as $skipPart => $context) {
                 if (in_array('prefix', $context)) {
-                    $search[] = '/(.?\b'.$skipPart.'_)/';
-                    $replace[] = '.';
+                    $search[] = '/((^|\\\)\b'.$skipPart.')/';
+                    $replace[] = '\\';
                 }
                 if (in_array('suffix', $context)) {
-                    $search[] = '/(_'.$skipPart.'\b.?)/';
-                    $replace[] = '.';
+                    $search[] = '/('.ucfirst($skipPart).'\b(\\\|$))/';
+                    $replace[] = '\\';
                 }
                 if (in_array('namespace', $context)) {
-                    $search[] = '/(.?\b'.$skipPart.'\b.?)/';
-                    $replace[] = '.';
+                    $search[] = '/((^|\\\)\b'.ucfirst($skipPart).'\b(\\\|$))/';
+                    $replace[] = '\\';
                 }
             }
+
+            /* remove duplicate dots */
+            $search[] = '|\\\+|';
+            $replace[] = '\\';
+
+            /* remove starting/trailing dots */
+            $search[] = '/(^\\\|\\\$)/';
+            $replace[] = '';
+
             $name = preg_replace($search, $replace, $name);
         }
 
-        return $name;
+        if ($this->underscore) {
+            $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
+        }
+
+        return strtolower(strtr($name, '\\', '.'));
     }
 }
