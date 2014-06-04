@@ -18,7 +18,7 @@
                 <parameter>namespace</parameter>
             </parameter>
         </parameter>
-        <parameter key="jms_di_extra.metadata.driver.annotation_driver.service_id.underscore">false</parameter>
+        <parameter key="jms_di_extra.metadata.driver.annotation_driver.service_id.underscore">true</parameter>
         <parameter key="jms_di_extra.metadata.driver.configured_controller_injections.class">JMS\DiExtraBundle\Metadata\Driver\ConfiguredControllerInjectionsDriver</parameter>
         <parameter key="jms_di_extra.metadata.driver.lazy_loading_driver.class">Metadata\Driver\LazyLoadingDriver</parameter>
 

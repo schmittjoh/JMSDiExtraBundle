@@ -46,10 +46,10 @@ class AnnotationDriver implements DriverInterface
 {
     private $reader;
 
-    protected $skipParts = array();
-    protected $underscore = false;
+    private $skipParts = array();
+    private $underscore = false;
 
-    public function __construct(Reader $reader, $skipParts = array(), $underscore)
+    public function __construct(Reader $reader, array $skipParts = array(), $underscore = true)
     {
         $this->reader = $reader;
         $this->skipParts = $skipParts;
@@ -225,7 +225,7 @@ class AnnotationDriver implements DriverInterface
         return $annot->value;
     }
 
-    protected function generateId($name)
+    private function generateId($name)
     {
         if (!empty($this->skipParts)) {
             $search = array();
