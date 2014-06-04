@@ -46,14 +46,14 @@ class AnnotationDriver implements DriverInterface
 {
     private $reader;
 
-    private $skipParts = array();
-    private $underscore = false;
+    private $namespaceStrip = array();
+    private $underscoreify = false;
 
-    public function __construct(Reader $reader, array $skipParts = array(), $underscore = true)
+    public function __construct(Reader $reader, array $namespaceStrip = array(), $underscoreify = true)
     {
         $this->reader = $reader;
-        $this->skipParts = $skipParts;
-        $this->underscore = $underscore;
+        $this->namespaceStrip = $namespaceStrip;
+        $this->underscoreify = $underscoreify;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -227,38 +227,38 @@ class AnnotationDriver implements DriverInterface
 
     private function generateId($name)
     {
-        if (!empty($this->skipParts)) {
+        if (!empty($this->namespaceStrip)) {
             $search = array();
             $replace = array();
 
             /* remove prefix/suffix/namespace items */
-            foreach ($this->skipParts as $skipPart => $context) {
+            foreach ($this->namespaceStrip as $skipPart => $context) {
                 if (in_array('prefix', $context)) {
-                    $search[] = '/((^|\\\)\b'.$skipPart.')/';
+                    $search[] = '/(\b'.$skipPart.'(?!\b))/';
                     $replace[] = '\\';
                 }
                 if (in_array('suffix', $context)) {
-                    $search[] = '/('.ucfirst($skipPart).'\b(\\\|$))/';
+                    $search[] = '/((?<!\b)'.ucfirst($skipPart).'\b)/';
                     $replace[] = '\\';
                 }
                 if (in_array('namespace', $context)) {
-                    $search[] = '/((^|\\\)\b'.ucfirst($skipPart).'\b(\\\|$))/';
+                    $search[] = '/(\b'.ucfirst($skipPart).'\b)/';
                     $replace[] = '\\';
                 }
             }
 
-            /* remove duplicate dots */
+            /* remove double NS separators */
             $search[] = '|\\\+|';
             $replace[] = '\\';
 
-            /* remove starting/trailing dots */
+            /* remove starting/trailing NS separators */
             $search[] = '/(^\\\|\\\$)/';
             $replace[] = '';
 
             $name = preg_replace($search, $replace, $name);
         }
 
-        if ($this->underscore) {
+        if ($this->underscoreify) {
             $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
         }
 

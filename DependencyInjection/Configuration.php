@@ -108,6 +108,12 @@ class Configuration implements ConfigurationInterface
                             })
                         ->end()
                         ->defaultValue(class_exists('Doctrine\ORM\EntityManager'))->end()
+                    ->arrayNode('namespace_strip')
+                        ->prototype('array')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                    ->booleanNode('underscoreify')->defaultTrue()->end()
                 ->end()
             ->end();
 
