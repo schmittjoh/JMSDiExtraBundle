@@ -38,6 +38,7 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
+use JMS\DiExtraBundle\Metadata\NamingStrategy;
 use Metadata\Driver\DriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
@@ -45,15 +46,12 @@ use Symfony\Component\DependencyInjection\Reference;
 class AnnotationDriver implements DriverInterface
 {
     private $reader;
+    private $namingStrategy;
 
-    private $namespaceStrip = array();
-    private $underscoreify = false;
-
-    public function __construct(Reader $reader, array $namespaceStrip = array(), $underscoreify = true)
+    public function __construct(Reader $reader, NamingStrategy $namingStrategy)
     {
         $this->reader = $reader;
-        $this->namespaceStrip = $namespaceStrip;
-        $this->underscoreify = $underscoreify;
+        $this->namingStrategy = $namingStrategy;
     }
 
     public function loadMetadataForClass(\ReflectionClass $class)
@@ -74,7 +72,7 @@ class AnnotationDriver implements DriverInterface
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof Service) {
                 if (null === $annot->id) {
-                    $metadata->id = $this->generateId($className);
+                    $metadata->id = $this->namingStrategy->classToServiceName($className);
                 } else {
                     $metadata->id = $annot->id;
                 }
@@ -88,7 +86,7 @@ class AnnotationDriver implements DriverInterface
             } else if ($annot instanceof Validator) {
                 // automatically register as service if not done explicitly
                 if (null === $metadata->id) {
-                    $metadata->id = $this->generateId($className);
+                    $metadata->id = $this->namingStrategy->classToServiceName($className);
                 }
 
                 $metadata->tags['validator.constraint_validator'][] = array(
@@ -96,7 +94,7 @@ class AnnotationDriver implements DriverInterface
                 );
             } else if ($annot instanceof AbstractDoctrineListener) {
                 if (null === $metadata->id) {
-                    $metadata->id = $this->generateId($className);
+                    $metadata->id = $this->namingStrategy->classToServiceName($className);
                 }
 
                 foreach ($annot->events as $event) {
@@ -109,7 +107,7 @@ class AnnotationDriver implements DriverInterface
                 }
             } else if ($annot instanceof FormType) {
                 if (null === $metadata->id) {
-                    $metadata->id = $this->generateId($className);
+                    $metadata->id = $this->namingStrategy->classToServiceName($className);
                 }
 
                 $alias = $annot->alias;
@@ -215,7 +213,7 @@ class AnnotationDriver implements DriverInterface
     private function convertReferenceValue($name, AnnotReference $annot)
     {
         if (null === $annot->value) {
-            return new Reference($this->generateId($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE, $annot->strict);
+            return new Reference($this->namingStrategy->classToServiceName($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE, $annot->strict);
         }
 
         if (false === strpos($annot->value, '%')) {
@@ -223,45 +221,5 @@ class AnnotationDriver implements DriverInterface
         }
 
         return $annot->value;
-    }
-
-    private function generateId($name)
-    {
-        if (!empty($this->namespaceStrip)) {
-            $search = array();
-            $replace = array();
-
-            /* remove prefix/suffix/namespace items */
-            foreach ($this->namespaceStrip as $skipPart => $context) {
-                if (in_array('prefix', $context)) {
-                    $search[] = '/(\b'.$skipPart.'(?!\b))/';
-                    $replace[] = '\\';
-                }
-                if (in_array('suffix', $context)) {
-                    $search[] = '/((?<!\b)'.ucfirst($skipPart).'\b)/';
-                    $replace[] = '\\';
-                }
-                if (in_array('namespace', $context)) {
-                    $search[] = '/(\b'.ucfirst($skipPart).'\b)/';
-                    $replace[] = '\\';
-                }
-            }
-
-            /* remove double NS separators */
-            $search[] = '|\\\+|';
-            $replace[] = '\\';
-
-            /* remove starting/trailing NS separators */
-            $search[] = '/(^\\\|\\\$)/';
-            $replace[] = '';
-
-            $name = preg_replace($search, $replace, $name);
-        }
-
-        if ($this->underscoreify) {
-            $name = preg_replace('/(?<=[a-zA-Z0-9])[A-Z]/', '_\\0', $name);
-        }
-
-        return strtolower(strtr($name, '\\', '.'));
     }
 }

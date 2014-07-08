@@ -3,6 +3,7 @@
 namespace JMS\DiExtraBundle\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\DiExtraBundle\Metadata\DefaultNamingStrategy;
 use JMS\DiExtraBundle\Metadata\Driver\AnnotationDriver;
 
 class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
@@ -32,6 +33,6 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
 
     private function getDriver()
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), new DefaultNamingStrategy());
     }
 }
