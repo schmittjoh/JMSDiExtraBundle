@@ -40,4 +40,7 @@ final class Service
 
     /** @var boolean */
     public $abstract;
+
+    /** @var  boolean */
+    public $lazy;
 }
