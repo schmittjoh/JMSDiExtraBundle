@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
+use JMS\DiExtraBundle\Metadata\ClassMetadata;
 use Symfony\Component\DependencyInjection\Alias;
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Config\ServiceFilesResource;
@@ -40,7 +41,6 @@ class AnnotationConfigurationPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
-        $reader = $container->get('annotation_reader');
         $factory = $container->get('jms_di_extra.metadata.metadata_factory');
         $converter = $container->get('jms_di_extra.metadata.converter');
         $disableGrep = $container->getParameter('jms_di_extra.disable_grep');
@@ -64,6 +64,9 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 continue;
             }
             if (null === $metadata->getOutsideClassMetadata()->id) {
+                continue;
+            }
+            if ( ! $metadata->getOutsideClassMetadata()->isLoadedInEnvironment($container->getParameter('kernel.environment'))) {
                 continue;
             }
 
