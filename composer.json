@@ -26,6 +26,7 @@
         "symfony/browser-kit": "*",
         "symfony/security-bundle": "*",
         "symfony/twig-bundle": "*",
+        "symfony/expression-language": "*",
         "sensio/framework-extra-bundle": "*",
         "jms/security-extra-bundle": "1.*",
         "doctrine/doctrine-bundle": "*",
