@@ -16,22 +16,22 @@ This marks a property, or parameter for injection:
         /**
          * @Inject("security.context", required = false)
          */
-        private $securityContext;
+        public $securityContext;
         
         /**
          * @Inject("request", strict = false)
          */
-        private $request;
+        public $request;
         
         /**
          * @Inject("%kernel.cache_dir%")
          */
-        private $cacheDir;
+        public $cacheDir;
         
         /**
          * @Inject
          */
-        private $session;
+        public $session;
     }
 
 .. tip :: 
