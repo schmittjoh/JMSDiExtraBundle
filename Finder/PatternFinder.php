@@ -187,16 +187,19 @@ class PatternFinder
 
     private static function determineMethod($disableGrep)
     {
+        self::$method = self::METHOD_FINDER;
+        
         $finder = new ExecutableFinder();
         $isWindows = 0 === stripos(PHP_OS, 'win');
         $execAvailable = function_exists('exec');
-
-        if (!$isWindows && $execAvailable && !$disableGrep && self::$grepPath = $finder->find('grep')) {
+        
+        if (! $isWindows && $execAvailable && ! $disableGrep && self::$grepPath = $finder->find('grep')) {
             self::$method = self::METHOD_GREP;
-        } else if ($isWindows && $execAvailable) {
-            self::$method = self::METHOD_FINDSTR;
-        } else {
-            self::$method = self::METHOD_FINDER;
+        } elseif ($isWindows && $execAvailable) {
+            @exec('cd', $lines, $exitCode);
+            if (- 1 !== $exitCode) {
+                self::$method = self::METHOD_FINDSTR;
+            }
         }
     }
 }

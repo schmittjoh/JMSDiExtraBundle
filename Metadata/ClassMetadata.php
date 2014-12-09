@@ -33,6 +33,16 @@ class ClassMetadata extends BaseClassMetadata
     public $lookupMethods = array();
     public $properties = array();
     public $initMethod;
+    public $environments = array();
+
+    public function isLoadedInEnvironment($env)
+    {
+        if (empty($this->environments)) {
+            return true;
+        }
+
+        return in_array($env, $this->environments, true);
+    }
 
     public function serialize()
     {
@@ -49,11 +59,14 @@ class ClassMetadata extends BaseClassMetadata
             $this->properties,
             $this->initMethod,
             parent::serialize(),
+            $this->environments,
         ));
     }
 
     public function unserialize($str)
     {
+        $data = unserialize($str);
+
         list(
             $this->id,
             $this->parent,
@@ -67,7 +80,11 @@ class ClassMetadata extends BaseClassMetadata
             $this->properties,
             $this->initMethod,
             $parentStr
-        ) = unserialize($str);
+        ) = $data;
+
+        if (isset($data[12])) {
+            $this->environments = $data[12];
+        }
 
         parent::unserialize($parentStr);
     }
