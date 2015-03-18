@@ -82,6 +82,9 @@ class JMSDiExtraExtension extends Extension
     private function generateEntityManagerProxyClass(array $config, ContainerBuilder $container)
     {
         $cacheDir = $container->getParameterBag()->resolveValue($config['cache_dir']);
+        $entityManagerClass = $container->getParameterBag()->has('doctrine.orm.entity_manager.class') ?
+            $container->getParameterBag()->get('doctrine.orm.entity_manager.class') :
+            'Doctrine\ORM\EntityManager';
 
         if (!is_dir($cacheDir.'/doctrine')) {
             if (false === @mkdir($cacheDir.'/doctrine', 0777, true)) {
@@ -89,7 +92,7 @@ class JMSDiExtraExtension extends Extension
             }
         }
 
-        $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
+        $enhancer = new Enhancer($ref = new \ReflectionClass($entityManagerClass), array(), array(new RepositoryInjectionGenerator()));
         $uniqid = uniqid(); // We do have to use a non-static id to avoid problems with cache:clear.
         if (strtoupper(PHP_OS)=='CYGWIN') {
             $uniqid=preg_replace('/\./','_',$uniqid); // replace dot; cygwin always generates uniqid's with more_entropy
