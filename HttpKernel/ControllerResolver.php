@@ -53,6 +53,8 @@ class ControllerResolver extends BaseControllerResolver
                 list($service, $method) = explode(':', $controller);
 
                 return array($this->container->get($service), $method);
+            } elseif ($this->container->has($controller) && method_exists($service = $this->container->get($controller), '__invoke')) {
+                return $service;
             } else {
                 throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
             }
