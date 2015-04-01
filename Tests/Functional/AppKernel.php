@@ -54,7 +54,7 @@ class AppKernel extends Kernel
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new \JMS\AopBundle\JMSAopBundle(),
             new \JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\JMSDiExtraTestBundle(),
-            new \JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            new \JMS\DiExtraBundle\JMSDiExtraBundle(),
             new \JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
         );
     }
