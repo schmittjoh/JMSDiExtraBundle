@@ -112,6 +112,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayNode('service_naming_strategy')
                         ->children()
                             ->scalarNode('id')->end()
+                            ->scalarNode('class')->end()
                         ->end()
                     ->end()
                 ->end()
