@@ -28,7 +28,6 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -59,8 +58,6 @@ class JMSDiExtraExtension extends Extension
             array(
                 'id' => 'jms_di_extra.service_naming_strategy.default',
                 'class' => null,
-                'namespace_strip' => array(),
-                'underscoreify' => true,
             ),
             isset($config['service_naming_strategy']) ? $config['service_naming_strategy'] : array()
         );
@@ -76,14 +73,6 @@ class JMSDiExtraExtension extends Extension
                 new Alias($config['service_naming_strategy']['id'])
             );
         }
-        $container->setParameter(
-            'jms_di_extra.service_naming_strategy.namespace_strip',
-            $config['service_naming_strategy']['namespace_strip']
-        );
-        $container->setParameter(
-            'jms_di_extra.service_naming_strategy.underscoreify',
-            $config['service_naming_strategy']['underscoreify']
-        );
 
         if ($config['cache_warmer']['enabled']) {
             foreach ($config['cache_warmer']['controller_file_blacklist'] as $filename) {

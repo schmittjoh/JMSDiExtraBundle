@@ -27,8 +27,7 @@
             <argument type="service" id="jms_di_extra.service_naming_strategy" />
         </service>
         <service id="jms_di_extra.service_naming_strategy.default" class="%jms_di_extra.service_naming_strategy.default.class%" public="false">
-            <argument>%jms_di_extra.service_naming_strategy.namespace_strip%</argument>
-            <argument>%jms_di_extra.service_naming_strategy.underscoreify%</argument>
+            <argument />
         </service>
         <service id="jms_di_extra.metadata.driver.configured_controller_injections" class="%jms_di_extra.metadata.driver.configured_controller_injections.class%" public="false">
             <argument type="service" id="jms_di_extra.metadata.driver.annotation_driver" />
