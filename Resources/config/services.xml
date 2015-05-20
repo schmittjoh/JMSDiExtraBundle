@@ -26,9 +26,7 @@
             <argument type="service" id="annotation_reader" />
             <argument type="service" id="jms_di_extra.service_naming_strategy" />
         </service>
-        <service id="jms_di_extra.service_naming_strategy.default" class="%jms_di_extra.service_naming_strategy.default.class%" public="false">
-            <argument />
-        </service>
+        <service id="jms_di_extra.service_naming_strategy.default" class="%jms_di_extra.service_naming_strategy.default.class%" public="false"/>
         <service id="jms_di_extra.metadata.driver.configured_controller_injections" class="%jms_di_extra.metadata.driver.configured_controller_injections.class%" public="false">
             <argument type="service" id="jms_di_extra.metadata.driver.annotation_driver" />
         </service>

@@ -54,25 +54,7 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.disable_grep', $config['disable_grep']);
         $container->setParameter('jms_di_extra.doctrine_integration', $config['doctrine_integration']);
 
-        $config['service_naming_strategy'] = array_merge(
-            array(
-                'id' => 'jms_di_extra.service_naming_strategy.default',
-                'class' => null,
-            ),
-            isset($config['service_naming_strategy']) ? $config['service_naming_strategy'] : array()
-        );
-
-        if ($config['service_naming_strategy']['class'] !== null) {
-            $container->register(
-                'jms_di_extra.service_naming_strategy',
-                $config['service_naming_strategy']['class']
-            );
-        } else {
-            $container->setAlias(
-                'jms_di_extra.service_naming_strategy',
-                new Alias($config['service_naming_strategy']['id'])
-            );
-        }
+        $container->setAlias('jms_di_extra.service_naming_strategy', new Alias($config['service_naming_strategy']));
 
         if ($config['cache_warmer']['enabled']) {
             foreach ($config['cache_warmer']['controller_file_blacklist'] as $filename) {
