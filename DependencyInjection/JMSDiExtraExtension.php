@@ -53,6 +53,7 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.cache_dir', $config['cache_dir']);
         $container->setParameter('jms_di_extra.disable_grep', $config['disable_grep']);
         $container->setParameter('jms_di_extra.doctrine_integration', $config['doctrine_integration']);
+
         if ($config['cache_warmer']['enabled']) {
             foreach ($config['cache_warmer']['controller_file_blacklist'] as $filename) {
                 $this->blackListControllerFile($filename);
