@@ -107,11 +107,7 @@ class Configuration implements ConfigurationInterface
                                 return $v;
                             })
                         ->end()
-                        ->defaultValue(class_exists('Doctrine\ORM\EntityManager'))
-                    ->end()
-                    ->scalarNode('service_naming_strategy')
-                        ->defaultValue('jms_di_extra.service_naming_strategy.default')
-                    ->end()
+                        ->defaultValue(class_exists('Doctrine\ORM\EntityManager'))->end()
                 ->end()
             ->end();
 
