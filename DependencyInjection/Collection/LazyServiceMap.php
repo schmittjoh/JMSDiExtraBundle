@@ -46,7 +46,7 @@ class LazyServiceMap extends Map
     public function getIterator()
     {
         foreach ($this->serviceIds as $key => $id) {
-            $this->set($key, $this->container->get($this->serviceIds[$key]));
+            $this->set($key, $this->container->get($id));
             unset($this->serviceIds[$key]);
         }
 
