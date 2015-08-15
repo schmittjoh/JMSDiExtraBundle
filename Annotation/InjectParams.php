@@ -24,6 +24,6 @@ namespace JMS\DiExtraBundle\Annotation;
  */
 final class InjectParams
 {
-    /** @var array<JMS\DiExtraBundle\Annotation\Inject> */
+    /** @var array<JMS\DiExtraBundle\Annotation\Injectable> */
     public $params = array();
 }
