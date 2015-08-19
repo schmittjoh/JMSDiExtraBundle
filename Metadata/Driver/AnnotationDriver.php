@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
+use JMS\DiExtraBundle\Annotation\MetadataProcessorInterface;
 use JMS\DiExtraBundle\Annotation\SecurityFunction;
 
 use JMS\DiExtraBundle\Annotation\AfterSetup;
@@ -121,6 +122,12 @@ class AnnotationDriver implements DriverInterface
                 $metadata->tags['form.type'][] = array(
                     'alias' => $alias,
                 );
+            } else if ($annot instanceof MetadataProcessorInterface) {
+                if (null === $metadata->id) {
+                    $metadata->id = $this->namingStrategy->classToServiceName($className);
+                }
+
+                $annot->processMetadata($metadata);
             }
         }
 
@@ -199,6 +206,12 @@ class AnnotationDriver implements DriverInterface
                     }
 
                     $metadata->initMethod = $method->name;
+                } else if ($annot instanceof MetadataProcessorInterface) {
+                    if (null === $metadata->id) {
+                        $metadata->id = $this->namingStrategy->classToServiceName($className);
+                    }
+
+                    $annot->processMetadata($metadata);
                 }
             }
         }
