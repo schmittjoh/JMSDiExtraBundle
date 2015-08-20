@@ -22,6 +22,7 @@ use CG\Core\DefaultNamingStrategy;
 use CG\Proxy\Enhancer;
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Generator\RepositoryInjectionGenerator;
+use JMS\DiExtraBundle\JMSDiExtraBundle;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -53,6 +54,7 @@ class JMSDiExtraExtension extends Extension
         $container->setParameter('jms_di_extra.cache_dir', $config['cache_dir']);
         $container->setParameter('jms_di_extra.disable_grep', $config['disable_grep']);
         $container->setParameter('jms_di_extra.doctrine_integration', $config['doctrine_integration']);
+        $container->setParameter('jms_di_extra.annotation_patterns', $config['annotation_patterns']);
 
         if ($config['cache_warmer']['enabled']) {
             foreach ($config['cache_warmer']['controller_file_blacklist'] as $filename) {

@@ -252,3 +252,93 @@ Automatically, registers the given class as a listener with the Doctrine ORM or 
 
     ``@DoctrineListener`` implies ``@Service`` if not explicitly defined.    
 
+
+Custom Annotations
+~~~~~~~~~~~~~~~~~~
+Build your own annotations and register them
+
+.. code-block :: php
+
+    <?php
+
+    namespace App;
+
+    use JMS\DiExtraBundle\Metadata\ClassMetadata;
+
+    /**
+     * @Annotation
+     */
+    class Special implements MetadataProcessorInterface
+    {
+        public $my_value;
+
+        public function processMetadata(ClassMetadata $metadata)
+        {}
+    }
+
+register your annotations by adding it to your config.yml
+
+.. code-block :: yml
+
+    jms_di_extra:
+        annotation_patterns:
+            - "JMS\DiExtraBundle\Annotation"
+            - "App"
+
+
+by now you can use your annotations
+
+.. code-block :: php
+
+    <?php
+
+    namespace App;
+
+    use AppBundle\Annotation as App;
+
+    /**
+     * @Special(my_value="nice")
+     */
+    class MySpecialService
+    {}
+
+
+Custom Annotations for generic bundles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Inside of a generic bundle you do not need to tell your users how to register your annotation.
+Use the PrependExtensionInterface (symfony.com/doc/current/cookbook/bundles/prepend_extension.html)
+
+.. code-block :: php
+
+    <?php
+
+    namespace AppBundle\DependencyInjection;
+
+
+    use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+    use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+    use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+    class AnnotationExtension extends Extension implements PrependExtensionInterface
+    {
+        /**
+         * Allow an extension to prepend the extension configurations.
+         *
+         * @param ContainerBuilder $container
+         */
+        public function prepend(ContainerBuilder $container)
+        {
+            $bundles = $container->getParameter('kernel.bundles');
+
+            if (!isset($bundles['JMSDiExtraBundle'])) {
+                $container->prependExtensionConfig(
+                    'jms_di_extra',
+                    array(
+                        'annotation_patterns' => array(
+                            'Sonata\AdminBundle\Annotation'
+                        )
+                    )
+                );
+            }
+        }
+    }

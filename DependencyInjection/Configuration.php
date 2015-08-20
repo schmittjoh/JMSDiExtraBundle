@@ -73,6 +73,12 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('cache')->defaultValue('file')->cannotBeEmpty()->end()
                         ->end()
                     ->end()
+                    ->arrayNode('annotation_patterns')
+                        ->info('Allows you to configure additional annotation patterns.')
+                        ->treatNullLike(array('JMS\DiExtraBundle\Annotation'))
+                        ->prototype('scalar')->end()
+                        ->defaultValue(array('JMS\DiExtraBundle\Annotation'))
+                    ->end()
                     ->arrayNode('automatic_controller_injections')
                         ->info('Allows you to configure automatic injections for controllers. '
                                 .'This is most useful for commonly needed services in controllers which then do not need to be annotated anymore.')
