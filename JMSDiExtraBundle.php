@@ -25,8 +25,14 @@ use JMS\DiExtraBundle\DependencyInjection\Compiler\AnnotationConfigurationPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Builder.
+ */
 class JMSDiExtraBundle extends Bundle
 {
+    /**
+     * @param ContainerBuilder $container
+     */
     public function build(ContainerBuilder $container)
     {
         $config = $container->getCompiler()->getPassConfig();

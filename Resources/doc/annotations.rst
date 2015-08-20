@@ -17,24 +17,24 @@ This marks a property, or parameter for injection:
          * @Inject("security.context", required = false)
          */
         private $securityContext;
-        
+
         /**
          * @Inject("request", strict = false)
          */
         private $request;
-        
+
         /**
          * @Inject("%kernel.cache_dir%")
          */
         private $cacheDir;
-        
+
         /**
          * @Inject
          */
         private $session;
     }
 
-.. tip :: 
+.. tip ::
 
     If you do not specify the service explicitly, we will try to guess it based on the name
     of the property or the parameter.
@@ -68,7 +68,7 @@ This marks the parameters of a method for injection:
             // ...
         }
     }
-    
+
 If you don't define all parameters in the param map, we will try to guess which services
 should be injected into the remaining parameters based on their name.
 
@@ -173,7 +173,7 @@ Automatically registers the given class as constraint validator for the Validato
     use JMS\DiExtraBundle\Annotation\Validator;
     use Symfony\Component\Validator\Constraint;
     use Symfony\Component\Validator\ConstraintValidator;
-    
+
     /**
      * @Validator("my_alias")
      */
@@ -181,7 +181,7 @@ Automatically registers the given class as constraint validator for the Validato
     {
         // ...
     }
-    
+
     class MyConstraint extends Constraint
     {
         // ...
@@ -202,17 +202,17 @@ Automatically, registers the given class as a form type with Symfony2's Form Com
 .. code-block :: php
 
     <?php
-    
+
     use JMS\DiExtraBundle\Annotation\FormType;
     use Symfony\Component\Form\AbstractType;
-    
+
     /**
      * @FormType
      */
     class MyFormType extends AbstractType
     {
         // ...
-        
+
         public function getName()
         {
             return 'my_form';
@@ -221,11 +221,11 @@ Automatically, registers the given class as a form type with Symfony2's Form Com
 
     // Controller.php
     $form = $this->formFactory->create('my_form');
-    
-.. note :: 
+
+.. note ::
 
     ``@FormType`` implies ``@Service`` if not explicitly defined.
-    
+
 @DoctrineListener or @DoctrineMongoDBListener
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Automatically, registers the given class as a listener with the Doctrine ORM or Doctrine MongoDB ODM:
@@ -233,14 +233,14 @@ Automatically, registers the given class as a listener with the Doctrine ORM or 
 .. code-block :: php
 
     <?php
-    
+
     use JMS\DiExtraBundle\Annotation\DoctrineListener;
-    
+
     /**
      * @DoctrineListener(
-     *     events = {"prePersist", "preUpdate"}, 
-     *     connection = "default", 
-     *     lazy = true, 
+     *     events = {"prePersist", "preUpdate"},
+     *     connection = "default",
+     *     lazy = true,
      *     priority = 0,
      * )
     class MyListener
@@ -250,5 +250,58 @@ Automatically, registers the given class as a listener with the Doctrine ORM or 
 
 .. note ::
 
-    ``@DoctrineListener`` implies ``@Service`` if not explicitly defined.    
+    ``@DoctrineListener`` implies ``@Service`` if not explicitly defined.
 
+
+Custom Annotations
+~~~~~~~~~~~~~~~~~~
+Build your own annotations and register them
+
+.. code-block :: php
+
+    <?php
+
+    namespace AppBundle\Annotation;
+
+    use JMS\DiExtraBundle\Metadata\ClassMetadata;
+
+    /**
+     * @Annotation
+     */
+    class Special implements MetadataProcessorInterface
+    {
+        public $my_value;
+
+        public function processMetadata(ClassMetadata $metadata)
+        {
+            // ...
+        }
+    }
+
+register your annotations by adding it to your config.yml
+
+.. code-block :: yml
+
+    jms_di_extra:
+        annotation_patterns:
+            - "JMS\DiExtraBundle\Annotation"
+            - "AppBundle\Annotation"
+
+
+by now you can use your annotations
+
+.. code-block :: php
+
+    <?php
+
+    namespace AppBundle;
+
+    use AppBundle\Annotation\Special;
+
+    /**
+     * @Special(my_value="nice")
+     */
+    class MySpecialService
+    {
+        // ...
+    }
