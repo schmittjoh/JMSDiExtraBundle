@@ -95,7 +95,7 @@ class ControllerResolver extends BaseControllerResolver
                 return;
             }
 
-            $this->prepareContainer($cache, $filename, $metadata, $class);
+            $this->prepareContainer($cache, $filename, $metadata, $class, $filename);
         }
 
         if ( ! class_exists($class.'__JMSInjector', false)) {
@@ -105,7 +105,7 @@ class ControllerResolver extends BaseControllerResolver
         return array($class.'__JMSInjector', 'inject');
     }
 
-    private function prepareContainer($cache, $containerFilename, $metadata, $className)
+    private function prepareContainer($cache, $containerFilename, $metadata, $className, $targetPath)
     {
         $container = new ContainerBuilder();
         $container->setParameter('jms_aop.cache_dir', $this->container->getParameter('jms_di_extra.cache_dir'));
@@ -154,7 +154,7 @@ class ControllerResolver extends BaseControllerResolver
             $generator = new DefinitionInjectorGenerator();
         }
 
-        $cache->write($generator->generate($container->getDefinition('controller'), $className), $container->getResources());
+        $cache->write($generator->generate($container->getDefinition('controller'), $className, $targetPath), $container->getResources());
     }
 
     private function generateLookupMethods($def, $metadata)

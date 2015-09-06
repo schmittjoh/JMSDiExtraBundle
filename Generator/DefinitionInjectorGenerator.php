@@ -39,7 +39,7 @@ class DefinitionInjectorGenerator
         $this->inlinedDefinitions = new \SplObjectStorage();
     }
 
-    public function generate(Definition $def, $className)
+    public function generate(Definition $def, $className, $targetPath)
     {
         $writer = new Writer();
 
@@ -68,9 +68,16 @@ class DefinitionInjectorGenerator
         ;
 
         if ($file = $def->getFile()) {
-            $writer->writeln('require_once '.var_export($file, true).';');
-
             require_once $file;
+
+            $writer->write('require_once ');
+
+            $relativePath = $this->relativizePath($targetPath, $file);
+            if ($relativePath[0] === '.') {
+                $writer->writeln('__DIR__ . '.var_export('/'.$relativePath, true).';');
+            } else {
+                $writer->writeln(var_export($relativePath, true).';');
+            }
         }
 
         foreach ($this->getInlineDefinitions($def) as $inlineDef) {
@@ -115,6 +122,25 @@ class DefinitionInjectorGenerator
         ;
 
         return $writer->getContent();
+    }
+
+    private function relativizePath($targetPath, $path)
+    {
+        $commonPath = dirname($targetPath);
+
+        $level = 0;
+        while ( ! empty($commonPath)) {
+            if (0 === strpos($path, $commonPath)) {
+                $relativePath = str_repeat('../', $level).substr($path, strlen($commonPath) + 1);
+
+                return $relativePath;
+            }
+
+            $commonPath = dirname($commonPath);
+            $level += 1;
+        }
+
+        return $path;
     }
 
     private function getReflectionProperty($ref, $property)
