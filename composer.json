@@ -15,7 +15,7 @@
         "symfony/framework-bundle": "~2.1",
         "symfony/process": "~2.1",
         "symfony/finder": "~2.1",
-        "jms/aop-bundle": ">=1.0.0,<1.2-dev",
+        "jms/aop-bundle": "^1.1.0",
         "jms/metadata": "1.*"
     },
     "require-dev": {
