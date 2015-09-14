@@ -4,7 +4,7 @@
     "description": "Allows to configure dependency injection using annotations",
     "keywords": ["annotations","dependency injection"],
     "homepage": "http://jmsyst.com/bundles/JMSDiExtraBundle",
-    "license": "Apache",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Johannes M. Schmitt",
