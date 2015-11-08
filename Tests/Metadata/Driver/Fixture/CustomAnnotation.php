@@ -14,12 +14,23 @@ class CustomAnnotation implements MetadataProcessorInterface
     public $value;
 
     /**
-     * handle custom metadata for annotation
+     * handle custom metadata for class annotation
      *
      * @param ClassMetadata $metadata
      */
-    public function processMetadata(ClassMetadata $metadata)
+    public function processMetadataForClass(ClassMetadata $metadata)
     {
         $metadata->tags[$this->key] = $this->value;
+    }
+
+    /**
+     * handle custom metadata for method annotation
+     *
+     * @param ClassMetadata $metadata
+     * @param \ReflectionMethod $method
+     */
+    public function processMetadataForMethod(ClassMetadata $metadata, \ReflectionMethod $method) {
+        $metadata->tags[$this->key] = $this->value;
+        $metadata->tags[$this->key . '.target'] = $method->getShortName();
     }
 }

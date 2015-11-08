@@ -41,6 +41,7 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
     {
         $metadata = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture\MethodMetaProcessor'));
         $this->assertEquals('fancy', @$metadata->tags['omg'], 'check key and value of custom annotation');
+        $this->assertEquals('test', @$metadata->tags['omg.target'], 'check target of custom annotation');
     }
 
 

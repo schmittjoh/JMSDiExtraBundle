@@ -12,9 +12,17 @@ use JMS\DiExtraBundle\Metadata\ClassMetadata;
 interface MetadataProcessorInterface
 {
     /**
-     * handle custom metadata for annotation
+     * handle custom metadata for class annotation
      *
      * @param ClassMetadata $metadata
      */
-    public function processMetadata(ClassMetadata $metadata);
+    public function processMetadataForClass(ClassMetadata $metadata);
+
+    /**
+     * handle custom metadata for method annotation
+     *
+     * @param ClassMetadata $metadata
+     * @param \ReflectionMethod $method
+     */
+    public function processMetadataForMethod(ClassMetadata $metadata, \ReflectionMethod $method);
 }

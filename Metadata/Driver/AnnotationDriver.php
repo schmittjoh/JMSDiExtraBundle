@@ -127,7 +127,7 @@ class AnnotationDriver implements DriverInterface
                     $metadata->id = $this->namingStrategy->classToServiceName($className);
                 }
 
-                $annot->processMetadata($metadata);
+                $annot->processMetadataForClass($metadata);
             }
         }
 
@@ -211,7 +211,7 @@ class AnnotationDriver implements DriverInterface
                         $metadata->id = $this->namingStrategy->classToServiceName($className);
                     }
 
-                    $annot->processMetadata($metadata);
+                    $annot->processMetadataForMethod($metadata, $method);
                 }
             }
         }
