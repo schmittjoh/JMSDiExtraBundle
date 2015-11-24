@@ -16,7 +16,8 @@
         "symfony/process": "~2.1",
         "symfony/finder": "~2.1",
         "jms/aop-bundle": "^1.1.0",
-        "jms/metadata": "1.*"
+        "jms/metadata": "1.*",
+        "ocramius/proxy-manager": "~1.0"
     },
     "require-dev": {
         "symfony/validator": "*",
@@ -30,8 +31,7 @@
         "jms/security-extra-bundle": "1.*",
         "doctrine/doctrine-bundle": "*",
         "doctrine/orm": "*",
-        "phpcollection/phpcollection": ">=0.1,<0.3-dev",
-        "ocramius/proxy-manager": "~1.0"
+        "phpcollection/phpcollection": ">=0.1,<0.3-dev"
     },
     "autoload": {
         "psr-0": { "JMS\\DiExtraBundle": "" }
