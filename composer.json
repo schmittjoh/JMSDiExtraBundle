@@ -30,7 +30,8 @@
         "jms/security-extra-bundle": "1.*",
         "doctrine/doctrine-bundle": "*",
         "doctrine/orm": "*",
-        "phpcollection/phpcollection": ">=0.1,<0.3-dev"
+        "phpcollection/phpcollection": ">=0.1,<0.3-dev",
+        "ocramius/proxy-manager": "~1.0"
     },
     "autoload": {
         "psr-0": { "JMS\\DiExtraBundle": "" }
