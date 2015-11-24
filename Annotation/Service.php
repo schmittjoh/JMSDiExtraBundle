@@ -18,8 +18,6 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
-
 /**
  * @Annotation
  * @Target("CLASS")
@@ -40,6 +38,9 @@ final class Service
 
     /** @var boolean */
     public $abstract;
+
+    /** @var boolean */
+    public $lazy;
 
     /** @var array<string> */
     public $environments = array();

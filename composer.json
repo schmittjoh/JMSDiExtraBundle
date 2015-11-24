@@ -16,7 +16,8 @@
         "symfony/process": "~2.1",
         "symfony/finder": "~2.1",
         "jms/aop-bundle": "^1.1.0",
-        "jms/metadata": "1.*"
+        "jms/metadata": "1.*",
+        "ocramius/proxy-manager": "~1.0"
     },
     "require-dev": {
         "symfony/validator": "*",
