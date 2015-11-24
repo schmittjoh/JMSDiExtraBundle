@@ -85,8 +85,8 @@ class ClassMetadata extends BaseClassMetadata
             $parentStr
         ) = $data;
 
-        if (isset($data[12])) {
-            $this->environments = $data[12];
+        if (isset($data[13])) {
+            $this->environments = $data[13];
         }
 
         parent::unserialize($parentStr);
