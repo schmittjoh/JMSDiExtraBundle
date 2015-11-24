@@ -30,6 +30,7 @@ class ClassMetadata extends BaseClassMetadata
     public $scope;
     public $public;
     public $abstract;
+    public $lazy;
     public $tags = array();
     public $arguments;
     public $methodCalls = array();
@@ -70,6 +71,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->scope,
             $this->public,
             $this->abstract,
+            $this->lazy,
             $this->tags,
             $this->arguments,
             $this->methodCalls,
@@ -98,6 +100,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->scope,
             $this->public,
             $this->abstract,
+            $this->lazy,
             $this->tags,
             $this->arguments,
             $this->methodCalls,
