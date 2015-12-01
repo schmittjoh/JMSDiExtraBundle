@@ -20,17 +20,17 @@
         "jms/metadata": "1.*"
     },
     "require-dev": {
-        "symfony/validator": "*",
-        "symfony/form": "*",
-        "symfony/class-loader": "*",
-        "symfony/yaml": "*",
-        "symfony/browser-kit": "*",
-        "symfony/security-bundle": "*",
-        "symfony/twig-bundle": "*",
-        "sensio/framework-extra-bundle": "*",
+        "symfony/validator": "~2.8|~3.0",
+        "symfony/form": "~2.8|~3.0",
+        "symfony/class-loader": "~2.8|~3.0",
+        "symfony/yaml": "~2.8|~3.0",
+        "symfony/browser-kit": "~2.8|~3.0",
+        "symfony/security-bundle": "~2.8|~3.0",
+        "symfony/twig-bundle": "~2.8|~3.0",
+        "sensio/framework-extra-bundle": "~2.8|~3.0",
         "jms/security-extra-bundle": "1.*",
-        "doctrine/doctrine-bundle": "*",
-        "doctrine/orm": "*",
+        "doctrine/doctrine-bundle": "~1.6",
+        "doctrine/orm": "~2.5",
         "phpcollection/phpcollection": ">=0.1,<0.3-dev"
     },
     "autoload": {
