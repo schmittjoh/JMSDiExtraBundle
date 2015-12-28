@@ -18,13 +18,9 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
-use JMS\DiExtraBundle\Metadata\ClassMetadata;
-use Symfony\Component\DependencyInjection\Alias;
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Config\ServiceFilesResource;
 use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Symfony\Component\DependencyInjection\Definition;
 use JMS\DiExtraBundle\Finder\PatternFinder;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -43,6 +39,8 @@ class AnnotationConfigurationPass implements CompilerPassInterface
     {
         $factory = $container->get('jms_di_extra.metadata.metadata_factory');
         $converter = $container->get('jms_di_extra.metadata.converter');
+        $annotationNamespaces = $container->getParameter('jms_di_extra.annotation_namespaces');
+        $annotationNamespaces[] = 'JMS\DiExtraBundle\Annotation';
         $disableGrep = $container->getParameter('jms_di_extra.disable_grep');
 
         $directories = $this->getScanDirectories($container);
@@ -51,9 +49,8 @@ class AnnotationConfigurationPass implements CompilerPassInterface
             return;
         }
 
-        $finder = new PatternFinder('JMS\DiExtraBundle\Annotation', '*.php', $disableGrep);
-        $files = $finder->findFiles($directories);
-        $container->addResource(new ServiceFilesResource($files, $directories, $disableGrep));
+        $files = $this->findFiles($directories, $annotationNamespaces, $disableGrep);
+        $container->addResource(new ServiceFilesResource($files, $directories, $annotationNamespaces, $disableGrep));
         foreach ($files as $file) {
             $container->addResource(new FileResource($file));
             require_once $file;
@@ -74,6 +71,18 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 $container->setDefinition($id, $definition);
             }
         }
+    }
+
+    private function findFiles(array $directories, array $annotationNamespaces, $disableGrep)
+    {
+        $files = [];
+        foreach ($annotationNamespaces as $namespace) {
+            $finder = new PatternFinder($namespace, '*.php', $disableGrep);
+            foreach ($finder->findFiles($directories) as $file) {
+                $files[$file] = $file;
+            }
+        }
+        return array_values($files);
     }
 
     private function getScanDirectories(ContainerBuilder $c)

@@ -26,20 +26,32 @@ class ServiceFilesResource implements ResourceInterface
     private $files;
     private $dirs;
     private $disableGrep;
+    private $annotationNamespaces;
 
-    public function __construct(array $files, array $dirs, $disableGrep)
+    public function __construct(array $files, array $dirs, array $annotationNamespaces, $disableGrep)
     {
         $this->files = $files;
         $this->dirs = $dirs;
+        $this->annotationNamespaces = $annotationNamespaces;
         $this->disableGrep = $disableGrep;
     }
 
     public function isFresh($timestamp)
     {
-        $finder = new PatternFinder('JMS\DiExtraBundle\Annotation', '*.php', $this->disableGrep);
-        $files = $finder->findFiles($this->dirs);
-
+        $files = $this->findFiles($this->dirs, $this->annotationNamespaces, $this->disableGrep);
         return !array_diff($files, $this->files) && !array_diff($this->files, $files);
+    }
+
+    private function findFiles(array $directories, array $annotationNamespaces, $disableGrep)
+    {
+        $files = [];
+        foreach ($annotationNamespaces as $namespace) {
+            $finder = new PatternFinder($namespace, '*.php', $disableGrep);
+            foreach ($finder->findFiles($directories) as $file) {
+                $files[$file] = $file;
+            }
+        }
+        return array_values($files);
     }
 
     public function __toString()
