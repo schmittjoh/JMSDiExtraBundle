@@ -13,6 +13,7 @@
     ],
     "require": {
         "symfony/framework-bundle": "~2.3|~3.0",
+        "symfony/routing": "~2.3",
         "symfony/http-kernel": "^2.3.24|~3.0",
         "symfony/dependency-injection": "~2.3|~3.0",
         "symfony/process": "~2.3|~3.0",
@@ -29,8 +30,8 @@
         "symfony/security-bundle": "~2.3",
         "symfony/twig-bundle": "~2.3|~3.0",
         "sensio/framework-extra-bundle": "~2.0|~3.0",
-        "jms/security-extra-bundle": "~1.0",
-        "doctrine/doctrine-bundle": "~1.5",
+        "jms/security-extra-bundle": "~1.0@dev",
+        "doctrine/doctrine-bundle": "~1.5@dev",
         "doctrine/orm": "~2.3",
         "phpcollection/phpcollection": ">=0.2,<0.3-dev",
         "symfony/phpunit-bridge": "~2.7"

@@ -10,7 +10,7 @@ class AutomaticControllerInjectionsTest extends BaseTestCase
     public function testInjections()
     {
         $client = $this->createClient(array(
-            'config' => class_exists('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface') ? 'automatic_controller_injections.yml' : 'bc_automatic_controller_injections.yml' 
+            'config' => class_exists('Symfony\Component\Security\Core\Authorization\AuthorizationChecker') ? 'automatic_controller_injections.yml' : 'bc_automatic_controller_injections.yml'
         ));
         $client->request('GET', '/automatic-controller-injection-test');
 

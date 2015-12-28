@@ -1,6 +1,6 @@
 TestBundle:
     type: annotation
-    resource: "@JMSDiExtraTestBundle/Controller/"
+    resource: '@JMSDiExtraTestBundle/Controller/'
 
 hello:
     path: /hello

@@ -27,6 +27,8 @@ matrix:
           env: SYMFONY_VERSION=2.7.*
         - php: 7.0
           env: SYMFONY_VERSION=2.8.* COVERAGE=true
+        - php: 7.0
+          env: SYMFONY_VERSION=3.0.* SYMFONY_DEPRECATIONS_HELPER=strict
 
 before_script:
     - composer self-update
