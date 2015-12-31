@@ -24,7 +24,7 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  * @Annotation
  * @Target("CLASS")
  */
-final class Service
+class Service
 {
     /** @var string */
     public $id;
