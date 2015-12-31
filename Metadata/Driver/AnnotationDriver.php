@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\Metadata\Driver;
 
+use JMS\DiExtraBundle\Annotation\InjectionAnnotationInterface;
 use JMS\DiExtraBundle\Annotation\MetadataProcessorInterface;
 use JMS\DiExtraBundle\Annotation\SecurityFunction;
 
@@ -207,10 +208,9 @@ class AnnotationDriver implements DriverInterface
 
                     $metadata->initMethod = $method->name;
                 } else if ($annot instanceof MetadataProcessorInterface) {
-                    if (null === $metadata->id) {
-                        $metadata->id = $this->namingStrategy->classToServiceName($className);
+                    if ($annot instanceof InjectionAnnotationInterface) {
+                        $hasInjection = true;
                     }
-
                     $annot->processMetadataForMethod($metadata, $method);
                 }
             }
