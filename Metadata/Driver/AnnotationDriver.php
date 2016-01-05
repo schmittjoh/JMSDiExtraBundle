@@ -123,7 +123,9 @@ class AnnotationDriver implements DriverInterface
                 $metadata->tags['form.type'][] = array(
                     'alias' => $alias,
                 );
-            } else if ($annot instanceof MetadataProcessorInterface) {
+            }
+
+            if ($annot instanceof MetadataProcessorInterface) {
                 if (null === $metadata->id) {
                     $metadata->id = $this->namingStrategy->classToServiceName($className);
                 }
