@@ -38,11 +38,6 @@ class LoginController
     private $rememberMeServices;
 
     /**
-     * @Inject("security.context")
-     */
-    private $securityContext;
-
-    /**
      * @Inject("security.authentication.trust_resolver")
      */
     private $trustResolver;
@@ -59,11 +54,6 @@ class LoginController
     public function getRememberMeServices()
     {
         return $this->rememberMeServices;
-    }
-
-    public function getSecurityContext()
-    {
-        return $this->securityContext;
     }
 
     public function getTrustResolver()

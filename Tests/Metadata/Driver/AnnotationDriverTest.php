@@ -3,6 +3,7 @@
 namespace JMS\DiExtraBundle\Tests\Metadata\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use JMS\DiExtraBundle\Metadata\DefaultNamingStrategy;
 use JMS\DiExtraBundle\Metadata\Driver\AnnotationDriver;
 
 class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
@@ -30,8 +31,21 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
         ), $metadata->tags);
     }
 
+    public function testCustomAnnotationOnClass()
+    {
+        $metadata = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture\ClassMetaProcessor'));
+        $this->assertEquals('works', @$metadata->tags['custom'], 'check value of custom annotation');
+    }
+
+    public function testCustomAnnotationOnMethod()
+    {
+        $metadata = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture\MethodMetaProcessor'));
+        $this->assertEquals('fancy', @$metadata->tags['omg'], 'check key and value of custom annotation');
+    }
+
+
     private function getDriver()
     {
-        return new AnnotationDriver(new AnnotationReader());
+        return new AnnotationDriver(new AnnotationReader(), new DefaultNamingStrategy());
     }
 }

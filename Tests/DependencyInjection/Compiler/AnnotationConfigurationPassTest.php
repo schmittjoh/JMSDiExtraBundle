@@ -110,6 +110,7 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $container->setParameter('kernel.environment', 'test');
         $container->setParameter('kernel.bundles', $bundles);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir().'/JMSDiExtraBundle-Test-AnnotationCFG');
+        $container->setParameter('kernel.environment', 'test');
 
         $extension = new JMSDiExtraExtension();
         $extension->load(array(array(

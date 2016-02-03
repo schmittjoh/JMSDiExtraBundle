@@ -107,7 +107,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
         }
         $namespace = $match[1];
 
-        if (!preg_match('/\bclass\s+([^\s]+)\s+(?:extends|implements|{)/is', $src, $match)) {
+        if (!preg_match('/\b(?:class|trait)\s+([^\s]+)\s+(?:extends|implements|{)/is', $src, $match)) {
             throw new RuntimeException(sprintf('Could not extract class name from file "%s".', $filename));
         }
 

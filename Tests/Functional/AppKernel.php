@@ -18,7 +18,29 @@
 
 namespace JMS\DiExtraBundle\Tests\Functional;
 
-require_once __DIR__.'/../bootstrap.php';
+// get the autoload file
+$dir = __DIR__;
+$lastDir = null;
+while ($dir !== $lastDir) {
+    $lastDir = $dir;
+
+    if (file_exists($dir.'/autoload.php')) {
+        require_once $dir.'/autoload.php';
+        break;
+    }
+
+    if (file_exists($dir.'/autoload.php.dist')) {
+        require_once $dir.'/autoload.php.dist';
+        break;
+    }
+
+    if (file_exists($dir.'/vendor/autoload.php')) {
+        require_once $dir.'/vendor/autoload.php';
+        break;
+    }
+
+    $dir = dirname($dir);
+}
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -62,6 +84,9 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->config);
+        if (PHP_VERSION_ID > 50400) {
+            $loader->load(__DIR__.'/config/traits.yml');
+        }
     }
 
     public function getCacheDir()
