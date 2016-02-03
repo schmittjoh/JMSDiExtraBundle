@@ -26,19 +26,11 @@ use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
 use JMS\DiExtraBundle\Finder\PatternFinder;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 class AnnotationConfigurationPass implements CompilerPassInterface
 {
-    private $kernel;
-
-    public function __construct(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
-
     public function process(ContainerBuilder $container)
     {
         $factory = $container->get('jms_di_extra.metadata.metadata_factory');
@@ -78,7 +70,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
 
     private function getScanDirectories(ContainerBuilder $c)
     {
-        $bundles = $this->kernel->getBundles();
+        $bundles = $c->getParameter('kernel.bundles');
         $scanBundles = $c->getParameter('jms_di_extra.bundles');
         $scanAllBundles = $c->getParameter('jms_di_extra.all_bundles');
 
@@ -92,7 +84,8 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 continue;
             }
 
-            $directories[] = $bundle->getPath();
+            $reflected = new \ReflectionClass($bundle);
+            $directories[] = dirname($reflected->getFileName());
         }
 
         return $directories;
