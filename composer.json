@@ -13,7 +13,7 @@
     ],
     "require": {
         "symfony/framework-bundle": "~2.3|~3.0",
-        "symfony/routing": "~2.3",
+        "symfony/routing": "~2.3|~3.0",
         "symfony/http-kernel": "^2.3.24|~3.0",
         "symfony/dependency-injection": "~2.3|~3.0",
         "symfony/process": "~2.3|~3.0",
