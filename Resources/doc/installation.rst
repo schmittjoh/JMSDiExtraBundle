@@ -44,7 +44,7 @@ register the new bundle:
     // in AppKernel::registerBundles()
     $bundles = array(
         // ...
-        new JMS\DiExtraBundle\JMSDiExtraBundle($this),
+        new JMS\DiExtraBundle\JMSDiExtraBundle(),
         new JMS\AopBundle\JMSAopBundle(),
         // ...
     );
