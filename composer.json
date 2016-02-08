@@ -31,7 +31,7 @@
         "symfony/twig-bundle": "~2.3|~3.0",
         "sensio/framework-extra-bundle": "~2.0|~3.0",
         "jms/security-extra-bundle": "~1.0@dev",
-        "doctrine/doctrine-bundle": "~1.5@dev",
+        "doctrine/doctrine-bundle": "~1.5",
         "doctrine/orm": "~2.3",
         "phpcollection/phpcollection": ">=0.2,<0.3-dev",
         "symfony/phpunit-bridge": "~2.7"
