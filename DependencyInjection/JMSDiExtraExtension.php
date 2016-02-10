@@ -152,7 +152,9 @@ class JMSDiExtraExtension extends Extension
 
             // clear the cache if container is re-build, needed for correct controller injections
             $fs = new Filesystem();
-            $fs->remove($cacheDir);
+            if ($fs->exists($cacheDir)) {
+                $fs->remove($cacheDir);
+            }
 
             if (!file_exists($cacheDir)) {
                 if (false === @mkdir($cacheDir, 0777, true)) {
