@@ -16,38 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Annotation;
+namespace JMS\DiExtraBundle\Exception;
 
-/**
- * @Annotation
- * @Target("CLASS")
- */
-final class Service
-{
-    /** @var string */
-    public $id;
-
-    /** @var string */
-    public $parent;
-
-    /** @var boolean */
-    public $public;
-
-    /** @var string */
-    public $scope;
-
-    /** @var string */
-    public $deprecated;
-
-    /** @var string */
-    public $decorates;
-
-    /** @var string */
-    public $decoration_inner_name;
-
-    /** @var boolean */
-    public $abstract;
-
-    /** @var array<string> */
-    public $environments = array();
-}
+class InvalidAnnotationException extends \InvalidArgumentException implements Exception
+{}

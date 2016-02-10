@@ -82,6 +82,9 @@ class AnnotationDriver implements DriverInterface
                 $metadata->public = $annot->public;
                 $metadata->scope = $annot->scope;
                 $metadata->abstract = $annot->abstract;
+                $metadata->decorates = $annot->decorates;
+                $metadata->decoration_inner_name = $annot->decoration_inner_name;
+                $metadata->deprecated = $annot->deprecated;
             } else if ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
             } else if ($annot instanceof Validator) {
