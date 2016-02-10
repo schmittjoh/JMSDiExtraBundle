@@ -34,6 +34,8 @@ class ClassMetadata extends BaseClassMetadata
     public $properties = array();
     public $initMethod;
     public $environments = array();
+    public $decorates;
+    public $decoration_inner_name;
 
     public function isLoadedInEnvironment($env)
     {
@@ -60,6 +62,8 @@ class ClassMetadata extends BaseClassMetadata
             $this->initMethod,
             parent::serialize(),
             $this->environments,
+            $this->decorates,
+            $this->decoration_inner_name,
         ));
     }
 
@@ -84,6 +88,14 @@ class ClassMetadata extends BaseClassMetadata
 
         if (isset($data[12])) {
             $this->environments = $data[12];
+        }
+
+        if (isset($data[13])) {
+            $this->decorates = $data[13];
+        }
+
+        if (isset($data[14])) {
+            $this->decoration_inner_name = $data[14];
         }
 
         parent::unserialize($parentStr);

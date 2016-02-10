@@ -18,8 +18,6 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
-
 /**
  * @Annotation
  * @Target("CLASS")
@@ -37,6 +35,12 @@ final class Service
 
     /** @var string */
     public $scope;
+
+    /** @var string */
+    public $decorates;
+
+    /** @var string */
+    public $decoration_inner_name;
 
     /** @var boolean */
     public $abstract;

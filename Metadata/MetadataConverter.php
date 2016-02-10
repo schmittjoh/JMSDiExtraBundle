@@ -64,6 +64,10 @@ class MetadataConverter
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);
 
+            if (method_exists($definition, 'setDecoratedService')) {
+                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
+            }
+
             if (null === $classMetadata->id) {
                 $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
             }
