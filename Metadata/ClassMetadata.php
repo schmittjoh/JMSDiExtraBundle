@@ -36,6 +36,7 @@ class ClassMetadata extends BaseClassMetadata
     public $environments = array();
     public $decorates;
     public $decoration_inner_name;
+    public $deprecated;
 
     public function isLoadedInEnvironment($env)
     {
@@ -64,6 +65,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->environments,
             $this->decorates,
             $this->decoration_inner_name,
+            $this->deprecated,
         ));
     }
 
@@ -96,6 +98,10 @@ class ClassMetadata extends BaseClassMetadata
 
         if (isset($data[14])) {
             $this->decoration_inner_name = $data[14];
+        }
+
+        if (isset($data[15])) {
+            $this->decoration_inner_name = $data[15];
         }
 
         parent::unserialize($parentStr);

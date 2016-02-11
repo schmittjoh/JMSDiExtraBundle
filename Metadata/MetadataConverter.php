@@ -64,8 +64,12 @@ class MetadataConverter
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);
 
-            if (method_exists($definition, 'setDecoratedService')) {
+            if (null !== $classMetadata->decorates && method_exists($definition, 'setDecoratedService')) {
                 $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
+            }
+
+            if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {
+                $definition->setDeprecated(true, $classMetadata->deprecated);
             }
 
             if (null === $classMetadata->id) {

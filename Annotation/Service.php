@@ -37,6 +37,9 @@ final class Service
     public $scope;
 
     /** @var string */
+    public $deprecated;
+
+    /** @var string */
     public $decorates;
 
     /** @var string */
