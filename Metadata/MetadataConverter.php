@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\Metadata;
 
+use JMS\DiExtraBundle\Exception\InvalidAnnotationException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -64,7 +65,16 @@ class MetadataConverter
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);
 
-            if (null !== $classMetadata->decorates && method_exists($definition, 'setDecoratedService')) {
+            if (null !== $classMetadata->decorates) {
+                if (!method_exists($definition, 'setDecoratedService')) {
+                    throw new InvalidAnnotationException(
+                        sprintf(
+                            "decorations require symfony >=2.8 on class %s",
+                            $classMetadata->name
+                        )
+                    );
+                }
+
                 $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
             }
 
