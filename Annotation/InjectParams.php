@@ -26,4 +26,7 @@ final class InjectParams
 {
     /** @var array<JMS\DiExtraBundle\Annotation\Inject> */
     public $params = array();
+
+    /** @var array */
+    public $services;
 }

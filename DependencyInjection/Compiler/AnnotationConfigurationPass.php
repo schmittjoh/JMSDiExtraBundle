@@ -55,14 +55,12 @@ class AnnotationConfigurationPass implements CompilerPassInterface
             if (null === $metadata = $factory->getMetadataForClass($className)) {
                 continue;
             }
+
             if (null === $metadata->getOutsideClassMetadata()->id) {
                 continue;
             }
-            if ( ! $metadata->getOutsideClassMetadata()->isLoadedInEnvironment($container->getParameter('kernel.environment'))) {
-                continue;
-            }
 
-            foreach ($converter->convert($metadata) as $id => $definition) {
+            foreach ($converter->convert($metadata, $container->getParameter('kernel.environment')) as $id => $definition) {
                 $container->setDefinition($id, $definition);
             }
         }

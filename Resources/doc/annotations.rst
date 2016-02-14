@@ -59,9 +59,12 @@ This marks the parameters of a method for injection:
     class Listener
     {
         /**
-         * @InjectParams({
-         *     "em" = @Inject("doctrine.entity_manager")
-         * })
+         * @InjectParams(
+         *     {
+         *         "em" = @Inject("doctrine.entity_manager")
+         *     },
+         *     services = {"limit.to.this.service"}
+         * )
          */
         public function __construct(EntityManager $em, Session $session)
         {
@@ -92,6 +95,9 @@ Marks a class as service:
 If you do not explicitly define a service id, then we will generated a sensible default
 based on the fully qualified class name for you. By default, the class will be loaded in all environments
 unless you explicitly specify an environment via the ``environments`` attribute.
+
+``Note``: you can define multiple @Service annotations on one class, to then limit the injection of parameters
+use the "services" attribute of @InjectParams
 
 @Tag
 ~~~~

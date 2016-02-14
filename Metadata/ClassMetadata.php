@@ -21,33 +21,140 @@ namespace JMS\DiExtraBundle\Metadata;
 use Metadata\ClassMetadata as BaseClassMetadata;
 
 /**
- * class metadata
+ * processed annotations for service creation
  */
 class ClassMetadata extends BaseClassMetadata
 {
+    /**
+     * @var string
+     * @deprecated use addService instead
+     */
     public $id;
+
+    /**
+     * @var string
+     * @deprecated use addService instead
+     */
     public $parent;
+
+    /**
+     * @var string
+     * @deprecated use addService instead, removed in SF 3.0
+     */
     public $scope;
+
+    /**
+     * @var bool
+     * @deprecated use addService instead
+     */
     public $public;
+
+    /**
+     * @var boolean
+     * @deprecated use addService instead
+     */
     public $abstract;
+
+    /**
+     * @var array
+     */
     public $tags = array();
+
+    /**
+     * constructor arguments
+     *
+     * @var array
+     */
     public $arguments;
+
+    /**
+     * @var array
+     */
     public $methodCalls = array();
+
+    /**
+     * @var array
+     */
     public $lookupMethods = array();
+
+    /**
+     * @var array
+     */
     public $properties = array();
     /**
      * @deprecated since version 1.7, to be removed in 2.0. Use $initMethods instead.
      */
     public $initMethod;
     public $initMethods = array();
-    public $environments = array();
-    public $decorates;
-    public $decoration_inner_name;
-    public $deprecated;
 
     /**
-     * @param string $env
+     * @deprecated use addService instead
      *
+     * @var string[]
+     */
+    public $environments = array();
+
+    /**
+     * service definitions
+     *
+     * @var array[]
+     */
+    private $services = array();
+
+    /**
+     * on first call also populate legacy fields
+     *
+     * @param string[] $service
+     */
+    public function addService(array $service)
+    {
+        if (empty($this->id)) {
+            $this->id = $service['id'];
+            $this->parent = @$service['parent'];
+            $this->public = @$service['public'];
+            $this->scope = @$service['scope'];
+            $this->abstract = @$service['abstract'];
+            $this->environments = @$service['environments'];
+            // TODO update call for other tags (there are several pull requests)
+        }
+
+        $this->services[$service['id']] = $service;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasServices()
+    {
+        return !empty($this->services);
+    }
+
+    /**
+     * get list of defined services, use fallback of original fields
+     *
+     * @return array[]
+     */
+    public function getServices()
+    {
+        // TODO remove fallback for next major version
+        if (empty($this->services) || !isset($this->services[$this->id])) {
+            $this->services[] = array(
+                'id' => $this->id,
+                'parent' => $this->parent,
+                'public' => $this->public,
+                'scope' => $this->scope,
+                'abstract' => $this->abstract,
+                'environments' => $this->environments,
+            );
+        }
+
+        return $this->services;
+    }
+
+    /**
+     * @deprecated this is handled on service level
+     *
+     * @param string $env
      * @return bool
      */
     public function isLoadedInEnvironment($env)
@@ -78,9 +185,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->initMethod,
             parent::serialize(),
             $this->environments,
-            $this->decorates,
-            $this->decoration_inner_name,
-            $this->deprecated,
+            $this->services,
         ));
     }
 
@@ -106,9 +211,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->initMethod,
             $parentStr,
             $this->environments,
-            $this->decorates,
-            $this->decoration_inner_name,
-            $this->deprecated,
+            $this->services,
         ) = $data;
 
         parent::unserialize($parentStr);

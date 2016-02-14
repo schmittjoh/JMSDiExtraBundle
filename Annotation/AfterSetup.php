@@ -10,4 +10,6 @@ namespace JMS\DiExtraBundle\Annotation;
  */
 final class AfterSetup
 {
+    /** @var array */
+    public $services;
 }
