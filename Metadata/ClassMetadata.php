@@ -20,6 +20,9 @@ namespace JMS\DiExtraBundle\Metadata;
 
 use Metadata\ClassMetadata as BaseClassMetadata;
 
+/**
+ * class metadata
+ */
 class ClassMetadata extends BaseClassMetadata
 {
     public $id;
@@ -38,6 +41,11 @@ class ClassMetadata extends BaseClassMetadata
     public $decoration_inner_name;
     public $deprecated;
 
+    /**
+     * @param string $env
+     *
+     * @return bool
+     */
     public function isLoadedInEnvironment($env)
     {
         if (empty($this->environments)) {
@@ -47,6 +55,9 @@ class ClassMetadata extends BaseClassMetadata
         return in_array($env, $this->environments, true);
     }
 
+    /**
+     * @return string
+     */
     public function serialize()
     {
         return serialize(array(
@@ -69,11 +80,15 @@ class ClassMetadata extends BaseClassMetadata
         ));
     }
 
+    /**
+     * @param string $str
+     */
     public function unserialize($str)
     {
         $data = unserialize($str);
 
-        list(
+        // prevent errors if not all key's are set
+        @list(
             $this->id,
             $this->parent,
             $this->scope,
@@ -85,24 +100,12 @@ class ClassMetadata extends BaseClassMetadata
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
-            $parentStr
+            $parentStr,
+            $this->environments,
+            $this->decorates,
+            $this->decoration_inner_name,
+            $this->deprecated,
         ) = $data;
-
-        if (isset($data[12])) {
-            $this->environments = $data[12];
-        }
-
-        if (isset($data[13])) {
-            $this->decorates = $data[13];
-        }
-
-        if (isset($data[14])) {
-            $this->decoration_inner_name = $data[14];
-        }
-
-        if (isset($data[15])) {
-            $this->deprecated = $data[15];
-        }
 
         parent::unserialize($parentStr);
     }
