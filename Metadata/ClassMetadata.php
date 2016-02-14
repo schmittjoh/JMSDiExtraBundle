@@ -101,7 +101,7 @@ class ClassMetadata extends BaseClassMetadata
         }
 
         if (isset($data[15])) {
-            $this->decoration_inner_name = $data[15];
+            $this->deprecated = $data[15];
         }
 
         parent::unserialize($parentStr);
