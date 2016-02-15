@@ -8,10 +8,10 @@ other service that you configure using YML, XML, or PHP. The only difference is
 that you can do it via annotations which is a lot more convenient.
 
 You can use these annotations on services (for examples, see below):
-@Service, @Inject, @InjectParams, @Observe, @Tag
+@Service, @Inject, @Call, @Observe, @Tag
 
 Note that you cannot use the @Inject annotation on private, or protected properties.
-Likewise, the @InjectParams annotation does not work on protected, or private methods.
+Likewise, the @Call annotation does not work on protected, or private methods.
 
 Controllers
 -----------
@@ -26,16 +26,16 @@ Constructor/Setter Injection
 .. code-block :: php
 
     <?php
-   
+
     use JMS\DiExtraBundle\Annotation as DI;
-   
+
     class Controller
     {
         private $em;
         private $session;
-    
+
         /**
-         * @DI\InjectParams({
+         * @DI\Call({
          *     "em" = @DI\Inject("doctrine.orm.entity_manager"),
          *     "session" = @DI\Inject("session")
          * })
@@ -47,8 +47,8 @@ Constructor/Setter Injection
         }
         // ... some actions
     }
-    
-.. note :: 
+
+.. note ::
 
     Constructor Injection is not possible when a parent definition
     also defines a constructor which is configured for injection.
@@ -61,12 +61,12 @@ Property Injection
     <?php
 
     use JMS\DiExtraBundle\Annotation as DI;
-    
+
     class Controller
     {
         /** @DI\Inject("doctrine.orm.entity_manager") */
         private $em;
-        
+
         /** @DI\Inject("session") */
         private $session;
     }
@@ -74,16 +74,16 @@ Property Injection
 .. note ::
 
     Injecting into private, or protected properties is only supported on controllers.
-    
+
 Method/Getter Injection
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block :: php
 
     <?php
-    
+
     use JMS\DiExtraBundle\Annotation as DI;
-    
+
     class Controller
     {
         public function myAction()
@@ -93,7 +93,7 @@ Method/Getter Injection
                 $mailer = $this->getMailer();
             }
         }
-    
+
         /** @DI\LookupMethod("mailer") */
         protected function getMailer() { /* empty body here */ }
     }

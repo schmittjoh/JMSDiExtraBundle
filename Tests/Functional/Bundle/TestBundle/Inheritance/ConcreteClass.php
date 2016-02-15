@@ -15,7 +15,7 @@ class ConcreteClass extends AbstractClass
     private $bar;
 
     /**
-     * @DI\InjectParams
+     * @DI\Call
      *
      * @param stdClass $foo
      * @param stdClass $bar

@@ -35,7 +35,7 @@ repositories using annotations:
         private $uuidGenerator;
 
         /**
-         * @DI\InjectParams({
+         * @DI\Call({
          *     "uuidGenerator" = @DI\Inject("my_uuid_generator"),
          * })
          */

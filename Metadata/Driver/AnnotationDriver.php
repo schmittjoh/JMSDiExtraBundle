@@ -26,6 +26,7 @@ use JMS\DiExtraBundle\Annotation\AfterSetup;
 use JMS\DiExtraBundle\Annotation\FormType;
 
 use JMS\DiExtraBundle\Annotation\AbstractDoctrineListener;
+use JMS\DiExtraBundle\Annotation\Call;
 use JMS\DiExtraBundle\Annotation\DoctrineListener;
 use JMS\DiExtraBundle\Annotation\DoctrineMongoDBListener;
 use JMS\DiExtraBundle\Annotation\Reference as AnnotReference;
@@ -165,6 +166,10 @@ class AnnotationDriver implements DriverInterface
                         'method' => $name,
                     );
                 } else if ($annot instanceof InjectParams) {
+                    if (!$annot instanceof Call) {
+                        @trigger_error('@InjectParams is deprecated since version 1.7 and will be removed in 2.0. Use @Call instead.', E_USER_DEPRECATED);
+                    }
+
                     $params = array();
                     foreach ($method->getParameters() as $param) {
                         if (!isset($annot->params[$paramName = $param->getName()])) {
@@ -175,7 +180,7 @@ class AnnotationDriver implements DriverInterface
                         $params[] = $this->convertReferenceValue($paramName, $annot->params[$paramName]);
                     }
 
-                    if (!$params) {
+                    if (!$params && !$annot instanceof Call) {
                         continue;
                     }
 

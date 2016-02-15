@@ -22,10 +22,8 @@ namespace JMS\DiExtraBundle\Annotation;
  * @Annotation
  * @Target("METHOD")
  *
- * @deprecated since 1.7, to be removed in 2.0. Use {@link Call} instead.
+ * @author Ener-Getick <egetick@gmail.com>
  */
-class InjectParams
+final class Call extends InjectParams
 {
-    /** @var array<JMS\DiExtraBundle\Annotation\Inject> */
-    public $params = array();
 }

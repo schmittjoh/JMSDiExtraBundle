@@ -69,7 +69,7 @@ class MetadataConverter
             }
 
             if ($classMetadata->initMethod) {
-                throw new \RuntimeException(sprintf('You can\'t use @AfterSetup on a service.'));
+                throw new \LogicException(sprintf('@AfterSetup doesn\'t work. Use @Call instead.'));
             }
 
             $definitions[$classMetadata->id] = $definition;
