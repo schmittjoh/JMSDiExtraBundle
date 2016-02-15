@@ -10,7 +10,7 @@ trait TemplatableTrait
     private $templating;
 
     /**
-     * @DI\InjectParams
+     * @DI\Call
      *
      * @param EngineInterface $templating
      */

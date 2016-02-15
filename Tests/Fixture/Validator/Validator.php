@@ -18,7 +18,7 @@
 
 namespace JMS\DiExtraBundle\Tests\Fixture\Validator;
 
-use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\DiExtraBundle\Annotation\Call;
 use JMS\DiExtraBundle\Annotation\Validator as ValidatorAnnot;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -31,7 +31,7 @@ class Validator extends ConstraintValidator
     private $foo;
 
     /**
-     * @InjectParams
+     * @Call
      */
     public function __construct($foo)
     {

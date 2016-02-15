@@ -15,7 +15,7 @@ abstract class AbstractClass
     private $templating;
 
     /**
-     * @DI\InjectParams
+     * @DI\Call
      *
      * @param EngineInterface $templating
      */

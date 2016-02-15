@@ -34,7 +34,7 @@ class RequestListener
     private $table;
 
     /**
-     * @DI\InjectParams({
+     * @DI\Call({
      *     "em" = @DI\Inject("doctrine.entity_manager")
      * })
      */
@@ -46,7 +46,7 @@ class RequestListener
     }
 
     /**
-     * @DI\InjectParams({
+     * @DI\Call({
      *     "table" = @DI\Inject("%table_name%")
      * })
      */
