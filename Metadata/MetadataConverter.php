@@ -44,7 +44,7 @@ class MetadataConverter
                 $parent = $classMetadata->parent ?: $previous->id;
 
                 // reset the parent constructor parameters if current constructor is set
-                if (null !== @$definitions[$parent] && null != $classMetadata->arguments) {
+                if (null !== @$definitions[$parent] && null !== $classMetadata->arguments) {
                     $definitions[$parent]->setArguments(array());
                 }
 
