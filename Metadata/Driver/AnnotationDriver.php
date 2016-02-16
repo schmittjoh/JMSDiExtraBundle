@@ -220,11 +220,11 @@ class AnnotationDriver implements DriverInterface
                         throw new \RuntimeException(sprintf('The init method "%s::%s" must be public.', $method->class, $method->name));
                     }
 
-                    $metadata->initMethods[] = [
+                    $metadata->initMethods[] = array(
                         $method->name,
                         array(), // parameters - to be in line with methodCalls
                         $annot->services
-                    ];
+                    );
                 } else if ($annot instanceof MetadataProcessorInterface) {
                     if (null === $metadata->id) {
                         $metadata->id = $this->namingStrategy->classToServiceName($className);
