@@ -75,9 +75,8 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->arrayNode('annotation_patterns')
                         ->info('Allows you to configure additional annotation patterns.')
-                        ->treatNullLike(array('JMS\DiExtraBundle\Annotation'))
-                        ->prototype('scalar')->end()
-                        ->defaultValue(array('JMS\DiExtraBundle\Annotation'))
+                        ->addDefaultChildrenIfNoneSet()
+                        ->prototype('scalar')->defaultValue('JMS\DiExtraBundle\Annotation')->end()
                     ->end()
                     ->arrayNode('automatic_controller_injections')
                         ->info('Allows you to configure automatic injections for controllers. '
