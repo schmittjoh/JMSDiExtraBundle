@@ -6,7 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 
-class ExtendedService extends SimpleService
+class ExtendedController extends SimpleController
 {
     protected $even;
     protected $more;

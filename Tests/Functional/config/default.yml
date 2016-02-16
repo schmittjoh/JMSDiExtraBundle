@@ -18,3 +18,4 @@ parameters:
     name: name
     even: even
     more: more
+    foo: foo

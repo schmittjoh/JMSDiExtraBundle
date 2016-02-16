@@ -4,7 +4,7 @@ namespace JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
-class SimpleService
+class SimpleController
 {
     protected $name;
 
