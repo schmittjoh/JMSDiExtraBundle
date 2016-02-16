@@ -92,7 +92,7 @@ class ControllerResolver extends BaseControllerResolver
              * those get remove by the metadataFactory because no metadata is
              * preset, but we still need them in the path to have it working
              */
-            if ($metadata->getOutsideClassMetadata()->name != $class) {
+            if ($metadata->getOutsideClassMetadata()->name !== $class) {
                 $metadata->addClassMetadata(new ClassMetadata($class));
             }
 
