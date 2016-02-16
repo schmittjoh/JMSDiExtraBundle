@@ -43,7 +43,7 @@ class MetadataConverter
         /** @var ClassMetadata $classMetadata */
         foreach ($metadata->classMetadata as $classMetadata) {
             foreach ($classMetadata->getServices() as $service) {
-                if (isset($environment)
+                if (null !== $environment
                     && isset($service['environments'])
                     && sizeof($service['environments']) > 0
                     && !in_array($environment, $service['environments'])
