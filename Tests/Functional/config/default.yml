@@ -13,3 +13,7 @@ services:
     controller.hello:
         class: JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller\ServiceController
         arguments: [ "@router" ]
+
+parameters:
+    foo: "foo"
+    bar: "bar"
