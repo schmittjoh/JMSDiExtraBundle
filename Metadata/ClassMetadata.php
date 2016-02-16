@@ -20,6 +20,9 @@ namespace JMS\DiExtraBundle\Metadata;
 
 use Metadata\ClassMetadata as BaseClassMetadata;
 
+/**
+ * class metadata
+ */
 class ClassMetadata extends BaseClassMetadata
 {
     public $id;
@@ -32,8 +35,33 @@ class ClassMetadata extends BaseClassMetadata
     public $methodCalls = array();
     public $lookupMethods = array();
     public $properties = array();
+    /**
+     * @deprecated since version 1.7, to be removed in 2.0. Use $initMethods instead.
+     */
     public $initMethod;
+    public $initMethods = array();
+    public $environments = array();
+    public $decorates;
+    public $decoration_inner_name;
+    public $deprecated;
 
+    /**
+     * @param string $env
+     *
+     * @return bool
+     */
+    public function isLoadedInEnvironment($env)
+    {
+        if (empty($this->environments)) {
+            return true;
+        }
+
+        return in_array($env, $this->environments, true);
+    }
+
+    /**
+     * @return string
+     */
     public function serialize()
     {
         return serialize(array(
@@ -49,12 +77,22 @@ class ClassMetadata extends BaseClassMetadata
             $this->properties,
             $this->initMethod,
             parent::serialize(),
+            $this->environments,
+            $this->decorates,
+            $this->decoration_inner_name,
+            $this->deprecated,
         ));
     }
 
+    /**
+     * @param string $str
+     */
     public function unserialize($str)
     {
-        list(
+        $data = unserialize($str);
+
+        // prevent errors if not all key's are set
+        @list(
             $this->id,
             $this->parent,
             $this->scope,
@@ -66,8 +104,12 @@ class ClassMetadata extends BaseClassMetadata
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
-            $parentStr
-        ) = unserialize($str);
+            $parentStr,
+            $this->environments,
+            $this->decorates,
+            $this->decoration_inner_name,
+            $this->deprecated,
+        ) = $data;
 
         parent::unserialize($parentStr);
     }

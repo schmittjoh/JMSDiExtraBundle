@@ -18,38 +18,22 @@
 
 namespace JMS\DiExtraBundle\Config;
 
-use JMS\DiExtraBundle\Finder\PatternFinder;
 use Symfony\Component\Config\Resource\ResourceInterface;
 use Symfony\Component\Config\Resource\SelfCheckingResourceInterface;
 
-class ServiceFilesResource extends InternalResource
-{
-    private $files;
-    private $dirs;
-    private $disableGrep;
-
-    public function __construct(array $files, array $dirs, $disableGrep)
+// BC for sf < 2.8
+if(interface_exists('Symfony\Component\Config\Resource\SelfCheckingResourceInterface')) {
+    /**
+     * @internal do not use this class
+     */
+    abstract class InternalResource implements ResourceInterface, SelfCheckingResourceInterface
     {
-        $this->files = $files;
-        $this->dirs = $dirs;
-        $this->disableGrep = $disableGrep;
     }
-
-    public function isFresh($timestamp)
+} else {
+    /**
+     * @internal do not use this class
+     */
+    abstract class InternalResource implements ResourceInterface
     {
-        $finder = new PatternFinder('JMS\DiExtraBundle\Annotation', '*.php', $this->disableGrep);
-        $files = $finder->findFiles($this->dirs);
-
-        return !array_diff($files, $this->files) && !array_diff($this->files, $files);
-    }
-
-    public function __toString()
-    {
-        return implode(', ', $this->files);
-    }
-
-    public function getResource()
-    {
-        return array($this->files, $this->dirs);
     }
 }

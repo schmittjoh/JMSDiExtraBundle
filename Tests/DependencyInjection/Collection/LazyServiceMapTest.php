@@ -3,17 +3,26 @@
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Collection;
 
 use JMS\DiExtraBundle\DependencyInjection\Collection\LazyServiceMap;
+use PHPUnit_Framework_MockObject_MockObject;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LazyServiceMapTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var LazyServiceMap
+     */
     private $map;
+
+    /**
+     * @var PHPUnit_Framework_MockObject_MockObject|ContainerInterface
+     */
     private $container;
 
     public function testGet()
     {
         $this->container->expects($this->once())
             ->method('get')
-            ->with('bar')
+            ->with('bar_service')
             ->will($this->returnValue($a = new \stdClass));
 
         $this->assertSame($a, $this->map->get('foo')->get());
@@ -24,7 +33,7 @@ class LazyServiceMapTest extends \PHPUnit_Framework_TestCase
     {
         $this->container->expects($this->once())
             ->method('get')
-            ->with('bar')
+            ->with('bar_service')
             ->will($this->returnValue($a = new \stdClass));
 
         $this->assertSame($a, $this->map->remove('foo'));
@@ -32,13 +41,33 @@ class LazyServiceMapTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->map->containsKey('foo'));
     }
 
+    public function testIterator()
+    {
+        $this->container->expects($this->at(0))
+            ->method('get')
+            ->with('bar_service')
+            ->will($this->returnValue($a = new \stdClass));
+
+        $this->container->expects($this->at(1))
+            ->method('get')
+            ->with('baz_service')
+            ->will($this->returnValue($b = new \stdClass));
+
+        $iterator = $this->map->getIterator();
+
+        $this->assertSame($a, $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($b, $iterator->current());
+    }
+
     protected function setUp()
     {
         $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
 
         $this->map = new LazyServiceMap($this->container, array(
-            'foo' => 'bar',
-            'bar' => 'baz',
+            'foo' => 'bar_service',
+            'bar' => 'baz_service',
         ));
     }
 }

@@ -16,14 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Annotation;
+namespace JMS\DiExtraBundle\Exception;
 
-/**
- * @Annotation
- * @Target("METHOD")
- */
-final class InjectParams
-{
-    /** @var array<JMS\DiExtraBundle\Annotation\Inject> */
-    public $params = array();
-}
+class InvalidAnnotationException extends \InvalidArgumentException implements Exception
+{}

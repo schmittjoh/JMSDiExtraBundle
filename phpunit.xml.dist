@@ -11,13 +11,13 @@
          syntaxCheck="false"
          bootstrap="./Tests/bootstrap.php"
 >
-         
+
     <testsuites>
         <testsuite name="DiExtraBundle Test Suite">
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>
-    
+
     <groups>
         <exclude>
             <group>performance</group>

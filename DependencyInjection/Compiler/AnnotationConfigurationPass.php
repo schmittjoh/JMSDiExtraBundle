@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
+use JMS\DiExtraBundle\Metadata\ClassMetadata;
 use Symfony\Component\DependencyInjection\Alias;
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Config\ServiceFilesResource;
@@ -25,22 +26,13 @@ use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
 use JMS\DiExtraBundle\Finder\PatternFinder;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 class AnnotationConfigurationPass implements CompilerPassInterface
 {
-    private $kernel;
-
-    public function __construct(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
-
     public function process(ContainerBuilder $container)
     {
-        $reader = $container->get('annotation_reader');
         $factory = $container->get('jms_di_extra.metadata.metadata_factory');
         $converter = $container->get('jms_di_extra.metadata.converter');
         $disableGrep = $container->getParameter('jms_di_extra.disable_grep');
@@ -66,6 +58,9 @@ class AnnotationConfigurationPass implements CompilerPassInterface
             if (null === $metadata->getOutsideClassMetadata()->id) {
                 continue;
             }
+            if ( ! $metadata->getOutsideClassMetadata()->isLoadedInEnvironment($container->getParameter('kernel.environment'))) {
+                continue;
+            }
 
             foreach ($converter->convert($metadata) as $id => $definition) {
                 $container->setDefinition($id, $definition);
@@ -75,7 +70,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
 
     private function getScanDirectories(ContainerBuilder $c)
     {
-        $bundles = $this->kernel->getBundles();
+        $bundles = $c->getParameter('kernel.bundles');
         $scanBundles = $c->getParameter('jms_di_extra.bundles');
         $scanAllBundles = $c->getParameter('jms_di_extra.all_bundles');
 
@@ -89,7 +84,8 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 continue;
             }
 
-            $directories[] = $bundle->getPath();
+            $reflected = new \ReflectionClass($bundle);
+            $directories[] = dirname($reflected->getFileName());
         }
 
         return $directories;
@@ -111,7 +107,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
         }
         $namespace = $match[1];
 
-        if (!preg_match('/\bclass\s+([^\s]+)\s+(?:extends|implements|{)/s', $src, $match)) {
+        if (!preg_match('/\b(?:class|trait)\s+([^\s]+)\s+(?:extends|implements|{)/is', $src, $match)) {
             throw new RuntimeException(sprintf('Could not extract class name from file "%s".', $filename));
         }
 

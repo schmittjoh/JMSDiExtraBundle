@@ -29,6 +29,9 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
         $classMetadata->abstract = true;
         $classMetadata->public = false;
         $classMetadata->id = 'foo';
+        $classMetadata->deprecated = true;
+        $classMetadata->decorates = 'test.service';
+        $classMetadata->decoration_inner_name = 'old.test.service';
 
         $this->assertEquals($classMetadata, unserialize(serialize($classMetadata)));
     }
