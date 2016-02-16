@@ -47,11 +47,6 @@ Constructor/Setter Injection
         }
         // ... some actions
     }
-    
-.. note :: 
-
-    Constructor Injection is not possible when a parent definition
-    also defines a constructor which is configured for injection.
 
 Property Injection
 ~~~~~~~~~~~~~~~~~~
