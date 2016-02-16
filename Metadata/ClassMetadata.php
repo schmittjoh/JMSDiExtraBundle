@@ -35,7 +35,11 @@ class ClassMetadata extends BaseClassMetadata
     public $methodCalls = array();
     public $lookupMethods = array();
     public $properties = array();
+    /**
+     * @deprecated since version 1.7, to be removed in 2.0. Use $initMethods instead.
+     */
     public $initMethod;
+    public $initMethods = array();
     public $environments = array();
     public $decorates;
     public $decoration_inner_name;

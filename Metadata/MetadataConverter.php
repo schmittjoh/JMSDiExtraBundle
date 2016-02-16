@@ -86,12 +86,13 @@ class MetadataConverter
                 $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
             }
 
-            if ($classMetadata->initMethod) {
-                if (!method_exists($definition, 'setInitMethod')) {
-                    throw new \RuntimeException(sprintf('@AfterSetup is not available on your Symfony version.'));
+            if (0 !== count($classMetadata->initMethods)) {
+                foreach ($classMetadata->initMethods as $initMethod) {
+                    $definition->addMethodCall($initMethod);
                 }
-
-                $definition->setInitMethod($classMetadata->initMethod);
+            } elseif (null !== $classMetadata->initMethod) {
+                @trigger_error('ClassMetadata::$initMethod is deprecated since version 1.7 and will be removed in 2.0. Use ClassMetadata::$initMethods instead.', E_USER_DEPRECATED);
+                $definition->addMethodCall($classMetadata->initMethod);
             }
 
             $definitions[$classMetadata->id] = $definition;

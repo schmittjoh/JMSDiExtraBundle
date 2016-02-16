@@ -109,10 +109,6 @@ class DefinitionInjectorGenerator
             }
         }
 
-        if (method_exists($def, 'getInitMethod') && $def->getInitMethod()) {
-            $writer->writeln('$instance->'.$def->getInitMethod().'();');
-        }
-
         $writer
             ->writeln('return $instance;')
             ->outdent()
