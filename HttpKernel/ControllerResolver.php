@@ -87,6 +87,15 @@ class ControllerResolver extends BaseControllerResolver
                 $metadata->addClassMetadata(new ClassMetadata($class));
             }
 
+            /*
+             * some controllers might not have an injection defined,
+             * those get remove by the metadataFactory because no metadata is
+             * preset, but we still need them in the path to have it working
+             */
+            if ($metadata->getOutsideClassMetadata()->name != $class) {
+                $metadata->addClassMetadata(new ClassMetadata($class));
+            }
+
             // If the cache warmer tries to warm up a service controller that uses
             // annotations, we need to bail out as this is handled by the service
             // container directly.
@@ -105,11 +114,18 @@ class ControllerResolver extends BaseControllerResolver
         return array($class.'__JMSInjector', 'inject');
     }
 
+    /**
+     * @param ConfigCache            $cache
+     * @param string                 $containerFilename
+     * @param ClassHierarchyMetadata $metadata
+     * @param string                 $className
+     * @param string                 $targetPath
+     */
     private function prepareContainer($cache, $containerFilename, $metadata, $className, $targetPath)
     {
         $container = new ContainerBuilder();
         $container->setParameter('jms_aop.cache_dir', $this->container->getParameter('jms_di_extra.cache_dir'));
-        $def = $container
+        $container
             ->register('jms_aop.interceptor_loader', 'JMS\AopBundle\Aop\InterceptorLoader')
             ->addArgument(new Reference('service_container'))
             ->setPublic(false)
@@ -124,7 +140,6 @@ class ControllerResolver extends BaseControllerResolver
 
         // add definitions
         $definitions = $this->container->get('jms_di_extra.metadata.converter')->convert($metadata);
-        $serviceIds = $parameters = array();
 
         $controllerDef = array_pop($definitions);
         $container->setDefinition('controller', $controllerDef);
@@ -157,6 +172,10 @@ class ControllerResolver extends BaseControllerResolver
         $cache->write($generator->generate($container->getDefinition('controller'), $className, $targetPath), $container->getResources());
     }
 
+    /**
+     * @param Definition             $def
+     * @param ClassHierarchyMetadata $metadata
+     */
     private function generateLookupMethods($def, $metadata)
     {
         $found = false;
