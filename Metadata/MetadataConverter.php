@@ -69,7 +69,11 @@ class MetadataConverter
             }
 
             if ($classMetadata->initMethod) {
-                throw new \RuntimeException(sprintf('You can\'t use @AfterSetup on a service.'));
+                if (!method_exists($definition, 'setInitMethod')) {
+                    throw new \RuntimeException(sprintf('@AfterSetup is not available on your Symfony version.'));
+                }
+
+                $definition->setInitMethod($classMetadata->initMethod);
             }
 
             $definitions[$classMetadata->id] = $definition;
