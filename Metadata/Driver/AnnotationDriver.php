@@ -209,6 +209,7 @@ class AnnotationDriver implements DriverInterface
                     }
 
                     $metadata->initMethod = $method->name;
+                    $metadata->initMethods[] = $method->name;
                 } else if ($annot instanceof MetadataProcessorInterface) {
                     if (null === $metadata->id) {
                         $metadata->id = $this->namingStrategy->classToServiceName($className);
