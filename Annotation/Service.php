@@ -48,6 +48,9 @@ final class Service
     /** @var boolean */
     public $abstract;
 
+    /** @var boolean */
+    public $lazy;
+
     /** @var array<string> */
     public $environments = array();
 }
