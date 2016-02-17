@@ -114,6 +114,10 @@ class ClassMetadata extends BaseClassMetadata
             $this->deprecated,
         ) = $data;
 
+        if (isset($data[13])) {
+            $this->environments = $data[13];
+        }
+
         parent::unserialize($parentStr);
     }
 }
