@@ -18,8 +18,8 @@
 
 namespace JMS\DiExtraBundle\Metadata;
 
+use JMS\DiExtraBundle\Exception\InvalidParentException;
 use JMS\DiExtraBundle\Exception\InvalidAnnotationException;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
 use Metadata\ClassHierarchyMetadata;
@@ -30,75 +30,123 @@ class MetadataConverter
      * Converts class hierarchy metadata to definition instances.
      *
      * @param ClassHierarchyMetadata $metadata
+     * @param string                 $environment
      * @return array an array of Definition instances
      */
-    public function convert(ClassHierarchyMetadata $metadata)
+    public function convert(ClassHierarchyMetadata $metadata, $environment = null)
     {
         static $count = 0;
         $definitions = array();
 
+        /** @var ClassMetadata $previous */
         $previous = null;
+        /** @var ClassMetadata $classMetadata */
         foreach ($metadata->classMetadata as $classMetadata) {
-            if (null === $previous && null === $classMetadata->parent) {
-                $definition = new Definition();
-            } else {
-                $definition = new DefinitionDecorator(
-                    $classMetadata->parent ?: $previous->id
-                );
-            }
+            foreach ($classMetadata->getServices() as $service) {
+                if (null !== $environment
+                    && isset($service['environments'])
+                    && sizeof($service['environments']) > 0
+                    && !in_array($environment, $service['environments'])
+                ) {
+                    continue;
+                }
 
-            $definition->setClass($classMetadata->name);
-            if (null !== $classMetadata->scope) {
-                $definition->setScope($classMetadata->scope);
-            }
-            if (null !== $classMetadata->public) {
-                $definition->setPublic($classMetadata->public);
-            }
-            if (null !== $classMetadata->abstract) {
-                $definition->setAbstract($classMetadata->abstract);
-            }
-            if (null !== $classMetadata->arguments) {
-                $definition->setArguments($classMetadata->arguments);
-            }
+                if (null === $previous && !isset($service['parent'])) {
+                    $definition = new Definition();
+                } else {
+                    if (!isset($service['parent']) && sizeof($previous->getServices()) > 1) {
+                        throw new InvalidParentException('there are multiple services on '.$classMetadata->name);
+                    }
 
-            $definition->setMethodCalls($classMetadata->methodCalls);
-            $definition->setTags($classMetadata->tags);
-            $definition->setProperties($classMetadata->properties);
-
-            if (null !== $classMetadata->decorates) {
-                if (!method_exists($definition, 'setDecoratedService')) {
-                    throw new InvalidAnnotationException(
-                        sprintf(
-                            "decorations require symfony >=2.8 on class %s",
-                            $classMetadata->name
-                        )
+                    $definition = new DefinitionDecorator(
+                        @$service['parent'] ?: $previous->id
                     );
                 }
 
-                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
-            }
+                if (!isset($service['id'])) {
+                    $service['id'] = '_jms_di_extra.unnamed.service_' . $count++;
+                }
 
-            if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {
-                $definition->setDeprecated(true, $classMetadata->deprecated);
-            }
+                $definition->setClass($classMetadata->name);
+                if (isset($service['scope'])) {
+                    if (!method_exists($definition, 'setScope')) {
+                        throw new \RuntimeException('service scopes are not available on your Symfony version.');
+                    }
+                    $definition->setScope($service['scope']);
+                }
+                if (isset($service['public'])) {
+                    $definition->setPublic($service['public']);
+                }
+                if (isset($service['abstract'])) {
+                    $definition->setAbstract($service['abstract']);
+                }
+                if (null !== $classMetadata->arguments) {
+                    $definition->setArguments($classMetadata->arguments);
+                }
 
-            if (null === $classMetadata->id) {
-                $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
-            }
+                $definition->setMethodCalls($this->reduceMethodCalls($classMetadata->methodCalls, $service['id']));
+                $definition->setTags($classMetadata->tags);
+                $definition->setProperties($classMetadata->properties);
+
+                if (isset($service['decorates'])) {
+                    if (!method_exists($definition, 'setDecoratedService')) {
+                        throw new InvalidAnnotationException(
+                            sprintf(
+                                "decorations require symfony >=2.8 on class %s",
+                                $classMetadata->name
+                            )
+                        );
+                    }
+
+                    $definition->setDecoratedService($service['decorates'], $service['decoration_inner_name']);
+                }
+
+                if (isset($service['deprecated']) && method_exists($definition, 'setDeprecated')) {
+                    $definition->setDeprecated(true, $service['deprecated']);
+                }
 
             if (0 !== count($classMetadata->initMethods)) {
-                foreach ($classMetadata->initMethods as $initMethod) {
-                    $definition->addMethodCall($initMethod);
+                foreach ($this->reduceMethodCalls($classMetadata->initMethods, $service['id']) as $initMethod) {
+                    $definition->addMethodCall($initMethod[0]);
                 }
             } elseif (null !== $classMetadata->initMethod) {
                 @trigger_error('ClassMetadata::$initMethod is deprecated since version 1.7 and will be removed in 2.0. Use ClassMetadata::$initMethods instead.', E_USER_DEPRECATED);
                 $definition->addMethodCall($classMetadata->initMethod);
             }
 
-            $definitions[$classMetadata->id] = $definition;
+                $definitions[$service['id']] = $definition;
+            }
+
             $previous = $classMetadata;
         }
 
         return $definitions;
+    }
+
+    /**
+     * @param $methods
+     * @param $serviceId
+     *
+     * @return array
+     */
+    private function reduceMethodCalls($methods, $serviceId)
+    {
+        $reduced = array();
+
+        /*
+         * $settings is an array with 3 keys:
+         *   0: method name
+         *   1: parameters
+         *   2: service restriction
+         */
+        foreach ($methods as $settings) {
+            if (isset($settings[2]) && !in_array($serviceId, $settings[2])) {
+                continue;
+            }
+
+            $reduced[] = $settings;
+        }
+
+        return $reduced;
     }
 }

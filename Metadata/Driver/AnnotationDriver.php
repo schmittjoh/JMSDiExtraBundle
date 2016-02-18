@@ -72,33 +72,41 @@ class AnnotationDriver implements DriverInterface
 
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof Service) {
+                $service = array();
                 if (null === $annot->id) {
-                    $metadata->id = $this->namingStrategy->classToServiceName($className);
+                    $service['id'] = $this->namingStrategy->classToServiceName($className);
                 } else {
-                    $metadata->id = $annot->id;
+                    $service['id'] = $annot->id;
                 }
 
-                $metadata->parent = $annot->parent;
-                $metadata->public = $annot->public;
-                $metadata->scope = $annot->scope;
-                $metadata->abstract = $annot->abstract;
-                $metadata->decorates = $annot->decorates;
-                $metadata->decoration_inner_name = $annot->decoration_inner_name;
-                $metadata->deprecated = $annot->deprecated;
+                $service['parent'] = $annot->parent;
+                $service['public'] = $annot->public;
+                $service['scope'] = $annot->scope;
+                $service['abstract'] = $annot->abstract;
+                $service['environments'] = $annot->environments;
+                $service['decorates'] = $annot->decorates;
+                $service['decoration_inner_name'] = $annot->decoration_inner_name;
+                $service['deprecated'] = $annot->deprecated;
+
+                $metadata->addService($service);
             } else if ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
             } else if ($annot instanceof Validator) {
                 // automatically register as service if not done explicitly
-                if (null === $metadata->id) {
-                    $metadata->id = $this->namingStrategy->classToServiceName($className);
+                if (!$metadata->hasServices()) {
+                    $metadata->addService(array(
+                        'id' => $this->namingStrategy->classToServiceName($className)
+                    ));
                 }
 
                 $metadata->tags['validator.constraint_validator'][] = array(
                     'alias' => $annot->alias,
                 );
             } else if ($annot instanceof AbstractDoctrineListener) {
-                if (null === $metadata->id) {
-                    $metadata->id = $this->namingStrategy->classToServiceName($className);
+                if (!$metadata->hasServices()) {
+                    $metadata->addService(array(
+                        'id' => $this->namingStrategy->classToServiceName($className)
+                    ));
                 }
 
                 foreach ($annot->events as $event) {
@@ -110,8 +118,10 @@ class AnnotationDriver implements DriverInterface
                     );
                 }
             } else if ($annot instanceof FormType) {
-                if (null === $metadata->id) {
-                    $metadata->id = $this->namingStrategy->classToServiceName($className);
+                if (!$metadata->hasServices()) {
+                    $metadata->addService(array(
+                        'id' => $this->namingStrategy->classToServiceName($className)
+                    ));
                 }
 
                 $alias = $annot->alias;
@@ -126,8 +136,10 @@ class AnnotationDriver implements DriverInterface
                     'alias' => $alias,
                 );
             } else if ($annot instanceof MetadataProcessorInterface) {
-                if (null === $metadata->id) {
-                    $metadata->id = $this->namingStrategy->classToServiceName($className);
+                if (!$metadata->hasServices()) {
+                    $metadata->addService(array(
+                        'id' => $this->namingStrategy->classToServiceName($className)
+                    ));
                 }
 
                 $annot->processMetadata($metadata);
@@ -187,7 +199,7 @@ class AnnotationDriver implements DriverInterface
                     if ('__construct' === $name) {
                         $metadata->arguments = $params;
                     } else {
-                        $metadata->methodCalls[] = array($name, $params);
+                        $metadata->methodCalls[] = array($name, $params, $annot->services);
                     }
                 } else if ($annot instanceof LookupMethod) {
                     $hasInjection = true;
@@ -208,8 +220,11 @@ class AnnotationDriver implements DriverInterface
                         throw new \RuntimeException(sprintf('The init method "%s::%s" must be public.', $method->class, $method->name));
                     }
 
-                    $metadata->initMethod = $method->name;
-                    $metadata->initMethods[] = $method->name;
+                    $metadata->initMethods[] = array(
+                        $method->name,
+                        array(), // parameters - to be in line with methodCalls
+                        $annot->services
+                    );
                 } else if ($annot instanceof MetadataProcessorInterface) {
                     if (null === $metadata->id) {
                         $metadata->id = $this->namingStrategy->classToServiceName($className);
