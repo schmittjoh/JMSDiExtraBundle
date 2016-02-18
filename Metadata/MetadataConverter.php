@@ -81,6 +81,21 @@ class MetadataConverter
             if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {
                 $definition->setDeprecated(true, $classMetadata->deprecated);
             }
+            if (null !== $classMetadata->lazy) {
+                if (!method_exists($definition, 'setLazy')) {
+                    throw new \RuntimeException(sprintf('the "lazy" attribute is not available on your Symfony version.'));
+                }
+                $definition->setLazy($classMetadata->lazy);
+            }
+            if (null !== $classMetadata->factoryClass) {
+                $definition->setFactoryClass($classMetadata->factoryClass);
+            }
+            if (null !== $classMetadata->factoryMethod) {
+                $definition->setFactoryMethod($classMetadata->factoryMethod);
+            }
+            if (null !== $classMetadata->factoryService) {
+                $definition->setFactoryService($classMetadata->factoryService);
+            }
 
             if (null === $classMetadata->id) {
                 $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;

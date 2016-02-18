@@ -85,6 +85,21 @@ class AnnotationDriver implements DriverInterface
                 $metadata->decorates = $annot->decorates;
                 $metadata->decoration_inner_name = $annot->decoration_inner_name;
                 $metadata->deprecated = $annot->deprecated;
+                $metadata->lazy = $annot->lazy;
+                $metadata->factoryClass = $annot->factoryClass;
+                $metadata->factoryService = $annot->factoryService;
+                $metadata->factoryMethod = $annot->factoryMethod;
+                if ($annot->factoryMethodArguments !== array()) {
+                    $params = array();
+                    foreach ($annot->factoryMethodArguments as $key => $argument) {
+                        if ($argument instanceof Inject) {
+                            $params[] = $this->convertReferenceValue($key, $argument);
+                        } else {
+                            $params[] = $argument;
+                        }
+                    }
+                    $metadata->arguments = $params;
+                }
             } else if ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
             } else if ($annot instanceof Validator) {
