@@ -102,7 +102,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
     {
         $src = file_get_contents($filename);
 
-        if (!preg_match('/\bnamespace\s+([^;]+);/s', $src, $match)) {
+        if (!preg_match('/\bnamespace\s+([^;\{\s]+)\s*?[;\{]/s', $src, $match)) {
             throw new RuntimeException(sprintf('Namespace could not be determined for file "%s".', $filename));
         }
         $namespace = $match[1];

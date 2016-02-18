@@ -26,6 +26,7 @@ abstract class AbstractPatternFinderTest extends \PHPUnit_Framework_TestCase
 
         $expectedFiles = array(
             realpath(__DIR__.'/../Fixture/NonEmptyDirectory/Service1.php'),
+            realpath(__DIR__.'/../Fixture/NonEmptyDirectory/Service4.php'),
             realpath(__DIR__.'/../Fixture/NonEmptyDirectory/SubDir1/Service2.php'),
             realpath(__DIR__.'/../Fixture/NonEmptyDirectory/SubDir2/Service3.php'),
         );
