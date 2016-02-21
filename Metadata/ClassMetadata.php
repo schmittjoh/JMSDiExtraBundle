@@ -81,6 +81,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->decorates,
             $this->decoration_inner_name,
             $this->deprecated,
+            $this->initMethods,
         ));
     }
 
@@ -109,6 +110,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->decorates,
             $this->decoration_inner_name,
             $this->deprecated,
+            $this->initMethods,
         ) = $data;
 
         parent::unserialize($parentStr);
