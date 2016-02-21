@@ -22,7 +22,6 @@ use CG\Core\DefaultNamingStrategy;
 use CG\Proxy\Enhancer;
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Generator\RepositoryInjectionGenerator;
-use JMS\DiExtraBundle\JMSDiExtraBundle;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
