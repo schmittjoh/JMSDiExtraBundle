@@ -18,6 +18,8 @@
 
 namespace JMS\DiExtraBundle\Tests\Functional;
 
+use Symfony\Component\HttpKernel\Kernel;
+
 class ControllerResolverTest extends BaseTestCase
 {
     /**
@@ -66,5 +68,20 @@ class ControllerResolverTest extends BaseTestCase
         $client->request('GET', '/hello');
 
         $this->assertEquals('hello', $client->getResponse()->getContent());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testInvokableControllerAsService()
+    {
+        if (version_compare(Kernel::VERSION_ID, '20600') < 0) {
+            $this->markTestSkipped('This option is avalible since symfony 2.6');
+        }
+
+        $client = $this->createClient();
+        $client->request('GET', '/invoke');
+
+        $this->assertEquals('invoked', $client->getResponse()->getContent());
     }
 }
