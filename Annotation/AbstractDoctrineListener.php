@@ -24,7 +24,7 @@ abstract class AbstractDoctrineListener
     public $events;
 
     /** @var string */
-    public $connection;
+    public $connection = 'default';
 
     /** @var boolean */
     public $lazy = true;

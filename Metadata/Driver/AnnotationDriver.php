@@ -104,7 +104,7 @@ class AnnotationDriver implements DriverInterface
                 foreach ($annot->events as $event) {
                     $metadata->tags[$annot->getTag()][] = array(
                         'event' => $event,
-                        'connection' => $annot->connection ?: 'default',
+                        'connection' => $annot->connection,
                         'lazy' => $annot->lazy,
                         'priority' => $annot->priority,
                     );
