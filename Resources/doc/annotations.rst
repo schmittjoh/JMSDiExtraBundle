@@ -243,6 +243,7 @@ Automatically, registers the given class as a listener with the Doctrine ORM or 
      *     lazy = true,
      *     priority = 0,
      * )
+     */
     class MyListener
     {
         // ...
