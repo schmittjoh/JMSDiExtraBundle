@@ -37,5 +37,5 @@ abstract class AbstractDoctrineListener
      *
      * @return string
      */
-    public abstract function getTag();
+    abstract public function getTag();
 }
