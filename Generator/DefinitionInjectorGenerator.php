@@ -84,10 +84,10 @@ class DefinitionInjectorGenerator
             $name = $this->nameGenerator->nextName();
             $this->inlinedDefinitions[$inlineDef] = $name;
 
-            $writer->writeln('$'.$name.' = new \\'.ltrim($inlineDef->getClass(), "\\").$this->dumpArguments($inlineDef->getArguments()).';');
+            $writer->writeln('$'.$name.' = new '.$this->dumpClassName($inlineDef).$this->dumpArguments($inlineDef->getArguments()).';');
         }
 
-        $writer->writeln('$instance = new \\'.ltrim($def->getClass(), "\\").$this->dumpArguments($def->getArguments()).';');
+        $writer->writeln('$instance = new '.$this->dumpClassName($def).$this->dumpArguments($def->getArguments()).';');
 
         foreach ($def->getMethodCalls() as $call) {
             list($method, $arguments) = $call;
@@ -170,6 +170,15 @@ class DefinitionInjectorGenerator
                 $this->getDefinitionsFromArray($v, $defs);
             }
         }
+    }
+
+    /**
+     * @param Definition $definition
+     * @return string
+     */
+    private function dumpClassName(Definition $definition)
+    {
+        return '\\'.ltrim($definition->getClass(), "\\");
     }
 
     private function dumpArguments(array $arguments)
