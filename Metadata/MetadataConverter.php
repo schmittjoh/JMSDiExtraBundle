@@ -42,9 +42,14 @@ class MetadataConverter
             if (null === $previous && null === $classMetadata->parent) {
                 $definition = new Definition();
             } else {
-                $definition = new DefinitionDecorator(
-                    $classMetadata->parent ?: $previous->id
-                );
+                $parent = $classMetadata->parent ?: $previous->id;
+
+                // reset the parent constructor parameters if current constructor is set
+                if (null !== @$definitions[$parent] && null !== $classMetadata->arguments) {
+                    $definitions[$parent]->setArguments(array());
+                }
+
+                $definition = new DefinitionDecorator($parent);
             }
 
             $definition->setClass($classMetadata->name);
