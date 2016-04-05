@@ -24,7 +24,7 @@ abstract class AbstractDoctrineListener
     public $events;
 
     /** @var string */
-    public $connection;
+    public $connection = 'default';
 
     /** @var boolean */
     public $lazy = true;
@@ -37,5 +37,5 @@ abstract class AbstractDoctrineListener
      *
      * @return string
      */
-    public abstract function getTag();
+    abstract public function getTag();
 }
