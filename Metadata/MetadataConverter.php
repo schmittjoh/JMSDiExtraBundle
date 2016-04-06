@@ -51,6 +51,9 @@ class MetadataConverter
             if (null !== $classMetadata->scope) {
                 $definition->setScope($classMetadata->scope);
             }
+            if (null !== $classMetadata->shared) {
+                $definition->setShared($classMetadata->shared);
+            }
             if (null !== $classMetadata->public) {
                 $definition->setPublic($classMetadata->public);
             }

@@ -28,6 +28,7 @@ class ClassMetadata extends BaseClassMetadata
     public $id;
     public $parent;
     public $scope;
+    public $shared;
     public $public;
     public $abstract;
     public $tags = array();
@@ -68,6 +69,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->id,
             $this->parent,
             $this->scope,
+            $this->shared,
             $this->public,
             $this->abstract,
             $this->tags,
@@ -97,6 +99,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->id,
             $this->parent,
             $this->scope,
+            $this->shared,
             $this->public,
             $this->abstract,
             $this->tags,

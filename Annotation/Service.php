@@ -36,6 +36,9 @@ final class Service
     /** @var string */
     public $scope;
 
+    /** @var boolean */
+    public $shared;
+
     /** @var string */
     public $deprecated;
 
