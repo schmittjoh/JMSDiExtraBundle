@@ -18,51 +18,65 @@
 
 namespace JMS\DiExtraBundle\HttpKernel;
 
-use Metadata\ClassHierarchyMetadata;
-use JMS\DiExtraBundle\Metadata\ClassMetadata;
-use CG\Core\DefaultNamingStrategy;
 use CG\Proxy\Enhancer;
 use JMS\AopBundle\DependencyInjection\Compiler\PointcutMatchingPass;
 use JMS\DiExtraBundle\Generator\DefinitionInjectorGenerator;
 use JMS\DiExtraBundle\Generator\LookupMethodClassGenerator;
-use JMS\DiExtraBundle\DependencyInjection\Dumper\PhpDumper;
-use Metadata\MetadataFactory;
-use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
-use Symfony\Component\DependencyInjection\Parameter;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\Config\Resource\FileResource;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\ConfigCache;
+use JMS\DiExtraBundle\Metadata\ClassMetadata;
+use Metadata\ClassHierarchyMetadata;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControllerResolver;
+use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
+use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class ControllerResolver extends BaseControllerResolver
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function createController($controller)
     {
-        if (false === $pos = strpos($controller, '::')) {
+        if (false === strpos($controller, '::')) {
             $count = substr_count($controller, ':');
             if (2 == $count) {
                 // controller in the a:b:c notation then
                 $controller = $this->parser->parse($controller);
-                $pos = strpos($controller, '::');
             } elseif (1 == $count) {
                 // controller in the service:method notation
-                list($service, $method) = explode(':', $controller);
+                list($service, $method) = explode(':', $controller, 2);
 
                 return array($this->container->get($service), $method);
+            } elseif ($this->container->has($controller) && method_exists($service = $this->container->get($controller), '__invoke')) {
+                return $service;
             } else {
                 throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
             }
         }
 
-        $class = substr($controller, 0, $pos);
-        $method = substr($controller, $pos+2);
+        list($class, $method) = explode('::', $controller, 2);
 
         if (!class_exists($class)) {
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+        }
+
+        return array($this->instantiateController($class), $method);
+    }
+
+    /**
+     * Returns an instantiated controller.
+     *
+     * @param string $class A class name
+     *
+     * @return object
+     */
+    protected function instantiateController($class)
+    {
+        if ($this->container->has($class)) {
+            return $this->container->get($class);
         }
 
         $injector = $this->createInjector($class);
@@ -72,7 +86,7 @@ class ControllerResolver extends BaseControllerResolver
             $controller->setContainer($this->container);
         }
 
-        return array($controller, $method);
+        return $controller;
     }
 
     public function createInjector($class)

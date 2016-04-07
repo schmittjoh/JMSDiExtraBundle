@@ -67,4 +67,15 @@ class ControllerResolverTest extends BaseTestCase
 
         $this->assertEquals('hello', $client->getResponse()->getContent());
     }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testInvokableControllerAsService()
+    {
+        $client = $this->createClient();
+        $client->request('GET', '/invoke');
+
+        $this->assertEquals('invoked', $client->getResponse()->getContent());
+    }
 }
