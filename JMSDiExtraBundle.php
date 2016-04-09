@@ -20,26 +20,24 @@ namespace JMS\DiExtraBundle;
 
 use JMS\DiExtraBundle\DependencyInjection\Compiler\ResourceOptimizationPass;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\IntegrationPass;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\AnnotationConfigurationPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Builder.
+ */
 class JMSDiExtraBundle extends Bundle
 {
-    private $kernel;
-
-    public function __construct(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
-
+    /**
+     * @param ContainerBuilder $container
+     */
     public function build(ContainerBuilder $container)
     {
         $config = $container->getCompiler()->getPassConfig();
         $passes = $config->getBeforeOptimizationPasses();
-        array_unshift($passes, new AnnotationConfigurationPass($this->kernel));
+        array_unshift($passes, new AnnotationConfigurationPass());
         $config->setBeforeOptimizationPasses($passes);
 
         $container->addCompilerPass(new IntegrationPass());

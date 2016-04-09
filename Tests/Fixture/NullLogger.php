@@ -16,26 +16,15 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Annotation;
+namespace JMS\DiExtraBundle\Tests\Fixture;
 
-abstract class AbstractDoctrineListener
-{
-    /** @var array<string> @Required */
-    public $events;
+use Psr\Log\NullLogger as PsrNullLogger;
+use Symfony\Component\HttpKernel\Log\NullLogger as SfNullLogger;
 
-    /** @var string */
-    public $connection = 'default';
-
-    /** @var boolean */
-    public $lazy = true;
-
-    /** @var integer */
-    public $priority = 0;
-
-    /**
-     * Returns the DI tag name
-     *
-     * @return string
-     */
-    abstract public function getTag();
+if (class_exists('JMS\SecurityExtraBundle\DependencyInjection\Compiler\SecurityCompatibilityPass')) {
+    class NullLogger extends PsrNullLogger {
+    }
+} else {
+    class NullLogger extends SfNullLogger {
+    }
 }

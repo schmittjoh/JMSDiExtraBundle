@@ -16,26 +16,7 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Annotation;
+namespace JMS\DiExtraBundle\Exception;
 
-abstract class AbstractDoctrineListener
-{
-    /** @var array<string> @Required */
-    public $events;
-
-    /** @var string */
-    public $connection = 'default';
-
-    /** @var boolean */
-    public $lazy = true;
-
-    /** @var integer */
-    public $priority = 0;
-
-    /**
-     * Returns the DI tag name
-     *
-     * @return string
-     */
-    abstract public function getTag();
-}
+class InvalidAnnotationException extends \InvalidArgumentException implements Exception
+{}

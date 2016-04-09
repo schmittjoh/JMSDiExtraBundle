@@ -83,6 +83,9 @@ class AnnotationDriver implements DriverInterface
                 $metadata->public = $annot->public;
                 $metadata->scope = $annot->scope;
                 $metadata->abstract = $annot->abstract;
+                $metadata->decorates = $annot->decorates;
+                $metadata->decoration_inner_name = $annot->decoration_inner_name;
+                $metadata->deprecated = $annot->deprecated;
             } else if ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
             } else if ($annot instanceof Validator) {
@@ -102,7 +105,7 @@ class AnnotationDriver implements DriverInterface
                 foreach ($annot->events as $event) {
                     $metadata->tags[$annot->getTag()][] = array(
                         'event' => $event,
-                        'connection' => $annot->connection ?: 'default',
+                        'connection' => $annot->connection,
                         'lazy' => $annot->lazy,
                         'priority' => $annot->priority,
                     );
@@ -209,6 +212,7 @@ class AnnotationDriver implements DriverInterface
                     }
 
                     $metadata->initMethod = $method->name;
+                    $metadata->initMethods[] = $method->name;
                 } else if ($annot instanceof MetadataProcessorInterface) {
                     if ($annot instanceof InjectionAnnotationInterface) {
                         $hasInjection = true;

@@ -16,26 +16,24 @@
  * limitations under the License.
  */
 
-namespace JMS\DiExtraBundle\Annotation;
+namespace JMS\DiExtraBundle\Config;
 
-abstract class AbstractDoctrineListener
-{
-    /** @var array<string> @Required */
-    public $events;
+use Symfony\Component\Config\Resource\ResourceInterface;
+use Symfony\Component\Config\Resource\SelfCheckingResourceInterface;
 
-    /** @var string */
-    public $connection = 'default';
-
-    /** @var boolean */
-    public $lazy = true;
-
-    /** @var integer */
-    public $priority = 0;
-
+// BC for sf < 2.8
+if(interface_exists('Symfony\Component\Config\Resource\SelfCheckingResourceInterface')) {
     /**
-     * Returns the DI tag name
-     *
-     * @return string
+     * @internal do not use this class
      */
-    abstract public function getTag();
+    abstract class InternalResource implements ResourceInterface, SelfCheckingResourceInterface
+    {
+    }
+} else {
+    /**
+     * @internal do not use this class
+     */
+    abstract class InternalResource implements ResourceInterface
+    {
+    }
 }

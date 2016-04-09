@@ -107,6 +107,8 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $container = new ContainerBuilder();
         $container->set('annotation_reader', new AnnotationReader());
         $container->setParameter('kernel.debug', false);
+        $container->setParameter('kernel.environment', 'test');
+        $container->setParameter('kernel.bundles', $bundles);
         $container->setParameter('kernel.cache_dir', sys_get_temp_dir().'/JMSDiExtraBundle-Test-AnnotationCFG');
         $container->setParameter('kernel.environment', 'test');
 
@@ -126,14 +128,9 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
 
     private function process(ContainerBuilder $container, array $bundles = array())
     {
-        $kernel = $this->getMock('Symfony\Component\HttpKernel\KernelInterface');
-        $kernel
-            ->expects($this->once())
-            ->method('getBundles')
-            ->will($this->returnValue($bundles))
-        ;
+        $container->setParameter('kernel.bundles', $bundles);
 
-        $pass = new AnnotationConfigurationPass($kernel);
+        $pass = new AnnotationConfigurationPass();
         $pass->process($container);
     }
 }

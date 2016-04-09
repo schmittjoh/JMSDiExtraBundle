@@ -18,6 +18,7 @@
 
 namespace JMS\DiExtraBundle\Metadata;
 
+use JMS\DiExtraBundle\Exception\InvalidAnnotationException;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -64,16 +65,34 @@ class MetadataConverter
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);
 
+            if (null !== $classMetadata->decorates) {
+                if (!method_exists($definition, 'setDecoratedService')) {
+                    throw new InvalidAnnotationException(
+                        sprintf(
+                            "decorations require symfony >=2.8 on class %s",
+                            $classMetadata->name
+                        )
+                    );
+                }
+
+                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
+            }
+
+            if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {
+                $definition->setDeprecated(true, $classMetadata->deprecated);
+            }
+
             if (null === $classMetadata->id) {
                 $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
             }
 
-            if ($classMetadata->initMethod) {
-                if (!method_exists($definition, 'setInitMethod')) {
-                    throw new \RuntimeException(sprintf('@AfterSetup is not available on your Symfony version.'));
+            if (0 !== count($classMetadata->initMethods)) {
+                foreach ($classMetadata->initMethods as $initMethod) {
+                    $definition->addMethodCall($initMethod);
                 }
-
-                $definition->setInitMethod($classMetadata->initMethod);
+            } elseif (null !== $classMetadata->initMethod) {
+                @trigger_error('ClassMetadata::$initMethod is deprecated since version 1.7 and will be removed in 2.0. Use ClassMetadata::$initMethods instead.', E_USER_DEPRECATED);
+                $definition->addMethodCall($classMetadata->initMethod);
             }
 
             $definitions[$classMetadata->id] = $definition;

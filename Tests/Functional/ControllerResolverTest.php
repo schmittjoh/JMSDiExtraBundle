@@ -39,7 +39,7 @@ class ControllerResolverTest extends BaseTestCase
         $client = $this->createClient();
         $client->request('GET', '/lookup-method-and-aop');
 
-        $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'), substr((string) $client->getResponse(), 0, 512));
+        $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'), substr((string) $client->getResponse(), 0, 1024));
 
         $client->insulate();
         $client->request('GET', '/lookup-method-and-aop');
@@ -66,5 +66,16 @@ class ControllerResolverTest extends BaseTestCase
         $client->request('GET', '/hello');
 
         $this->assertEquals('hello', $client->getResponse()->getContent());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testInvokableControllerAsService()
+    {
+        $client = $this->createClient();
+        $client->request('GET', '/invoke');
+
+        $this->assertEquals('invoked', $client->getResponse()->getContent());
     }
 }

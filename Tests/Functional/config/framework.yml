@@ -5,12 +5,12 @@ framework:
         storage_id: session.storage.filesystem
     form:            true
     csrf_protection: true
-    validation:       
+    validation:
         enabled: true
         enable_annotations: true
     router:
         resource: %kernel.root_dir%/config/routing.yml
 
 services:
-    logger: 
-        class: Symfony\Component\HttpKernel\Log\NullLogger
+    logger:
+        class: JMS\DiExtraBundle\Tests\Fixture\NullLogger

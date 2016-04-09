@@ -18,39 +18,78 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
+use JMS\DiExtraBundle\Metadata\MetadataConverter;
+use Metadata\AdvancedMetadataFactoryInterface;
 use JMS\DiExtraBundle\Exception\RuntimeException;
 use JMS\DiExtraBundle\Config\ServiceFilesResource;
 use Symfony\Component\Config\Resource\FileResource;
 use JMS\DiExtraBundle\Finder\PatternFinder;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
+/**
+ * Search for annotation usage.
+ */
 class AnnotationConfigurationPass implements CompilerPassInterface
 {
-    private $kernel;
+    /**
+     * @var string[]
+     */
+    private $patterns;
 
-    public function __construct(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-    }
-
+    /**
+     * @param ContainerBuilder $container
+     */
     public function process(ContainerBuilder $container)
     {
+        /** @var AdvancedMetadataFactoryInterface $factory */
         $factory = $container->get('jms_di_extra.metadata.metadata_factory');
+        /** @var MetadataConverter $converter */
         $converter = $container->get('jms_di_extra.metadata.converter');
-        $annotationNamespaces = $container->getParameter('jms_di_extra.annotation_namespaces');
-        $annotationNamespaces[] = 'JMS\DiExtraBundle\Annotation';
         $disableGrep = $container->getParameter('jms_di_extra.disable_grep');
 
         $directories = $this->getScanDirectories($container);
         if (!$directories) {
             $container->getCompiler()->addLogMessage('No directories configured for AnnotationConfigurationPass.');
+
             return;
         }
 
-        $files = $this->findFiles($directories, $annotationNamespaces, $disableGrep);
-        $container->addResource(new ServiceFilesResource($files, $directories, $annotationNamespaces, $disableGrep));
+        /*
+         * process all available patterns
+         */
+        foreach ($this->getPatterns($container) as $pattern) {
+            $this->handlePattern($container, $directories, $pattern, $factory, $converter, $disableGrep);
+        }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @return \string[]
+     */
+    private function getPatterns(ContainerBuilder $container)
+    {
+        if (null === $this->patterns) {
+            $this->patterns = $container->getParameter('jms_di_extra.annotation_patterns');
+            $container->getParameterBag()->remove('jms_di_extra.annotation_patterns');
+        }
+
+        return $this->patterns;
+    }
+
+    /**
+     * @param ContainerBuilder                 $container
+     * @param string[]                         $directories
+     * @param string                           $pattern
+     * @param AdvancedMetadataFactoryInterface $factory
+     * @param MetadataConverter                $converter
+     * @param bool                             $disableGrep
+     */
+    private function handlePattern(ContainerBuilder $container, $directories, $pattern, $factory, $converter, $disableGrep)
+    {
+        $finder = new PatternFinder($pattern, '*.php', $disableGrep);
+        $files = $finder->findFiles($directories);
+        $container->addResource(new ServiceFilesResource($files, $directories, $disableGrep));
         foreach ($files as $file) {
             $container->addResource(new FileResource($file));
             require_once $file;
@@ -63,7 +102,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
             if (null === $metadata->getOutsideClassMetadata()->id) {
                 continue;
             }
-            if ( ! $metadata->getOutsideClassMetadata()->isLoadedInEnvironment($container->getParameter('kernel.environment'))) {
+            if (!$metadata->getOutsideClassMetadata()->isLoadedInEnvironment($container->getParameter('kernel.environment'))) {
                 continue;
             }
 
@@ -73,21 +112,16 @@ class AnnotationConfigurationPass implements CompilerPassInterface
         }
     }
 
-    private function findFiles(array $directories, array $annotationNamespaces, $disableGrep)
-    {
-        $files = [];
-        foreach ($annotationNamespaces as $namespace) {
-            $finder = new PatternFinder($namespace, '*.php', $disableGrep);
-            foreach ($finder->findFiles($directories) as $file) {
-                $files[$file] = $file;
-            }
-        }
-        return array_values($files);
-    }
-
+    /**
+     * Figure out where to search for usages.
+     *
+     * @param ContainerBuilder $c
+     *
+     * @return string[]
+     */
     private function getScanDirectories(ContainerBuilder $c)
     {
-        $bundles = $this->kernel->getBundles();
+        $bundles = $c->getParameter('kernel.bundles');
         $scanBundles = $c->getParameter('jms_di_extra.bundles');
         $scanAllBundles = $c->getParameter('jms_di_extra.all_bundles');
 
@@ -101,24 +135,27 @@ class AnnotationConfigurationPass implements CompilerPassInterface
                 continue;
             }
 
-            $directories[] = $bundle->getPath();
+            $reflected = new \ReflectionClass($bundle);
+            $directories[] = dirname($reflected->getFileName());
         }
 
         return $directories;
     }
 
     /**
-     * Only supports one namespaced class per file
+     * Only supports one namespaced class per file.
      *
      * @throws \RuntimeException if the class name cannot be extracted
+     *
      * @param string $filename
+     *
      * @return string the fully qualified class name
      */
     private function getClassName($filename)
     {
         $src = file_get_contents($filename);
 
-        if (!preg_match('/\bnamespace\s+([^;]+);/s', $src, $match)) {
+        if (!preg_match('/\bnamespace\s+([^;\{\s]+)\s*?[;\{]/s', $src, $match)) {
             throw new RuntimeException(sprintf('Namespace could not be determined for file "%s".', $filename));
         }
         $namespace = $match[1];

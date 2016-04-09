@@ -20,8 +20,9 @@ namespace JMS\DiExtraBundle\Config;
 
 use JMS\DiExtraBundle\Finder\PatternFinder;
 use Symfony\Component\Config\Resource\ResourceInterface;
+use Symfony\Component\Config\Resource\SelfCheckingResourceInterface;
 
-class ServiceFilesResource implements ResourceInterface
+class ServiceFilesResource extends InternalResource
 {
     private $files;
     private $dirs;

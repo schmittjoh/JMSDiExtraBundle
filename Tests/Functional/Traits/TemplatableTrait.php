@@ -1,6 +1,6 @@
 <?php
 
-namespace JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Traits;
+namespace JMS\DiExtraBundle\Tests\Functional\Traits;
 
 use Symfony\Component\Templating\EngineInterface;
 use JMS\DiExtraBundle\Annotation as DI;
