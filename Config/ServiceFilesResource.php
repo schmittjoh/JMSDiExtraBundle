@@ -27,32 +27,22 @@ class ServiceFilesResource extends InternalResource
     private $files;
     private $dirs;
     private $disableGrep;
-    private $annotationNamespaces;
+    private $pattern;
 
-    public function __construct(array $files, array $dirs, array $annotationNamespaces, $disableGrep)
+    public function __construct(array $files, array $dirs, $pattern, $disableGrep)
     {
         $this->files = $files;
         $this->dirs = $dirs;
-        $this->annotationNamespaces = $annotationNamespaces;
+        $this->pattern = $pattern;
         $this->disableGrep = $disableGrep;
     }
 
     public function isFresh($timestamp)
     {
-        $files = $this->findFiles($this->dirs, $this->annotationNamespaces, $this->disableGrep);
-        return !array_diff($files, $this->files) && !array_diff($this->files, $files);
-    }
+        $finder = new PatternFinder($this->pattern, '*.php', $this->disableGrep);
+        $files = $finder->findFiles($this->dirs);
 
-    private function findFiles(array $directories, array $annotationNamespaces, $disableGrep)
-    {
-        $files = [];
-        foreach ($annotationNamespaces as $namespace) {
-            $finder = new PatternFinder($namespace, '*.php', $disableGrep);
-            foreach ($finder->findFiles($directories) as $file) {
-                $files[$file] = $file;
-            }
-        }
-        return array_values($files);
+        return !array_diff($files, $this->files) && !array_diff($this->files, $files);
     }
 
     public function __toString()
