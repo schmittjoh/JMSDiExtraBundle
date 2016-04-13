@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI; // Use this alias in order to not have t
 /**
  * @DI\Service(
  *     id="test.service",
+ *     environments={"dev", "test"},
  *     decorates="test.service",
  *     decoration_inner_name="original.test.service",
  *     deprecated="use new.test.service instead",
