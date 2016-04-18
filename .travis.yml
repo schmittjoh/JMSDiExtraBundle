@@ -1,8 +1,6 @@
 language: php
 
 php:
-  - 5.3
-  - 5.4
   - 5.5
   - 5.6
   - 7.0
@@ -23,7 +21,11 @@ matrix:
     fast_finish: true
     include:
         - php: 5.3
+          env: SYMFONY_DEPRECATIONS_HELPER=weak
+        - php: 5.3
           env: COMPOSER_FLAGS="--prefer-lowest" SYMFONY_DEPRECATIONS_HELPER=weak
+        - php: 5.4
+          env: SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 7.0
           env: SYMFONY_VERSION=2.7.* SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 7.0
