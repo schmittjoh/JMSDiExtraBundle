@@ -23,11 +23,11 @@ matrix:
     fast_finish: true
     include:
         - php: 5.3
-          env: COMPOSER_FLAGS="--prefer-lowest" SYMFONY_DEPRECATIONS_HELPER: weak
+          env: COMPOSER_FLAGS="--prefer-lowest" SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 7.0
-          env: SYMFONY_VERSION=2.7.* SYMFONY_DEPRECATIONS_HELPER: weak
+          env: SYMFONY_VERSION=2.7.* SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 7.0
-          env: SYMFONY_VERSION=2.8.* COVERAGE=true SYMFONY_DEPRECATIONS_HELPER: weak
+          env: SYMFONY_VERSION=2.8.* COVERAGE=true SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 7.0
           env: SYMFONY_VERSION=3.0.*
 
