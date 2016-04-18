@@ -41,6 +41,7 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
     {
         $metadata = $this->getDriver()->loadMetadataForClass(new \ReflectionClass('JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture\Service'));
         $this->assertEquals('test.service', $metadata->id);
+        $this->assertEquals(array('dev', 'test'), $metadata->environments);
         $this->assertEquals('test.service', $metadata->decorates);
         $this->assertEquals('original.test.service', $metadata->decoration_inner_name);
         $this->assertEquals('use new.test.service instead', $metadata->deprecated);
