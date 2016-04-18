@@ -121,7 +121,7 @@ class AnnotationDriver implements DriverInterface
                 // try to extract it from the class itself
                 if (null === $alias) {
                     $instance = unserialize(sprintf('O:%d:"%s":0:{}', strlen($className), $className));
-                    $alias = $instance->getName();
+                    $alias = method_exists($instance, 'getBlockPrefix') ? $instance->getBlockPrefix() : $instance->getName();
                 }
 
                 $metadata->tags['form.type'][] = array(
