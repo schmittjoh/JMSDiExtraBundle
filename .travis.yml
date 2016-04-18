@@ -8,9 +8,10 @@ php:
   - 7.0
   - hhvm
 
-env:
-    global:
-        - SYMFONY_DEPRECATIONS_HELPER: weak
+branches:
+    only:
+        - master
+        - /^\d+\.\d+$/
 
 sudo: false
 
@@ -22,13 +23,13 @@ matrix:
     fast_finish: true
     include:
         - php: 5.3
-          env: COMPOSER_FLAGS="--prefer-lowest"
+          env: COMPOSER_FLAGS="--prefer-lowest" SYMFONY_DEPRECATIONS_HELPER: weak
         - php: 7.0
-          env: SYMFONY_VERSION=2.7.*
+          env: SYMFONY_VERSION=2.7.* SYMFONY_DEPRECATIONS_HELPER: weak
         - php: 7.0
-          env: SYMFONY_VERSION=2.8.* COVERAGE=true
+          env: SYMFONY_VERSION=2.8.* COVERAGE=true SYMFONY_DEPRECATIONS_HELPER: weak
         - php: 7.0
-          env: SYMFONY_VERSION=3.0.* SYMFONY_DEPRECATIONS_HELPER=strict
+          env: SYMFONY_VERSION=3.0.*
 
 before_script:
     - composer self-update
