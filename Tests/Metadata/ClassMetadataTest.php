@@ -32,6 +32,8 @@ class ClassMetadataTest extends \PHPUnit_Framework_TestCase
         $classMetadata->deprecated = true;
         $classMetadata->decorates = 'test.service';
         $classMetadata->decoration_inner_name = 'old.test.service';
+        $classMetadata->autowire = true;
+        $classMetadata->autowiringTypes = array('JMS\DiExtraBundle\Tests\Fixture\LoginController');
 
         $this->assertEquals($classMetadata, unserialize(serialize($classMetadata)));
     }

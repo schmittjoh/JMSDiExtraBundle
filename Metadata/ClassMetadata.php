@@ -46,6 +46,9 @@ class ClassMetadata extends BaseClassMetadata
     public $decoration_inner_name;
     public $deprecated;
 
+    public $autowire;
+    public $autowiringTypes;
+
     /**
      * @param string $env
      *
@@ -72,12 +75,14 @@ class ClassMetadata extends BaseClassMetadata
             $this->shared,
             $this->public,
             $this->abstract,
+            $this->autowire,
             $this->tags,
             $this->arguments,
             $this->methodCalls,
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
+            $this->autowiringTypes,
             parent::serialize(),
             $this->environments,
             $this->decorates,
@@ -102,12 +107,14 @@ class ClassMetadata extends BaseClassMetadata
             $this->shared,
             $this->public,
             $this->abstract,
+            $this->autowire,
             $this->tags,
             $this->arguments,
             $this->methodCalls,
             $this->lookupMethods,
             $this->properties,
             $this->initMethod,
+            $this->autowiringTypes,
             $parentStr,
             $this->environments,
             $this->decorates,

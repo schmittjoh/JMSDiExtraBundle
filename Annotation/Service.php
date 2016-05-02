@@ -53,4 +53,10 @@ final class Service
 
     /** @var array<string> */
     public $environments = array();
+
+    /** @var boolean */
+    public $autowire;
+
+    /** @var array<string> */
+    public $autowiringTypes;
 }

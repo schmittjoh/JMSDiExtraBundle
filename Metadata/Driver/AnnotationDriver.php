@@ -87,6 +87,8 @@ class AnnotationDriver implements DriverInterface
                 $metadata->decoration_inner_name = $annot->decoration_inner_name;
                 $metadata->deprecated = $annot->deprecated;
                 $metadata->environments = $annot->environments;
+                $metadata->autowire = $annot->autowire;
+                $metadata->autowiringTypes = $annot->autowiringTypes;
             } else if ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
             } else if ($annot instanceof Validator) {
