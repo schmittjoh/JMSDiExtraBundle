@@ -70,12 +70,7 @@ class MetadataConverter
 
             if (null !== $classMetadata->decorates) {
                 if (!method_exists($definition, 'setDecoratedService')) {
-                    throw new InvalidAnnotationException(
-                        sprintf(
-                            "decorations require symfony >=2.8 on class %s",
-                            $classMetadata->name
-                        )
-                    );
+                    throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use decorations on the class %s.', $classMetadata->name));
                 }
 
                 $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
