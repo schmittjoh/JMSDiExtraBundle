@@ -63,19 +63,25 @@ class MetadataConverter
             if (null !== $classMetadata->arguments) {
                 $definition->setArguments($classMetadata->arguments);
             }
+            if (null !== $classMetadata->autowire) {
+                if (!method_exists($definition, 'setAutowire')) {
+                    throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use autowiring on the class %s.', $classMetadata->name));
+                }
 
+                $definition->setAutowire($classMetadata->autowire);
+            }
+            if (null !== $classMetadata->autowiringTypes && method_exists($definition, 'setAutowiringTypes')) {
+                $definition->setAutowiringTypes($classMetadata->autowiringTypes);
+            }
+
+            
             $definition->setMethodCalls($classMetadata->methodCalls);
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);
 
             if (null !== $classMetadata->decorates) {
                 if (!method_exists($definition, 'setDecoratedService')) {
-                    throw new InvalidAnnotationException(
-                        sprintf(
-                            "decorations require symfony >=2.8 on class %s",
-                            $classMetadata->name
-                        )
-                    );
+                    throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use decorations on the class %s.', $classMetadata->name));
                 }
 
                 $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
