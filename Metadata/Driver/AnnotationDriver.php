@@ -72,6 +72,10 @@ class AnnotationDriver implements DriverInterface
 
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof Service) {
+                if ($annot->decorationInnerName === null && $annot->decoration_inner_name !== null) {
+                    @trigger_error('@Service(decoration_inner_name="...") is deprecated since version 1.8 and will be removed in 2.0. Use @Service(decorationInnerName="...") instead.', E_USER_DEPRECATED);
+                }
+                
                 if (null === $annot->id) {
                     $metadata->id = $this->namingStrategy->classToServiceName($className);
                 } else {
@@ -84,7 +88,7 @@ class AnnotationDriver implements DriverInterface
                 $metadata->shared = $annot->shared;
                 $metadata->abstract = $annot->abstract;
                 $metadata->decorates = $annot->decorates;
-                $metadata->decoration_inner_name = $annot->decoration_inner_name;
+                $metadata->decorationInnerName = $annot->decorationInnerName ?: $annot->decoration_inner_name;
                 $metadata->deprecated = $annot->deprecated;
                 $metadata->environments = $annot->environments;
                 $metadata->autowire = $annot->autowire;
