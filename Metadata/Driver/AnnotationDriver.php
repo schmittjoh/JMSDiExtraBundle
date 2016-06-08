@@ -224,10 +224,6 @@ class AnnotationDriver implements DriverInterface
             }
         }
 
-        if (null == $metadata->id && !$hasInjection) {
-            return null;
-        }
-
         return $metadata;
     }
 
