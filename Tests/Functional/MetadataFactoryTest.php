@@ -2,7 +2,6 @@
 
 namespace JMS\DiExtraBundle\Tests\Functional;
 
-use JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Inheritance\UnmapedSubClass;
 use Metadata\MetadataFactory;
 
 class MetadataFactoryTest extends BaseTestCase
@@ -16,10 +15,15 @@ class MetadataFactoryTest extends BaseTestCase
         
         $this->assertInstanceOf('\Metadata\MetadataFactory', $metadataFactory);
         
-        $metadata = $metadataFactory->getMetadataForClass(UnmapedSubClass::class);
+        $metadata = $metadataFactory->getMetadataForClass(
+            'JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Inheritance\UnmapedSubClass'
+        );
 
         $this->assertCount(2, $metadata->classMetadata);
-        $this->assertEquals(UnmapedSubClass::class, $metadata->getOutsideClassMetadata()->name);
+        $this->assertEquals(
+            'JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Inheritance\UnmapedSubClass', 
+            $metadata->getOutsideClassMetadata()->name
+        );
     }
     
     /**
