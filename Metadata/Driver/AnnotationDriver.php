@@ -42,6 +42,7 @@ use JMS\DiExtraBundle\Metadata\ClassMetadata;
 use JMS\DiExtraBundle\Metadata\NamingStrategy;
 use Metadata\Driver\DriverInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 
 class AnnotationDriver implements DriverInterface
@@ -175,7 +176,7 @@ class AnnotationDriver implements DriverInterface
                     $params = array();
                     foreach ($method->getParameters() as $param) {
                         if (!isset($annot->params[$paramName = $param->getName()])) {
-                            $params[] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)));
+                            $params[] = $this->convertReferenceValue($paramName, new Inject(array('value' => null)), method_exists($param, 'getType') ? $param->getType() : null);
                             continue;
                         }
 
@@ -231,9 +232,13 @@ class AnnotationDriver implements DriverInterface
         return $metadata;
     }
 
-    private function convertReferenceValue($name, AnnotReference $annot)
+    private function convertReferenceValue($name, AnnotReference $annot, \ReflectionType $annotatedType = null)
     {
         if (null === $annot->value) {
+            if ($this->hasParameterType($annotatedType)) {
+                return '%'.$this->namingStrategy->classToServiceName($name).'%';
+            }
+
             return new Reference($this->namingStrategy->classToServiceName($name), false !== $annot->required ? ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE : ContainerInterface::NULL_ON_INVALID_REFERENCE, $annot->strict);
         }
 
@@ -242,5 +247,14 @@ class AnnotationDriver implements DriverInterface
         }
 
         return $annot->value;
+    }
+
+    private function hasParameterType(\ReflectionType $type = null)
+    {
+        if ($type === null) {
+            return false;
+        }
+
+        return $type->isBuiltin() && in_array((string)$type, array('string', 'int', 'bool', 'array'), true);
     }
 }
