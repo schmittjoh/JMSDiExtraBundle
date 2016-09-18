@@ -64,11 +64,11 @@ class MetadataConverter
                 $definition->setArguments($classMetadata->arguments);
             }
             if (null !== $classMetadata->autowire) {
-                if (!method_exists($definition, 'setAutowire')) {
+                if (!method_exists($definition, 'setAutowired')) {
                     throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use autowiring on the class %s.', $classMetadata->name));
                 }
 
-                $definition->setAutowire($classMetadata->autowire);
+                $definition->setAutowired($classMetadata->autowire);
             }
             if (null !== $classMetadata->autowiringTypes && method_exists($definition, 'setAutowiringTypes')) {
                 $definition->setAutowiringTypes($classMetadata->autowiringTypes);
