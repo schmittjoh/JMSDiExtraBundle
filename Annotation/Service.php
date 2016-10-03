@@ -45,8 +45,14 @@ final class Service
     /** @var string */
     public $decorates;
 
-    /** @var string */
+    /**
+     * @var string
+     * @deprecated since version 1.8, to be removed in 2.0. Use $decorationInnerName instead.
+     */
     public $decoration_inner_name;
+
+    /** @var string */
+    public $decorationInnerName;
 
     /** @var boolean */
     public $abstract;

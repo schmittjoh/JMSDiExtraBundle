@@ -80,11 +80,15 @@ class MetadataConverter
             $definition->setProperties($classMetadata->properties);
 
             if (null !== $classMetadata->decorates) {
+                if ($classMetadata->decorationInnerName === null && $classMetadata->decoration_inner_name !== null) {
+                    @trigger_error('ClassMetaData::$decoration_inner_name is deprecated since version 1.8 and will be removed in 2.0. Use ClassMetaData::$decorationInnerName instead.', E_USER_DEPRECATED);
+                }
+
                 if (!method_exists($definition, 'setDecoratedService')) {
                     throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use decorations on the class %s.', $classMetadata->name));
                 }
 
-                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decoration_inner_name);
+                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decorationInnerName !== null ? $classMetadata->decorationInnerName : $classMetadata->decoration_inner_ame);
             }
 
             if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {

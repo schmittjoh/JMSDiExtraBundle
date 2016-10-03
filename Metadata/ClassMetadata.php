@@ -43,6 +43,10 @@ class ClassMetadata extends BaseClassMetadata
     public $initMethods = array();
     public $environments = array();
     public $decorates;
+    public $decorationInnerName;
+    /**
+     * @deprecated since version 1.8, to be removed in 2.0. Use $initMethods instead.
+     */
     public $decoration_inner_name;
     public $deprecated;
 
@@ -87,6 +91,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->environments,
             $this->decorates,
             $this->decoration_inner_name,
+            $this->decorationInnerName,
             $this->deprecated,
             $this->initMethods,
         ));
@@ -119,6 +124,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->environments,
             $this->decorates,
             $this->decoration_inner_name,
+            $this->decorationInnerName,
             $this->deprecated,
             $this->initMethods,
         ) = $data;
