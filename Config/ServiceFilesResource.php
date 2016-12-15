@@ -27,17 +27,19 @@ class ServiceFilesResource extends InternalResource
     private $files;
     private $dirs;
     private $disableGrep;
+    private $pattern;
 
-    public function __construct(array $files, array $dirs, $disableGrep)
+    public function __construct(array $files, array $dirs, $pattern, $disableGrep)
     {
         $this->files = $files;
         $this->dirs = $dirs;
+        $this->pattern = $pattern;
         $this->disableGrep = $disableGrep;
     }
 
     public function isFresh($timestamp)
     {
-        $finder = new PatternFinder('JMS\DiExtraBundle\Annotation', '*.php', $this->disableGrep);
+        $finder = new PatternFinder($this->pattern, '*.php', $this->disableGrep);
         $files = $finder->findFiles($this->dirs);
 
         return !array_diff($files, $this->files) && !array_diff($this->files, $files);

@@ -24,7 +24,7 @@ use JMS\DiExtraBundle\Exception\InvalidTypeException;
  * @Annotation
  * @Target("METHOD")
  */
-final class Observe
+class Observe
 {
     /** @var string @Required */
     public $event;

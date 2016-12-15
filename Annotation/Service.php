@@ -22,7 +22,7 @@ namespace JMS\DiExtraBundle\Annotation;
  * @Annotation
  * @Target("CLASS")
  */
-final class Service
+class Service
 {
     /** @var string */
     public $id;
