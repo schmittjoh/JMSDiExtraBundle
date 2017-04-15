@@ -20,7 +20,7 @@ namespace JMS\DiExtraBundle\Annotation;
 
 /**
  * @Annotation
- * @Target({"PROPERTY", "ANNOTATION"})
+ * @Target({"PROPERTY", "ANNOTATION", "METHOD"})
  */
 final class Inject extends Reference
 {
