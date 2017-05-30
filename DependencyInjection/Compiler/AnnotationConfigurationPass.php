@@ -50,7 +50,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
 
         $directories = $this->getScanDirectories($container);
         if (!$directories) {
-            $container->getCompiler()->addLogMessage('No directories configured for AnnotationConfigurationPass.');
+            $container->getCompiler()->log($this, 'No directories configured for AnnotationConfigurationPass.');
 
             return;
         }
