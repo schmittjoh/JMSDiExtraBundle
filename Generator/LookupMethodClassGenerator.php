@@ -18,12 +18,12 @@
 
 namespace JMS\DiExtraBundle\Generator;
 
-use Metadata\ClassHierarchyMetadata;
-use CG\Generator\PhpParameter;
-use CG\Generator\PhpMethod;
-use CG\Generator\PhpProperty;
 use CG\Generator\PhpClass;
+use CG\Generator\PhpMethod;
+use CG\Generator\PhpParameter;
+use CG\Generator\PhpProperty;
 use CG\Proxy\GeneratorInterface;
+use Metadata\ClassHierarchyMetadata;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -106,11 +106,11 @@ class LookupMethodClassGenerator implements GeneratorInterface
     {
         if ($value instanceof Parameter) {
             return '$this->'.self::PREFIX.'container->getParameter('.var_export((string) $value, true).')';
-        } else if ($value instanceof Reference) {
+        } elseif ($value instanceof Reference) {
             return '$this->'.self::PREFIX.'container->get('.var_export((string) $value, true).', '.var_export($value->getInvalidBehavior(), true).')';
-        } else if (is_string($value) && '%' === $value[0]) {
+        } elseif (is_string($value) && '%' === $value[0]) {
             return '$this->'.self::PREFIX.'container->getParameter('.var_export(substr($value, 1, -1), true).')';
-        } else if (is_array($value) || is_scalar($value) || null === $value) {
+        } elseif (is_array($value) || is_scalar($value) || null === $value) {
             return var_export($value, true);
         }
 

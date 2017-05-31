@@ -43,5 +43,7 @@ class Validator extends ConstraintValidator
         return true;
     }
 
-    public function validate($value, Constraint $constraint) { }
+    public function validate($value, Constraint $constraint)
+    {
+    }
 }

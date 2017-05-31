@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class JMSDiExtraExtension extends Extension
 {
     /**
-     * Controller blacklist, ie. php files names for controllers that should not be analyzed
+     * Controller blacklist, ie. php files names for controllers that should not be analyzed.
      *
      * @var array
      */
@@ -93,8 +93,8 @@ class JMSDiExtraExtension extends Extension
 
         $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
         $uniqid = uniqid(); // We do have to use a non-static id to avoid problems with cache:clear.
-        if (strtoupper(PHP_OS)=='CYGWIN') {
-            $uniqid=preg_replace('/\./','_',$uniqid); // replace dot; cygwin always generates uniqid's with more_entropy
+        if (strtoupper(PHP_OS) == 'CYGWIN') {
+            $uniqid = preg_replace('/\./', '_', $uniqid); // replace dot; cygwin always generates uniqid's with more_entropy
         }
         $enhancer->setNamingStrategy(new DefaultNamingStrategy('EntityManager'.$uniqid));
         $enhancer->writeClass($file = $cacheDir.'/doctrine/EntityManager_'.$uniqid.'.php');
@@ -145,6 +145,7 @@ class JMSDiExtraExtension extends Extension
     {
         if ('none' === $config['cache']) {
             $container->removeAlias('jms_di_extra.metadata.cache');
+
             return;
         }
 

@@ -19,4 +19,5 @@
 namespace JMS\DiExtraBundle\Exception;
 
 class InvalidAnnotationException extends \InvalidArgumentException implements Exception
-{}
+{
+}

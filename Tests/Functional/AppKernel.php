@@ -42,8 +42,8 @@ while ($dir !== $lastDir) {
     $dir = dirname($dir);
 }
 
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel

@@ -19,10 +19,9 @@
 namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 
 use JMS\DiExtraBundle\Config\FastDirectoriesResource;
-
 use Symfony\Component\Config\Resource\DirectoryResource;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ResourceOptimizationPass implements CompilerPassInterface
 {
@@ -47,7 +46,7 @@ class ResourceOptimizationPass implements CompilerPassInterface
             $resources[] = $resource;
         }
 
-        $sortFunc = function($a, $b) {
+        $sortFunc = function ($a, $b) {
             return strlen($a) - strlen($b);
         };
 

@@ -18,16 +18,14 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
-
 abstract class Reference
 {
     /** @var string */
     public $value;
 
-    /** @var boolean */
+    /** @var bool */
     public $required;
 
-    /** @var boolean */
+    /** @var bool */
     public $strict = true;
 }

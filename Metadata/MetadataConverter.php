@@ -19,10 +19,9 @@
 namespace JMS\DiExtraBundle\Metadata;
 
 use JMS\DiExtraBundle\Exception\InvalidAnnotationException;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Symfony\Component\DependencyInjection\Definition;
 use Metadata\ClassHierarchyMetadata;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
 class MetadataConverter
 {
@@ -30,6 +29,7 @@ class MetadataConverter
      * Converts class hierarchy metadata to definition instances.
      *
      * @param ClassHierarchyMetadata $metadata
+     *
      * @return array an array of Definition instances
      */
     public function convert(ClassHierarchyMetadata $metadata)
@@ -74,7 +74,6 @@ class MetadataConverter
                 $definition->setAutowiringTypes($classMetadata->autowiringTypes);
             }
 
-            
             $definition->setMethodCalls($classMetadata->methodCalls);
             $definition->setTags($classMetadata->tags);
             $definition->setProperties($classMetadata->properties);

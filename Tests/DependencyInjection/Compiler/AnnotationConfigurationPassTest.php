@@ -33,10 +33,10 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer(array(), array(
             __DIR__.'/../../Fixture/',
         ));
-        $container->set('doctrine.entity_manager', $em = new \stdClass);
-        $container->set('session', $session = new \stdClass);
-        $container->set('database_connection', $dbCon = new \stdClass);
-        $container->set('router', $router = new \stdClass);
+        $container->set('doctrine.entity_manager', $em = new \stdClass());
+        $container->set('session', $session = new \stdClass());
+        $container->set('database_connection', $dbCon = new \stdClass());
+        $container->set('router', $router = new \stdClass());
         $container->setParameter('table_name', 'foo');
         $this->process($container);
 
@@ -54,7 +54,7 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer(array(), array(
             __DIR__.'/../../Fixture/Validator',
         ));
-        $container->set('foo', $foo = new \stdClass);
+        $container->set('foo', $foo = new \stdClass());
         $this->process($container);
 
         $this->assertTrue($container->hasDefinition('j_m_s.di_extra_bundle.tests.fixture.validator.validator'));
@@ -63,7 +63,7 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'validator.constraint_validator' => array(
                 array('alias' => 'foobar'),
-            )
+            ),
         ), $def->getTags());
 
         $v = $container->get('j_m_s.di_extra_bundle.tests.fixture.validator.validator');
@@ -75,8 +75,8 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer(array(), array(
             __DIR__.'/../../Functional/Bundle/TestBundle/Inheritance',
         ));
-        $container->set('foo', $foo = new \stdClass);
-        $container->set('bar', $bar = new \stdClass);
+        $container->set('foo', $foo = new \stdClass());
+        $container->set('bar', $bar = new \stdClass());
         $this->process($container);
 
         $this->assertTrue($container->hasDefinition('concrete_class'));
@@ -120,7 +120,7 @@ class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
             ),
             'metadata' => array(
                 'cache' => 'none',
-            )
+            ),
         )), $container);
 
         return $container;

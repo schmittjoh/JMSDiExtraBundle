@@ -18,17 +18,15 @@
 
 namespace JMS\DiExtraBundle\Tests;
 
-use Symfony\Bundle\TwigBundle\TwigBundle;
-use Symfony\Bundle\DoctrineBundle\DoctrineBundle;
-use JMS\DiExtraBundle\JMSDiExtraBundle;
+use JMS\DiExtraBundle\Finder\ServiceFinder;
 use JMS\SecurityExtraBundle\JMSSecurityExtraBundle;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
-use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Bundle\AsseticBundle\AsseticBundle;
+use Symfony\Bundle\DoctrineBundle\DoctrineBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
-use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
-use JMS\DiExtraBundle\Finder\ServiceFinder;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 
 /**
  * @group performance
@@ -54,14 +52,14 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
             new SensioFrameworkExtraBundle(),
             new JMSSecurityExtraBundle(),
         );
-        $bundles = array_map(function($v) {
+        $bundles = array_map(function ($v) {
             return $v->getPath();
         }, $bundles);
 
         $bundles[] = __DIR__.'/../';
 
         $time = microtime(true);
-        for ($i=0,$c=5; $i<$c; $i++) {
+        for ($i = 0, $c = 5; $i < $c; ++$i) {
             $ref->invoke($finder, $bundles);
         }
         $time = microtime(true) - $time;
@@ -84,8 +82,8 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
 
         $title = $test." results:\n";
         $iterationsText = sprintf("Iterations:         %d\n", $iterations);
-        $totalTime      = sprintf("Total Time:         %.3f s\n", $time);
-        $iterationTime  = sprintf("Time per iteration: %.3f ms\n", $time/$iterations * 1000);
+        $totalTime = sprintf("Total Time:         %.3f s\n", $time);
+        $iterationTime = sprintf("Time per iteration: %.3f ms\n", $time / $iterations * 1000);
 
         $max = max(strlen($title), strlen($iterationTime)) - 1;
 

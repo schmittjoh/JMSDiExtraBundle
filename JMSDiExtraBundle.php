@@ -18,10 +18,10 @@
 
 namespace JMS\DiExtraBundle;
 
-use JMS\DiExtraBundle\DependencyInjection\Compiler\ResourceOptimizationPass;
-use JMS\DiExtraBundle\DependencyInjection\Compiler\IntegrationPass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\AnnotationConfigurationPass;
+use JMS\DiExtraBundle\DependencyInjection\Compiler\IntegrationPass;
+use JMS\DiExtraBundle\DependencyInjection\Compiler\ResourceOptimizationPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

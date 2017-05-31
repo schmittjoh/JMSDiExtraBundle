@@ -48,12 +48,12 @@ class PatternFinder
 
     public function setRecursive($bool)
     {
-        $this->recursive = (Boolean) $bool;
+        $this->recursive = (bool) $bool;
     }
 
     public function setRegexPattern($bool)
     {
-        $this->regexPattern = (Boolean) $bool;
+        $this->regexPattern = (bool) $bool;
     }
 
     public function findFiles(array $dirs)
@@ -169,7 +169,7 @@ class PatternFinder
             ->name($this->filePattern)
             ->in($dirs)
             ->ignoreVCS(true)
-            ->filter(function($file) use ($pattern, $regex) {
+            ->filter(function ($file) use ($pattern, $regex) {
                 if (!$regex) {
                     return false !== strpos(file_get_contents($file->getPathName()), $pattern);
                 }
@@ -188,16 +188,16 @@ class PatternFinder
     private static function determineMethod($disableGrep)
     {
         self::$method = self::METHOD_FINDER;
-        
+
         $finder = new ExecutableFinder();
         $isWindows = 0 === stripos(PHP_OS, 'win');
         $execAvailable = function_exists('exec');
-        
-        if (! $isWindows && $execAvailable && ! $disableGrep && self::$grepPath = $finder->find('grep')) {
+
+        if (!$isWindows && $execAvailable && !$disableGrep && self::$grepPath = $finder->find('grep')) {
             self::$method = self::METHOD_GREP;
         } elseif ($isWindows && $execAvailable) {
             @exec('cd', $lines, $exitCode);
-            if (- 1 !== $exitCode) {
+            if (-1 !== $exitCode) {
                 self::$method = self::METHOD_FINDSTR;
             }
         }

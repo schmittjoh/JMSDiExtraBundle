@@ -18,9 +18,6 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Annotation\AbstractDoctrineListener;
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
-
 /**
  * @Annotation
  * @Target("CLASS")

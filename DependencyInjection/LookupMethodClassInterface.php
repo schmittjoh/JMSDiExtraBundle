@@ -20,5 +20,5 @@ namespace JMS\DiExtraBundle\DependencyInjection;
 
 interface LookupMethodClassInterface
 {
-    function __jmsDiExtra_getOriginalClassName();
+    public function __jmsDiExtra_getOriginalClassName();
 }

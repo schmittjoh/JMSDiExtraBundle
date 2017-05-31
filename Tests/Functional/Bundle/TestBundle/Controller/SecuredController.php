@@ -18,9 +18,9 @@
 
 namespace JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use JMS\SecurityExtraBundle\Annotation\Secure;
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation\Secure;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
@@ -37,5 +37,7 @@ class SecuredController
     }
 
     /** @DI\LookupMethod */
-    protected function getTestMailer() {}
+    protected function getTestMailer()
+    {
+    }
 }

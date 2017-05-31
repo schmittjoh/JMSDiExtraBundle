@@ -22,9 +22,11 @@ use Psr\Log\NullLogger as PsrNullLogger;
 use Symfony\Component\HttpKernel\Log\NullLogger as SfNullLogger;
 
 if (class_exists('JMS\SecurityExtraBundle\DependencyInjection\Compiler\SecurityCompatibilityPass')) {
-    class NullLogger extends PsrNullLogger {
+    class NullLogger extends PsrNullLogger
+    {
     }
 } else {
-    class NullLogger extends SfNullLogger {
+    class NullLogger extends SfNullLogger
+    {
     }
 }

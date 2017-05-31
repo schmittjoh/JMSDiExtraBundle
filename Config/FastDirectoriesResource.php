@@ -20,8 +20,6 @@ namespace JMS\DiExtraBundle\Config;
 
 use JMS\DiExtraBundle\Finder\PatternFinder;
 
-use Symfony\Component\Config\Resource\ResourceInterface;
-
 class FastDirectoriesResource extends InternalResource
 {
     private $finder;

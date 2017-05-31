@@ -21,7 +21,7 @@ namespace JMS\DiExtraBundle\Metadata;
 use Metadata\ClassMetadata as BaseClassMetadata;
 
 /**
- * class metadata
+ * class metadata.
  */
 class ClassMetadata extends BaseClassMetadata
 {
@@ -126,8 +126,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->decoration_inner_name,
             $this->decorationInnerName,
             $this->deprecated,
-            $this->initMethods,
-        ) = $data;
+            $this->initMethods) = $data;
 
         parent::unserialize($parentStr);
     }

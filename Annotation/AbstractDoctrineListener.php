@@ -26,14 +26,14 @@ abstract class AbstractDoctrineListener
     /** @var string */
     public $connection = 'default';
 
-    /** @var boolean */
+    /** @var bool */
     public $lazy = true;
 
-    /** @var integer */
+    /** @var int */
     public $priority = 0;
 
     /**
-     * Returns the DI tag name
+     * Returns the DI tag name.
      *
      * @return string
      */

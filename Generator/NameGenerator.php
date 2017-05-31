@@ -56,14 +56,14 @@ class NameGenerator
             $i = $this->count;
 
             if ('' === $name) {
-                $name .= $this->firstChars[$i%$this->firstCharsLength];
-                $i = intval($i/$this->firstCharsLength);
+                $name .= $this->firstChars[$i % $this->firstCharsLength];
+                $i = intval($i / $this->firstCharsLength);
             }
 
             while ($i > 0) {
                 $i -= 1;
-                $name .= $this->nonFirstChars[$i%$this->nonFirstCharsLength];
-                $i = intval($i/$this->nonFirstCharsLength);
+                $name .= $this->nonFirstChars[$i % $this->nonFirstCharsLength];
+                $i = intval($i / $this->nonFirstCharsLength);
             }
 
             $this->count += 1;

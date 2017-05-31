@@ -22,7 +22,7 @@ use Symfony\Component\Config\Resource\ResourceInterface;
 use Symfony\Component\Config\Resource\SelfCheckingResourceInterface;
 
 // BC for sf < 2.8
-if(interface_exists('Symfony\Component\Config\Resource\SelfCheckingResourceInterface')) {
+if (interface_exists('Symfony\Component\Config\Resource\SelfCheckingResourceInterface')) {
     /**
      * @internal do not use this class
      */

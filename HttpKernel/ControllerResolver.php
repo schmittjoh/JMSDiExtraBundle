@@ -112,7 +112,7 @@ class ControllerResolver extends BaseControllerResolver
             $this->prepareContainer($cache, $filename, $metadata, $class, $filename);
         }
 
-        if ( ! class_exists($class.'__JMSInjector', false)) {
+        if (!class_exists($class.'__JMSInjector', false)) {
             require $filename;
         }
 

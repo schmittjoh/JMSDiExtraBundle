@@ -19,9 +19,9 @@
 namespace JMS\DiExtraBundle\Generator;
 
 use CG\Generator\Writer;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * Generates lightweight code for injecting a single definition.
@@ -43,7 +43,7 @@ class DefinitionInjectorGenerator
     {
         $writer = new Writer();
 
-        $parts = explode("\\", $className);
+        $parts = explode('\\', $className);
         $shortName = array_pop($parts);
 
         $writer
@@ -51,7 +51,7 @@ class DefinitionInjectorGenerator
         ;
 
         if ($parts) {
-            $writer->writeln("namespace ".ltrim(implode("\\", $parts), "\\").";\n");
+            $writer->writeln('namespace '.ltrim(implode('\\', $parts), '\\').";\n");
         }
 
         $writer
@@ -84,10 +84,10 @@ class DefinitionInjectorGenerator
             $name = $this->nameGenerator->nextName();
             $this->inlinedDefinitions[$inlineDef] = $name;
 
-            $writer->writeln('$'.$name.' = new \\'.ltrim($inlineDef->getClass(), "\\").$this->dumpArguments($inlineDef->getArguments()).';');
+            $writer->writeln('$'.$name.' = new \\'.ltrim($inlineDef->getClass(), '\\').$this->dumpArguments($inlineDef->getArguments()).';');
         }
 
-        $writer->writeln('$instance = new \\'.ltrim($def->getClass(), "\\").$this->dumpArguments($def->getArguments()).';');
+        $writer->writeln('$instance = new \\'.ltrim($def->getClass(), '\\').$this->dumpArguments($def->getArguments()).';');
 
         foreach ($def->getMethodCalls() as $call) {
             list($method, $arguments) = $call;
@@ -125,7 +125,7 @@ class DefinitionInjectorGenerator
         $commonPath = dirname($targetPath);
 
         $level = 0;
-        while ( ! empty($commonPath)) {
+        while (!empty($commonPath)) {
             if (0 === strpos($path, $commonPath)) {
                 $relativePath = str_repeat('../', $level).substr($path, strlen($commonPath) + 1);
 
@@ -166,7 +166,7 @@ class DefinitionInjectorGenerator
         foreach ($a as $k => $v) {
             if ($v instanceof Definition) {
                 $defs->attach($v);
-            } else if (is_array($v)) {
+            } elseif (is_array($v)) {
                 $this->getDefinitionsFromArray($v, $defs);
             }
         }
@@ -205,22 +205,22 @@ class DefinitionInjectorGenerator
             }
 
             return $code.')';
-        } else if ($value instanceof Reference) {
+        } elseif ($value instanceof Reference) {
             if ('service_container' === (string) $value) {
                 return '$container';
             }
 
             return sprintf('$container->get(%s, %d)', var_export((string) $value, true), $value->getInvalidBehavior());
-        } else if ($value instanceof Parameter) {
+        } elseif ($value instanceof Parameter) {
             return sprintf('$container->getParameter(%s)', var_export((string) $value, true));
-        } else if (is_scalar($value) || null === $value) {
+        } elseif (is_scalar($value) || null === $value) {
             // we do not support embedded parameters
             if (is_string($value) && '%' === $value[0] && '%' !== $value[1]) {
                 return sprintf('$container->getParameter(%s)', var_export(substr($value, 1, -1), true));
             }
 
             return var_export($value, true);
-        } else if ($value instanceof Definition) {
+        } elseif ($value instanceof Definition) {
             return sprintf('$%s', $this->inlinedDefinitions[$value]);
         }
 

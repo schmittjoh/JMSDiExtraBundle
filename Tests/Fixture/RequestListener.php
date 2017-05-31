@@ -52,7 +52,7 @@ class RequestListener
      */
     public function setConnection($databaseConnection, $table)
     {
-        $this->con   = $databaseConnection;
+        $this->con = $databaseConnection;
         $this->table = $table;
     }
 }

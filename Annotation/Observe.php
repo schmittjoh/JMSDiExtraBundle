@@ -18,8 +18,6 @@
 
 namespace JMS\DiExtraBundle\Annotation;
 
-use JMS\DiExtraBundle\Exception\InvalidTypeException;
-
 /**
  * @Annotation
  * @Target("METHOD")
@@ -29,6 +27,6 @@ final class Observe
     /** @var string @Required */
     public $event;
 
-    /** @var integer */
+    /** @var int */
     public $priority = 0;
 }

@@ -19,7 +19,6 @@
 namespace JMS\DiExtraBundle\DependencyInjection;
 
 use Doctrine\Common\Version;
-
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -48,7 +47,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('bundles')
                                 ->beforeNormalization()
                                     ->ifString()
-                                    ->then(function($v) {
+                                    ->then(function ($v) {
                                         return preg_split('/\s*,\s*/', $v);
                                     })
                                 ->end()
@@ -57,7 +56,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('directories')
                                 ->beforeNormalization()
                                     ->ifString()
-                                    ->then(function($v) {
+                                    ->then(function ($v) {
                                         return preg_split('/\s*,\s*/', $v);
                                     })
                                 ->end()
@@ -93,7 +92,7 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('array')
                                     ->beforeNormalization()
                                         ->ifString()
-                                        ->then(function($v) {
+                                        ->then(function ($v) {
                                             return preg_split('/\s*,\s*/', $v);
                                         })
                                     ->end()
@@ -104,7 +103,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->booleanNode('doctrine_integration')
                         ->validate()
-                            ->always(function($v) {
+                            ->always(function ($v) {
                                 if ($v && !class_exists('Doctrine\ORM\EntityManager')) {
                                     throw new \Exception('Doctrine integration is only available for the Doctrine ORM at the moment.');
                                 }
