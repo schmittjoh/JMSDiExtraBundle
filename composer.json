@@ -36,7 +36,7 @@
         "doctrine/doctrine-bundle": "~1.5",
         "doctrine/orm": "~2.3",
         "phpcollection/phpcollection": ">=0.2,<0.3-dev",
-        "symfony/phpunit-bridge": "~2.7"
+        "symfony/phpunit-bridge": "~3.2"
     },
     "autoload": {
         "psr-4": { "JMS\\DiExtraBundle\\": "" }
