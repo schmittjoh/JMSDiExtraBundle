@@ -71,9 +71,11 @@ class JMSDiExtraExtension extends Extension
             $this->generateEntityManagerProxyClass($config, $container);
         }
 
-        $this->addClassesToCompile(array(
-            'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
-        ));
+        if (PHP_VERSION_ID < 70000) {
+            $this->addClassesToCompile(array(
+                'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
+            ));
+        }
     }
 
     public function blackListControllerFile($filename)
