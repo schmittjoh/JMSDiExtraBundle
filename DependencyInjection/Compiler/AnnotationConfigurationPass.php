@@ -93,7 +93,7 @@ class AnnotationConfigurationPass implements CompilerPassInterface
     {
         $finder = new PatternFinder($pattern, '*.php', $disableGrep);
         $files = $finder->findFiles($directories);
-        $container->addResource(new ServiceFilesResource($files, $directories, $disableGrep));
+        $container->addResource(new ServiceFilesResource($files, $directories, $disableGrep, $pattern));
         foreach ($files as $file) {
             $container->addResource(new FileResource($file));
             require_once $file;
