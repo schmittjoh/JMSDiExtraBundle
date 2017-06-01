@@ -87,7 +87,7 @@ class MetadataConverter
                     throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use decorations on the class %s.', $classMetadata->name));
                 }
 
-                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decorationInnerName !== null ? $classMetadata->decorationInnerName : $classMetadata->decoration_inner_ame);
+                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decorationInnerName !== null ? $classMetadata->decorationInnerName : $classMetadata->decoration_inner_name);
             }
 
             if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {
