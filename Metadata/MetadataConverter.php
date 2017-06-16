@@ -22,9 +22,12 @@ use JMS\DiExtraBundle\Exception\InvalidAnnotationException;
 use Metadata\ClassHierarchyMetadata;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Reference;
 
 class MetadataConverter
 {
+    private $count = 0;
+
     /**
      * Converts class hierarchy metadata to definition instances.
      *
@@ -34,83 +37,109 @@ class MetadataConverter
      */
     public function convert(ClassHierarchyMetadata $metadata)
     {
-        static $count = 0;
         $definitions = array();
 
         $previous = null;
         foreach ($metadata->classMetadata as $classMetadata) {
-            if (null === $previous && null === $classMetadata->parent) {
-                $definition = new Definition();
-            } else {
-                $definition = new DefinitionDecorator(
-                    $classMetadata->parent ?: $previous->id
-                );
-            }
+            /** @var ClassMetadata $classMetadata */
+            foreach ($classMetadata->factoryMethods as $methodName => $factoryMetadata) {
+                /** @var ClassMetadata $factoryMetadata */
 
-            $definition->setClass($classMetadata->name);
-            if (null !== $classMetadata->scope) {
-                $definition->setScope($classMetadata->scope);
-            }
-            if (null !== $classMetadata->shared) {
-                $definition->setShared($classMetadata->shared);
-            }
-            if (null !== $classMetadata->public) {
-                $definition->setPublic($classMetadata->public);
-            }
-            if (null !== $classMetadata->abstract) {
-                $definition->setAbstract($classMetadata->abstract);
-            }
-            if (null !== $classMetadata->arguments) {
-                $definition->setArguments($classMetadata->arguments);
-            }
-            if (null !== $classMetadata->autowire) {
-                if (!method_exists($definition, 'setAutowired')) {
-                    throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use autowiring on the class %s.', $classMetadata->name));
+                $factoryServiceDef = $this->convertMetadata($factoryMetadata);
+
+                if (method_exists($factoryServiceDef, 'setFactory')) {
+                    $factoryServiceDef->setFactory(array(
+                        new Reference($classMetadata->id),
+                        $methodName,
+                    ));
+                } else {
+                    $factoryServiceDef
+                        ->setFactoryService($classMetadata->id)
+                        ->setFactoryMethod('selectCollection')
+                    ;
                 }
 
-                $definition->setAutowired($classMetadata->autowire);
-            }
-            if (null !== $classMetadata->autowiringTypes && method_exists($definition, 'setAutowiringTypes')) {
-                $definition->setAutowiringTypes($classMetadata->autowiringTypes);
+                $definitions[$factoryMetadata->id] = $factoryServiceDef;
             }
 
-            $definition->setMethodCalls($classMetadata->methodCalls);
-            $definition->setTags($classMetadata->tags);
-            $definition->setProperties($classMetadata->properties);
+            $definitions[$classMetadata->id] = $this->convertMetadata($classMetadata, $previous);
 
-            if (null !== $classMetadata->decorates) {
-                if ($classMetadata->decorationInnerName === null && $classMetadata->decoration_inner_name !== null) {
-                    @trigger_error('ClassMetaData::$decoration_inner_name is deprecated since version 1.8 and will be removed in 2.0. Use ClassMetaData::$decorationInnerName instead.', E_USER_DEPRECATED);
-                }
-
-                if (!method_exists($definition, 'setDecoratedService')) {
-                    throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use decorations on the class %s.', $classMetadata->name));
-                }
-
-                $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decorationInnerName !== null ? $classMetadata->decorationInnerName : $classMetadata->decoration_inner_name);
-            }
-
-            if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {
-                $definition->setDeprecated(true, $classMetadata->deprecated);
-            }
-
-            if (null === $classMetadata->id) {
-                $classMetadata->id = '_jms_di_extra.unnamed.service_'.$count++;
-            }
-
-            if (0 !== count($classMetadata->initMethods)) {
-                foreach ($classMetadata->initMethods as $initMethod) {
-                    $definition->addMethodCall($initMethod);
-                }
-            } elseif (null !== $classMetadata->initMethod) {
-                @trigger_error('ClassMetadata::$initMethod is deprecated since version 1.7 and will be removed in 2.0. Use ClassMetadata::$initMethods instead.', E_USER_DEPRECATED);
-                $definition->addMethodCall($classMetadata->initMethod);
-            }
-
-            $definitions[$classMetadata->id] = $definition;
             $previous = $classMetadata;
         }
 
         return $definitions;
+    }
+
+    private function convertMetadata(ClassMetadata $classMetadata, ClassMetadata $previous = null)
+    {
+        if (null === $previous && null === $classMetadata->parent) {
+            $definition = new Definition();
+        } else {
+            $definition = new DefinitionDecorator(
+                $classMetadata->parent ?: $previous->id
+            );
+        }
+
+        $definition->setClass($classMetadata->name);
+        if (null !== $classMetadata->scope) {
+            $definition->setScope($classMetadata->scope);
+        }
+        if (null !== $classMetadata->shared) {
+            $definition->setShared($classMetadata->shared);
+        }
+        if (null !== $classMetadata->public) {
+            $definition->setPublic($classMetadata->public);
+        }
+        if (null !== $classMetadata->abstract) {
+            $definition->setAbstract($classMetadata->abstract);
+        }
+        if (null !== $classMetadata->arguments) {
+            $definition->setArguments($classMetadata->arguments);
+        }
+        if (null !== $classMetadata->autowire) {
+            if (!method_exists($definition, 'setAutowired')) {
+                throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use autowiring on the class %s.', $classMetadata->name));
+            }
+
+            $definition->setAutowired($classMetadata->autowire);
+        }
+        if (null !== $classMetadata->autowiringTypes && method_exists($definition, 'setAutowiringTypes')) {
+            $definition->setAutowiringTypes($classMetadata->autowiringTypes);
+        }
+
+        $definition->setMethodCalls($classMetadata->methodCalls);
+        $definition->setTags($classMetadata->tags);
+        $definition->setProperties($classMetadata->properties);
+
+        if (null !== $classMetadata->decorates) {
+            if ($classMetadata->decorationInnerName === null && $classMetadata->decoration_inner_name !== null) {
+                @trigger_error('ClassMetaData::$decoration_inner_name is deprecated since version 1.8 and will be removed in 2.0. Use ClassMetaData::$decorationInnerName instead.', E_USER_DEPRECATED);
+            }
+
+            if (!method_exists($definition, 'setDecoratedService')) {
+                throw new InvalidAnnotationException(sprintf('You must use symfony 2.8 or higher to use decorations on the class %s.', $classMetadata->name));
+            }
+
+            $definition->setDecoratedService($classMetadata->decorates, $classMetadata->decorationInnerName !== null ? $classMetadata->decorationInnerName : $classMetadata->decoration_inner_name);
+        }
+
+        if (null !== $classMetadata->deprecated && method_exists($definition, 'setDeprecated')) {
+            $definition->setDeprecated(true, $classMetadata->deprecated);
+        }
+
+        if (null === $classMetadata->id) {
+            $classMetadata->id = '_jms_di_extra.unnamed.service_'.$this->count++;
+        }
+
+        if (0 !== count($classMetadata->initMethods)) {
+            foreach ($classMetadata->initMethods as $initMethod) {
+                $definition->addMethodCall($initMethod);
+            }
+        } elseif (null !== $classMetadata->initMethod) {
+            @trigger_error('ClassMetadata::$initMethod is deprecated since version 1.7 and will be removed in 2.0. Use ClassMetadata::$initMethods instead.', E_USER_DEPRECATED);
+            $definition->addMethodCall($classMetadata->initMethod);
+        }
+
+        return $definition;
     }
 }

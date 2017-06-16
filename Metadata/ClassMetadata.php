@@ -53,6 +53,8 @@ class ClassMetadata extends BaseClassMetadata
     public $autowire;
     public $autowiringTypes;
 
+    public $factoryMethods = array();
+
     /**
      * @param string $env
      *
@@ -94,6 +96,7 @@ class ClassMetadata extends BaseClassMetadata
             $this->decorationInnerName,
             $this->deprecated,
             $this->initMethods,
+            $this->factoryMethods,
         ));
     }
 
@@ -126,7 +129,8 @@ class ClassMetadata extends BaseClassMetadata
             $this->decoration_inner_name,
             $this->decorationInnerName,
             $this->deprecated,
-            $this->initMethods) = $data;
+            $this->initMethods,
+            $this->factoryMethods) = $data;
 
         parent::unserialize($parentStr);
     }

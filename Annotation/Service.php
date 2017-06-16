@@ -20,7 +20,7 @@ namespace JMS\DiExtraBundle\Annotation;
 
 /**
  * @Annotation
- * @Target("CLASS")
+ * @Target({"CLASS", "METHOD"})
  */
 final class Service
 {

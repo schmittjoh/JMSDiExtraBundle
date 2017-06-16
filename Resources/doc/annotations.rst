@@ -74,6 +74,9 @@ should be injected into the remaining parameters based on their name.
 
 @Service
 ~~~~~~~~
+
+On classes
+^^^^^^^^^
 Marks a class as service:
 
 .. code-block :: php
@@ -92,6 +95,22 @@ Marks a class as service:
 If you do not explicitly define a service id, then we will generated a sensible default
 based on the fully qualified class name for you. By default, the class will be loaded in all environments
 unless you explicitly specify an environment via the ``environments`` attribute.
+
+On methods
+^^^^^^^^^^
+Marks the method as a factory for a service:
+
+.. code-block :: php
+
+    <?php
+
+    use JMS\DiExtraBundle\Annotation\Service;
+
+    class SomeFactory {
+        /** @Service("some.service.id") */
+        public function createService() { /* ... */ }
+    }
+
 
 @Tag
 ~~~~

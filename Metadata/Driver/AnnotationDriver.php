@@ -66,27 +66,7 @@ class AnnotationDriver implements DriverInterface
 
         foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof Service) {
-                if ($annot->decorationInnerName === null && $annot->decoration_inner_name !== null) {
-                    @trigger_error('@Service(decoration_inner_name="...") is deprecated since version 1.8 and will be removed in 2.0. Use @Service(decorationInnerName="...") instead.', E_USER_DEPRECATED);
-                }
-
-                if (null === $annot->id) {
-                    $metadata->id = $this->namingStrategy->classToServiceName($className);
-                } else {
-                    $metadata->id = $annot->id;
-                }
-
-                $metadata->parent = $annot->parent;
-                $metadata->public = $annot->public;
-                $metadata->scope = $annot->scope;
-                $metadata->shared = $annot->shared;
-                $metadata->abstract = $annot->abstract;
-                $metadata->decorates = $annot->decorates;
-                $metadata->decorationInnerName = $annot->decorationInnerName ?: $annot->decoration_inner_name;
-                $metadata->deprecated = $annot->deprecated;
-                $metadata->environments = $annot->environments;
-                $metadata->autowire = $annot->autowire;
-                $metadata->autowiringTypes = $annot->autowiringTypes;
+                $this->parseServiceAnnotation($annot, $metadata, $this->namingStrategy->classToServiceName($className));
             } elseif ($annot instanceof Tag) {
                 $metadata->tags[$annot->name][] = $annot->attributes;
             } elseif ($annot instanceof Validator) {
@@ -218,6 +198,16 @@ class AnnotationDriver implements DriverInterface
                     }
 
                     $annot->processMetadata($metadata);
+                } elseif ($annot instanceof Service) {
+                    if ( ! $method->getReturnType() instanceof \ReflectionType) {
+                        throw new \RuntimeException('Return-Type must be a hinted class type on '.$method->class.'::'.$method->name.' (requires PHP 7.0).');
+                    }
+
+                    $factoryMethod = new ClassMetadata((string)$method->getReturnType());
+                    $inferredName = $this->namingStrategy->classToServiceName(preg_replace('/^(create|get)/', '', $method->name));
+                    $this->parseServiceAnnotation($annot, $factoryMethod, $inferredName);
+
+                    $metadata->factoryMethods[$method->name] = $factoryMethod;
                 }
             }
         }
@@ -227,6 +217,31 @@ class AnnotationDriver implements DriverInterface
         }
 
         return $metadata;
+    }
+
+    private function parseServiceAnnotation(Service $annot, ClassMetadata $metadata, $inferredServiceName)
+    {
+        if ($annot->decorationInnerName === null && $annot->decoration_inner_name !== null) {
+            @trigger_error('@Service(decoration_inner_name="...") is deprecated since version 1.8 and will be removed in 2.0. Use @Service(decorationInnerName="...") instead.', E_USER_DEPRECATED);
+        }
+
+        if (null === $annot->id) {
+            $metadata->id = $inferredServiceName;
+        } else {
+            $metadata->id = $annot->id;
+        }
+
+        $metadata->parent = $annot->parent;
+        $metadata->public = $annot->public;
+        $metadata->scope = $annot->scope;
+        $metadata->shared = $annot->shared;
+        $metadata->abstract = $annot->abstract;
+        $metadata->decorates = $annot->decorates;
+        $metadata->decorationInnerName = $annot->decorationInnerName ?: $annot->decoration_inner_name;
+        $metadata->deprecated = $annot->deprecated;
+        $metadata->environments = $annot->environments;
+        $metadata->autowire = $annot->autowire;
+        $metadata->autowiringTypes = $annot->autowiringTypes;
     }
 
     private function convertReferenceValue($name, AnnotReference $annot, \ReflectionType $annotatedType = null)
