@@ -25,12 +25,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ControllerInjectorsWarmer implements CacheWarmerInterface
 {
+    static protected $warm;
     private $kernel;
     private $controllerResolver;
     private $blackListedControllerFiles;
 
     public function __construct(KernelInterface $kernel, ControllerResolver $resolver, array $blackListedControllerFiles)
     {
+        static::$warm = false;
         $this->kernel = $kernel;
         $this->controllerResolver = $resolver;
         $this->blackListedControllerFiles = $blackListedControllerFiles;
@@ -38,6 +40,12 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
 
     public function warmUp($cacheDir)
     {
+        if (static::$warm === true) {
+            return;
+        }
+
+        static::$warm = true;
+
         // This avoids class-being-declared twice errors when the cache:clear
         // command is called. The controllers are not pre-generated in that case.
         $suffix = defined('Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate::NEW_CACHE_FOLDER_SUFFIX')
