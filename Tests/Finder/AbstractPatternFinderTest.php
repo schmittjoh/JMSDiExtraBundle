@@ -18,7 +18,9 @@
 
 namespace JMS\DiExtraBundle\Tests\Finder;
 
-abstract class AbstractPatternFinderTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+abstract class AbstractPatternFinderTest extends TestCase
 {
     public function testFindFiles()
     {
