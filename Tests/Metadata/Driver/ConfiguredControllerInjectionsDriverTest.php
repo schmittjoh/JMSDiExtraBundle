@@ -20,9 +20,10 @@ namespace JMS\DiExtraBundle\Tests\Metadata\Driver;
 
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
 use JMS\DiExtraBundle\Metadata\Driver\ConfiguredControllerInjectionsDriver;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ConfiguredControllerInjectionsDriverTest extends \PHPUnit_Framework_TestCase
+class ConfiguredControllerInjectionsDriverTest extends TestCase
 {
     public function testIgnoresNonControllers()
     {

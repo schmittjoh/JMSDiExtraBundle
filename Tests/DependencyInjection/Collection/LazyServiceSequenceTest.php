@@ -19,8 +19,9 @@
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Collection;
 
 use JMS\DiExtraBundle\DependencyInjection\Collection\LazyServiceSequence;
+use PHPUnit\Framework\TestCase;
 
-class LazyServiceSequenceTest extends \PHPUnit_Framework_TestCase
+class LazyServiceSequenceTest extends TestCase
 {
     private $container;
     private $seq;
