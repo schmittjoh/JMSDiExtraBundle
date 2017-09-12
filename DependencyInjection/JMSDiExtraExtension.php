@@ -18,10 +18,7 @@
 
 namespace JMS\DiExtraBundle\DependencyInjection;
 
-use CG\Core\DefaultNamingStrategy;
-use CG\Proxy\Enhancer;
 use JMS\DiExtraBundle\Exception\RuntimeException;
-use JMS\DiExtraBundle\Generator\RepositoryInjectionGenerator;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
@@ -67,10 +64,6 @@ class JMSDiExtraExtension extends Extension
         $this->configureMetadata($config['metadata'], $container, $config['cache_dir'].'/metadata');
         $this->configureAutomaticControllerInjections($config, $container);
 
-        if ($config['doctrine_integration']) {
-            $this->generateEntityManagerProxyClass($config, $container);
-        }
-
         if (PHP_VERSION_ID < 70000) {
             $this->addClassesToCompile(array(
                 'JMS\\DiExtraBundle\\HttpKernel\ControllerResolver',
@@ -81,27 +74,6 @@ class JMSDiExtraExtension extends Extension
     public function blackListControllerFile($filename)
     {
         $this->blackListedControllerFiles[] = realpath($filename);
-    }
-
-    private function generateEntityManagerProxyClass(array $config, ContainerBuilder $container)
-    {
-        $cacheDir = $container->getParameterBag()->resolveValue($config['cache_dir']);
-
-        if (!is_dir($cacheDir.'/doctrine')) {
-            if (false === @mkdir($cacheDir.'/doctrine', 0777, true)) {
-                throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cacheDir.'/doctrine'));
-            }
-        }
-
-        $enhancer = new Enhancer($ref = new \ReflectionClass('Doctrine\ORM\EntityManager'), array(), array(new RepositoryInjectionGenerator()));
-        $uniqid = uniqid(); // We do have to use a non-static id to avoid problems with cache:clear.
-        if (strtoupper(PHP_OS) == 'CYGWIN') {
-            $uniqid = preg_replace('/\./', '_', $uniqid); // replace dot; cygwin always generates uniqid's with more_entropy
-        }
-        $enhancer->setNamingStrategy(new DefaultNamingStrategy('EntityManager'.$uniqid));
-        $enhancer->writeClass($file = $cacheDir.'/doctrine/EntityManager_'.$uniqid.'.php');
-        $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.file', $file);
-        $container->setParameter('jms_di_extra.doctrine_integration.entity_manager.class', $enhancer->getClassName($ref));
     }
 
     private function configureAutomaticControllerInjections(array $config, ContainerBuilder $container)

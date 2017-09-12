@@ -21,7 +21,6 @@ namespace JMS\DiExtraBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -41,36 +40,39 @@ class IntegrationPass implements CompilerPassInterface
         }
     }
 
-    /**
-     * Integrates the DiAwareObjectManager with Doctrine.
-     *
-     * This is a bit trickier... mostly because Doctrine uses many factories,
-     * and we cannot directly inject the EntityManager. We circumvent this
-     * problem by renaming the original entity manager definition, and then
-     * placing our definition in its place.
-     *
-     * Note that this also currently only supports the ORM, for the ODM flavors
-     * a similar integration should be possible.
-     *
-     * @param ContainerBuilder $container
-     */
-    private function integrateWithDoctrine($container)
+    private function integrateWithDoctrine(ContainerBuilder $container)
     {
-        foreach ($container->getDefinitions() as $id => $definition) {
-            if (!$definition instanceof DefinitionDecorator) {
-                continue;
+        $entityManagerNames = array_keys($container->getParameter('doctrine.entity_managers'));
+
+        foreach ($entityManagerNames as $emName) {
+            // See: https://github.com/doctrine/DoctrineBundle/blob/c9f8cc06153a70433d2c67393f10725959f7bb43/DependencyInjection/DoctrineExtension.php#L384-L385
+            $ormConfigDef = $container->getDefinition(sprintf('doctrine.orm.%s_configuration', $emName));
+
+            $originalRepositoryFactoryRef = null;
+
+            foreach ($ormConfigDef->getMethodCalls() as $methodCall) {
+                list($methodName, $arguments) = $methodCall;
+
+                if ('setRepositoryFactory' === $methodName) {
+                    $originalRepositoryFactoryRef = $arguments[0];
+
+                    $ormConfigDef->removeMethodCall($methodName);
+
+                    break;
+                }
             }
 
-            if ('doctrine.orm.entity_manager.abstract' !== $definition->getParent()) {
-                continue;
-            }
+            $replacedRepositoryFactoryId = sprintf('jms_di_extra.doctrine.orm.%s.repository_factory', $emName);
 
-            $definition->setPublic(false);
-            $container->setDefinition($id.'.delegate', $definition);
-            $container->register($id, $container->getParameter('jms_di_extra.doctrine_integration.entity_manager.class'))
-                ->setFile($container->getParameter('jms_di_extra.doctrine_integration.entity_manager.file'))
-                ->addArgument(new Reference($id.'.delegate'))
-                ->addArgument(new Reference('service_container'));
+            $container->register($replacedRepositoryFactoryId, 'JMS\DiExtraBundle\Doctrine\ORM\ContainerAwareRepositoryFactoryDecorator')
+                ->setPublic(false)
+                ->setArguments(array(
+                    new Reference('service_container'),
+                    $originalRepositoryFactoryRef,
+                ))
+            ;
+
+            $ormConfigDef->addMethodCall('setRepositoryFactory', array(new Reference($replacedRepositoryFactoryId)));
         }
     }
 }
