@@ -28,12 +28,21 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
     private $kernel;
     private $controllerResolver;
     private $blackListedControllerFiles;
+    private $scanAllBundles;
+    private $scanBundles;
 
-    public function __construct(KernelInterface $kernel, ControllerResolver $resolver, array $blackListedControllerFiles)
-    {
+    public function __construct(
+        KernelInterface $kernel,
+        ControllerResolver $resolver,
+        array $blackListedControllerFiles,
+        $scanAllBundles = true,
+        array $scanBundles = array()
+    ) {
         $this->kernel = $kernel;
         $this->controllerResolver = $resolver;
         $this->blackListedControllerFiles = $blackListedControllerFiles;
+        $this->scanAllBundles = $scanAllBundles;
+        $this->scanBundles = $scanBundles;
     }
 
     public function warmUp($cacheDir)
@@ -63,6 +72,10 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
     {
         $dirs = array();
         foreach ($this->kernel->getBundles() as $bundle) {
+            if (!$this->scanAllBundles && !in_array($bundle->getName(), $this->scanBundles, true)) {
+                continue;
+            }
+
             if (!is_dir($controllerDir = $bundle->getPath().'/Controller')) {
                 continue;
             }

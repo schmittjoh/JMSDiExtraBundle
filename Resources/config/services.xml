@@ -65,6 +65,8 @@
             <argument type="service" id="kernel" />
             <argument type="service" id="jms_di_extra.controller_resolver" />
             <argument>%jms_di_extra.cache_warmer.controller_file_blacklist%</argument>
+            <argument>%jms_di_extra.all_bundles%</argument>
+            <argument>%jms_di_extra.bundles%</argument>
         </service>
     </services>
 </container>
