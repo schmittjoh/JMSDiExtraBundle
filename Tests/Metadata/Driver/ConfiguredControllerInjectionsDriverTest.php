@@ -20,10 +20,10 @@ namespace JMS\DiExtraBundle\Tests\Metadata\Driver;
 
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
 use JMS\DiExtraBundle\Metadata\Driver\ConfiguredControllerInjectionsDriver;
-use PHPUnit\Framework\TestCase;
+use JMS\DiExtraBundle\Tests\BaseTestCase;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ConfiguredControllerInjectionsDriverTest extends TestCase
+class ConfiguredControllerInjectionsDriverTest extends BaseTestCase
 {
     public function testIgnoresNonControllers()
     {
@@ -74,7 +74,7 @@ class ConfiguredControllerInjectionsDriverTest extends TestCase
 
     protected function setUp()
     {
-        $this->delegate = $this->getMock('Metadata\Driver\DriverInterface');
+        $this->delegate = $this->createMock('Metadata\Driver\DriverInterface');
     }
 
     private function delegateReturnsEmptyMetadata()

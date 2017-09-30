@@ -19,9 +19,9 @@
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Collection;
 
 use JMS\DiExtraBundle\DependencyInjection\Collection\LazyServiceSequence;
-use PHPUnit\Framework\TestCase;
+use JMS\DiExtraBundle\Tests\BaseTestCase;
 
-class LazyServiceSequenceTest extends TestCase
+class LazyServiceSequenceTest extends BaseTestCase
 {
     private $container;
     private $seq;
@@ -76,7 +76,7 @@ class LazyServiceSequenceTest extends TestCase
 
     protected function setUp()
     {
-        $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $this->container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
         $this->seq = new LazyServiceSequence($this->container, array('foo', 'bar', 'baz'));
     }
 }
