@@ -36,7 +36,7 @@ matrix:
         - php: 7.0
           env: SYMFONY_VERSION=2.8.* COVERAGE=true SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 7.0
-          env: SYMFONY_VERSION=3.0.*
+          env: SYMFONY_VERSION=3.1.*
 
 before_script:
     - if [ "$COVERAGE" != "true" ]; then phpenv config-rm xdebug.ini; fi
