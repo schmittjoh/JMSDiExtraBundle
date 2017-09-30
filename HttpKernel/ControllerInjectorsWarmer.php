@@ -83,10 +83,15 @@ class ControllerInjectorsWarmer implements CacheWarmerInterface
             $dirs[] = $controllerDir;
         }
 
-        foreach (Finder::create()->name('*Controller.php')->in($dirs)->files() as $file) {
-            $filename = $file->getRealPath();
-            if (!in_array($filename, $this->blackListedControllerFiles)) {
-                require_once $filename;
+        // Combination of scanAllBundles/scanBundles can lead to empty dirs.
+        // Only search for controllers if we have at least one directory,
+        // otherwise the finder will throw an exception.
+        if (!empty($dirs)) {
+            foreach (Finder::create()->name('*Controller.php')->in($dirs)->files() as $file) {
+                $filename = $file->getRealPath();
+                if (!in_array($filename, $this->blackListedControllerFiles)) {
+                    require_once $filename;
+                }
             }
         }
 
