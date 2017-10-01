@@ -13,6 +13,8 @@ branches:
         - master
         - /^\d+\.\d+$/
 
+env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors
+
 sudo: false
 
 cache:
@@ -25,18 +27,21 @@ matrix:
     include:
         - php: 5.3
           dist: precise
-          env: SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 5.3
           dist: precise
-          env: COMPOSER_FLAGS="--prefer-lowest" SYMFONY_DEPRECATIONS_HELPER=weak
+          env: SYMFONY_DEPRECATIONS_HELPER COMPOSER_FLAGS="--prefer-lowest"
         - php: 5.4
-          env: SYMFONY_DEPRECATIONS_HELPER=weak
         - php: 7.0
-          env: SYMFONY_VERSION=2.7.* SYMFONY_DEPRECATIONS_HELPER=weak
+          env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=2.7.*
         - php: 7.0
-          env: SYMFONY_VERSION=2.8.* COVERAGE=true SYMFONY_DEPRECATIONS_HELPER=weak
+          env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=2.8.* COVERAGE=true
         - php: 7.0
-          env: SYMFONY_VERSION=3.2.*
+          env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=3.2.*
+        - php: 7.1
+          env: ~
+    allow_failures:
+        - php: 7.1
+          env: ~
 
 before_script:
     - if [ "$COVERAGE" != "true" ]; then phpenv config-rm xdebug.ini; fi
