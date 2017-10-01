@@ -19,8 +19,9 @@
 namespace JMS\DiExtraBundle\Tests\Metadata;
 
 use JMS\DiExtraBundle\Metadata\ClassMetadata;
+use PHPUnit\Framework\TestCase;
 
-class ClassMetadataTest extends \PHPUnit_Framework_TestCase
+class ClassMetadataTest extends TestCase
 {
     public function testSerializeUnserialize()
     {

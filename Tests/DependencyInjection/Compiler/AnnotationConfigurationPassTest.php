@@ -21,12 +21,13 @@ namespace JMS\DiExtraBundle\Tests\DependencyInjection\Compiler;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\DiExtraBundle\DependencyInjection\Compiler\AnnotationConfigurationPass;
 use JMS\DiExtraBundle\DependencyInjection\JMSDiExtraExtension;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Filesystem\Filesystem;
 
-class AnnotationConfigurationPassTest extends \PHPUnit_Framework_TestCase
+class AnnotationConfigurationPassTest extends TestCase
 {
     public function testProcess()
     {

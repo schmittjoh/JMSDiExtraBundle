@@ -19,11 +19,12 @@
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Compiler;
 
 use JMS\DiExtraBundle\DependencyInjection\Compiler\LazyServiceSequencePass;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-class LazyServiceSequencePassTest extends \PHPUnit_Framework_TestCase
+class LazyServiceSequencePassTest extends TestCase
 {
     public function testProcess()
     {

@@ -19,10 +19,11 @@
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Compiler;
 
 use JMS\DiExtraBundle\DependencyInjection\Compiler\ResourceOptimizationPass;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class ResourceOptimizationPassTest extends \PHPUnit_Framework_TestCase
+class ResourceOptimizationPassTest extends TestCase
 {
     public function testProcess()
     {

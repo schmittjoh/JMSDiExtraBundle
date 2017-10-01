@@ -19,10 +19,11 @@
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Collection;
 
 use JMS\DiExtraBundle\DependencyInjection\Collection\LazyServiceMap;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LazyServiceMapTest extends \PHPUnit_Framework_TestCase
+class LazyServiceMapTest extends TestCase
 {
     /**
      * @var LazyServiceMap

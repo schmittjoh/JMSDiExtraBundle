@@ -21,8 +21,9 @@ namespace JMS\DiExtraBundle\Tests\Metadata\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
 use JMS\DiExtraBundle\Metadata\DefaultNamingStrategy;
 use JMS\DiExtraBundle\Metadata\Driver\AnnotationDriver;
+use PHPUnit\Framework\TestCase;
 
-class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
+class AnnotationDriverTest extends TestCase
 {
     public function testFormType()
     {
