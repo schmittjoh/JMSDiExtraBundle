@@ -160,11 +160,11 @@ class JMSDiExtraExtension extends Extension
                 $fs->remove($cacheDir);
             }
 
-            if (!file_exists($cacheDir)) {
-                if (false === @mkdir($cacheDir, 0777, true)) {
-                    throw new RuntimeException(sprintf('The cache dir "%s" could not be created.', $cacheDir));
-                }
+            // re-check dir existence to avoid concurrency issues
+            if (!file_exists($cacheDir) && !@mkdir($cacheDir, 0777, true) && !is_dir($cacheDir)) {
+                throw new RuntimeException(sprintf('The cache dir "%s" could not be created.', $cacheDir));
             }
+
             if (!is_writable($cacheDir)) {
                 throw new RuntimeException(sprintf('The cache dir "%s" is not writable.', $cacheDir));
             }
