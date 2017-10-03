@@ -20,6 +20,9 @@ namespace JMS\DiExtraBundle\Tests\Functional;
 
 class Issue48Test extends BaseTestCase
 {
+    /**
+     * @runInSeparateProcess
+     */
     public function testCreatingMultipleKernelsInATest()
     {
         $kernelA = static::createKernel(array('debug' => false, 'config' => 'doctrine.yml'));

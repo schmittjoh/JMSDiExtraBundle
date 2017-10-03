@@ -20,6 +20,7 @@ namespace JMS\DiExtraBundle\Tests;
 
 use JMS\DiExtraBundle\Finder\ServiceFinder;
 use JMS\SecurityExtraBundle\JMSSecurityExtraBundle;
+use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle;
 use Symfony\Bundle\AsseticBundle\AsseticBundle;
 use Symfony\Bundle\DoctrineBundle\DoctrineBundle;
@@ -31,7 +32,7 @@ use Symfony\Bundle\TwigBundle\TwigBundle;
 /**
  * @group performance
  */
-class PerformanceTest extends \PHPUnit_Framework_TestCase
+class PerformanceTest extends TestCase
 {
     /**
      * @dataProvider getFinderMethods

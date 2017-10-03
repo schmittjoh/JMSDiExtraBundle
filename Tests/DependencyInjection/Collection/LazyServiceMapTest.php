@@ -19,10 +19,11 @@
 namespace JMS\DiExtraBundle\Tests\DependencyInjection\Collection;
 
 use JMS\DiExtraBundle\DependencyInjection\Collection\LazyServiceMap;
+use JMS\DiExtraBundle\Tests\BaseTestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LazyServiceMapTest extends \PHPUnit_Framework_TestCase
+class LazyServiceMapTest extends BaseTestCase
 {
     /**
      * @var LazyServiceMap
@@ -79,7 +80,7 @@ class LazyServiceMapTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $this->container = $this->createMock('Symfony\Component\DependencyInjection\ContainerInterface');
 
         $this->map = new LazyServiceMap($this->container, array(
             'foo' => 'bar_service',
