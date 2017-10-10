@@ -47,6 +47,12 @@ class IntegrationPass implements CompilerPassInterface
             return;
         }
 
+        // Can't support Doctrine/ORM older (< 2.4) version.
+        $reflection = new \ReflectionClass('Doctrine\ORM\Configuration');
+        if (!$reflection->hasMethod('setRepositoryFactory')) {
+            return;
+        }
+
         $entityManagerNames = array_keys($container->getParameter('doctrine.entity_managers'));
 
         foreach ($entityManagerNames as $emName) {
