@@ -42,6 +42,11 @@ class IntegrationPass implements CompilerPassInterface
 
     private function integrateWithDoctrine(ContainerBuilder $container)
     {
+        // The parameter "doctrine.entity_managers" can be missed when not actually using ORM even if DoctrineBundle loaded.
+        if (!$container->hasParameter('doctrine.entity_managers')) {
+            return;
+        }
+
         $entityManagerNames = array_keys($container->getParameter('doctrine.entity_managers'));
 
         foreach ($entityManagerNames as $emName) {
