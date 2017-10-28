@@ -25,14 +25,11 @@ class AutowiredControllerTest extends BaseTestCase
      */
     public function testAutowiredController()
     {
-        $client = $this->createClient(array(
-            'config' => 'autowired_controller.yml',
-        ));
+        $client = $this->createClient();
         $client->request('GET', '/autowired-controller-test');
 
         $expected = '';
         $expected .= "\$has container: OK\n";
-
 
         $this->assertEquals($expected, $client->getResponse()->getContent());
     }

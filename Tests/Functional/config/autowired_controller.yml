@@ -1,8 +1,0 @@
-imports:
-    - { resource: default.yml }
-
-services:
-    autowired_controller:
-        class: JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller\AutowiredController
-        autowired: true
-

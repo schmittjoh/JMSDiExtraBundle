@@ -13,6 +13,9 @@ services:
     controller.hello:
         class: JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller\ServiceController
         arguments: [ "@router" ]
+    controller.autowired:
+        class: JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller\AutowiredController
+        autowired: true
 
 sensio_framework_extra:
     request: { converters: false }
