@@ -108,6 +108,7 @@ class JMSDiExtraExtension extends Extension
     {
         if (!isset($config['automatic_controller_injections'])) {
             $container->setAlias('jms_di_extra.metadata_driver', 'jms_di_extra.metadata.driver.annotation_driver');
+            $container->getAlias('jms_di_extra.metadata_driver')->setPublic(true);
 
             return;
         }

@@ -42,7 +42,7 @@
             <argument /><!-- Directory -->
         </service>
         <service id="jms_di_extra.metadata.cache" alias="jms_di_extra.metadata.cache.file_cache" public="false" />
-        <service id="jms_di_extra.metadata.metadata_factory" class="%jms_di_extra.metadata.metadata_factory.class%">
+        <service id="jms_di_extra.metadata.metadata_factory" class="%jms_di_extra.metadata.metadata_factory.class%" public="true">
             <argument type="service" id="jms_di_extra.metadata.driver.lazy_loading_driver" />
             <argument>Metadata\ClassHierarchyMetadata</argument>
             <argument>%kernel.debug%</argument>
@@ -51,7 +51,7 @@
             </call>
         </service>
 
-        <service id="jms_di_extra.metadata.converter" class="%jms_di_extra.metadata.converter.class%" />
+        <service id="jms_di_extra.metadata.converter" class="%jms_di_extra.metadata.converter.class%" public="true" />
 
         <service id="jms_di_extra.controller_resolver" class="%jms_di_extra.controller_resolver.class%" public="false">
             <tag name="monolog.logger" channel="request" />
