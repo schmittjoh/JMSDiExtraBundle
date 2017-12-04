@@ -66,16 +66,21 @@ class IntegrationPass implements CompilerPassInterface
             }
 
             $public = $definition->isPublic();
-            $private = \method_exists($definition,'isPrivate') ? $definition->isPrivate() : false;
-
             $definition->setPublic(false);
+            
             $container->setDefinition($id.'.delegate', $definition);
-            $container->register($id, $container->getParameter('jms_di_extra.doctrine_integration.entity_manager.class'))
+            
+            $newDefinition = $container->register($id, $container->getParameter('jms_di_extra.doctrine_integration.entity_manager.class'))
                 ->setFile($container->getParameter('jms_di_extra.doctrine_integration.entity_manager.file'))
                 ->addArgument(new Reference($id.'.delegate'))
-                ->addArgument(new Reference('service_container'))
-                ->setPrivate($private)
-                ->setPublic($public);
+                ->addArgument(new Reference('service_container'));
+            
+            if (\method_exists($newDefinition, 'isPrivate')) {
+                $newDefinition->setPrivate($definition->isPrivate())
+                    ->setPublic($public);
+            } else {
+                $newDefinition->setPublic($public);
+            }
         }
     }
 }
