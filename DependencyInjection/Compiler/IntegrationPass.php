@@ -66,7 +66,7 @@ class IntegrationPass implements CompilerPassInterface
             }
 
             $public = $definition->isPublic();
-            $private = $definition->isPrivate();
+            $private = \method_exists($definition,'isPrivate') ? $definition->isPrivate() : false;
 
             $definition->setPublic(false);
             $container->setDefinition($id.'.delegate', $definition);
