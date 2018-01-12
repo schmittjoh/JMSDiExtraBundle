@@ -65,12 +65,16 @@ class IntegrationPass implements CompilerPassInterface
                 continue;
             }
 
+            $public = $definition->isPublic();
             $definition->setPublic(false);
+            
             $container->setDefinition($id.'.delegate', $definition);
+            
             $container->register($id, $container->getParameter('jms_di_extra.doctrine_integration.entity_manager.class'))
                 ->setFile($container->getParameter('jms_di_extra.doctrine_integration.entity_manager.file'))
                 ->addArgument(new Reference($id.'.delegate'))
-                ->addArgument(new Reference('service_container'));
+                ->addArgument(new Reference('service_container'))
+                ->setPublic($public);
         }
     }
 }
