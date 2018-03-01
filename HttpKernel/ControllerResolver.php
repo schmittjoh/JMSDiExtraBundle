@@ -45,15 +45,8 @@ class ControllerResolver extends BaseControllerResolver
             if (2 == $count) {
                 // controller in the a:b:c notation then
                 $controller = $this->parser->parse($controller);
-            } elseif (1 == $count) {
-                // controller in the service:method notation
-                list($service, $method) = explode(':', $controller, 2);
-
-                return array($this->container->get($service), $method);
-            } elseif ($this->container->has($controller) && method_exists($service = $this->container->get($controller), '__invoke')) {
-                return $service;
             } else {
-                throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
+                return parent::createController($controller);
             }
         }
 
