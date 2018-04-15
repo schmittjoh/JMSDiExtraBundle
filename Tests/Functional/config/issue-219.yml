@@ -1,0 +1,17 @@
+imports:
+    - { resource: doctrine.yml }
+
+doctrine:
+    orm:
+        mappings:
+            test_entities:
+                type: annotation
+                dir: %kernel.root_dir%/Entities
+                prefix: JMS\DiExtraBundle\Tests\Functional\Entities
+
+services:
+    some_service:
+        class: stdClass
+
+parameters:
+    some_parameter: 42
