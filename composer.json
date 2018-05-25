@@ -20,7 +20,8 @@
         "symfony/process": "~2.3|~3.0|~4.0",
         "symfony/finder": "~2.3|~3.0|~4.0",
         "jms/aop-bundle": "~1.1",
-        "jms/metadata": "~1.0"
+        "jms/metadata": "~1.0",
+        "doctrine/annotations": "~1.0"
     },
     "require-dev": {
         "symfony/validator": "~2.3|~3.0|~4.0",
