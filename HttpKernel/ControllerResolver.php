@@ -28,7 +28,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControll
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -152,7 +152,7 @@ class ControllerResolver extends BaseControllerResolver
         $config = $container->getCompilerPassConfig();
         $config->setOptimizationPasses(array());
         $config->setRemovingPasses(array());
-        $config->addPass(new ResolveDefinitionTemplatesPass());
+        $config->addPass(new ResolveChildDefinitionsPass());
         $config->addPass(new PointcutMatchingPass($this->container->get('jms_aop.pointcut_container')->getPointcuts()));
         $config->addPass(new InlineServiceDefinitionsPass());
         $container->compile();

@@ -33,9 +33,6 @@ final class Service
     /** @var bool */
     public $public;
 
-    /** @var string */
-    public $scope;
-
     /** @var bool */
     public $shared;
 

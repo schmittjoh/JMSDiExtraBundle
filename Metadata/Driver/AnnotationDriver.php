@@ -233,7 +233,6 @@ class AnnotationDriver implements DriverInterface
 
         $metadata->parent = $annot->parent;
         $metadata->public = $annot->public;
-        $metadata->scope = $annot->scope;
         $metadata->shared = $annot->shared;
         $metadata->abstract = $annot->abstract;
         $metadata->decorates = $annot->decorates;

@@ -75,11 +75,8 @@ class AppKernel extends Kernel
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new \JMS\AopBundle\JMSAopBundle(),
-            version_compare(PHP_VERSION, '7.0.0', '<')?
-            new \JMS\DiExtraBundle\Tests\Functional\Bundle\LegacyTestBundle\JMSDiExtraTestBundle():
             new \JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\JMSDiExtraTestBundle(),
             new \JMS\DiExtraBundle\JMSDiExtraBundle(),
-            new \JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
         );
     }
 
