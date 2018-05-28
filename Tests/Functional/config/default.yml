@@ -6,10 +6,14 @@ imports:
 jms_di_extra:
     locations:
         bundles: [JMSDiExtraTestBundle]
-        
+
 services:
-    foo: { class: stdClass }
-    bar: { class: stdClass }
+    foo:
+        class: stdClass
+        public: true
+    bar:
+        class: stdClass
+        public: true
     controller.hello:
         class: JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Controller\ServiceController
         arguments: [ "@router" ]

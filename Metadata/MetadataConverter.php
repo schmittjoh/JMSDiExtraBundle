@@ -20,6 +20,7 @@ namespace JMS\DiExtraBundle\Metadata;
 
 use JMS\DiExtraBundle\Exception\InvalidAnnotationException;
 use Metadata\ClassHierarchyMetadata;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
@@ -75,15 +76,16 @@ class MetadataConverter
         if (null === $previous && null === $classMetadata->parent) {
             $definition = new Definition();
         } else {
-            $definition = new DefinitionDecorator(
+            $definition = new ChildDefinition(
                 $classMetadata->parent ?: $previous->id
             );
         }
 
-        $definition->setClass($classMetadata->name);
-        if (null !== $classMetadata->scope) {
-            $definition->setScope($classMetadata->scope);
-        }
+        $definition
+            ->setClass($classMetadata->name)
+            ->setPublic(true)
+            ->setPrivate(false)
+        ;
         if (null !== $classMetadata->shared) {
             $definition->setShared($classMetadata->shared);
         }
