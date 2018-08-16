@@ -2,7 +2,6 @@ language: php
 dist: trusty
 
 php:
-  - 5.5
   - 5.6
   - 7.0
   - 7.1
@@ -25,12 +24,9 @@ cache:
 matrix:
     fast_finish: true
     include:
-        - php: 5.3
-          dist: precise
-        - php: 5.3
+        - php: 5.6
           dist: precise
           env: SYMFONY_DEPRECATIONS_HELPER COMPOSER_FLAGS="--prefer-lowest"
-        - php: 5.4
         - php: 7.0
           env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=2.7.*
         - php: 7.0
