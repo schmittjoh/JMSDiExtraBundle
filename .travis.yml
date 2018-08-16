@@ -35,6 +35,8 @@ matrix:
         - php: 7.1
           env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=4.0.*
         - php: 7.1
+          env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=4.1.*
+        - php: 7.1
           env: ~
 
 before_script:
