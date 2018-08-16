@@ -4,7 +4,7 @@ imports:
 jms_di_extra:
     automatic_controller_injections:
         properties:
-            context: "@security.context"
+            context: "@security.authorization_checker"
             templating: "@templating"
             foo: bar
         method_calls:

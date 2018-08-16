@@ -29,11 +29,11 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker; // Use t
  */
 class LoginType extends AbstractType
 {
-    private $securityContext;
+    private $authorizationChecker;
 
-    public function __construct(AuthorizationChecker $context)
+    public function __construct(AuthorizationChecker $authorizationChecker)
     {
-        $this->securityContext = $context;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function getName()
