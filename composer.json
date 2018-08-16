@@ -42,7 +42,10 @@
         "symfony/templating": "~2.3|^3.3"
     },
     "autoload": {
-        "psr-4": { "JMS\\DiExtraBundle\\": "" }
+        "psr-4": { "JMS\\DiExtraBundle\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "JMS\\DiExtraBundle\\Tests\\": "tests/" }
     },
     "extra": {
         "branch-alias": {
