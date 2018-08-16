@@ -51,7 +51,8 @@
         "symfony/phpunit-bridge": "~3.4|~4.0",
         "phpunit/phpunit": "^4.8.35|^5.4.4|^6.0.0",
         "symfony/asset": "~2.7|~3.4|~4.0",
-        "symfony/templating": "~2.7|~3.4|~4.0"
+        "symfony/templating": "~2.7|~3.4|~4.0",
+        "symfony/css-selector": "~2.7|~3.4|~4.0"
     },
     "autoload": {
         "psr-4": { "JMS\\DiExtraBundle\\": "src/" }
