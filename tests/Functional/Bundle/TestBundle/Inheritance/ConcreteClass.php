@@ -21,7 +21,7 @@ namespace JMS\DiExtraBundle\Tests\Functional\Bundle\TestBundle\Inheritance;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("concrete_class")
+ * @DI\Service("concrete_class", public=true)
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */

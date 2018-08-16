@@ -22,7 +22,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @DI\Service("controller.extended_hello", parent = "controller.hello")
+ * @DI\Service("controller.extended_hello", public=true, parent = "controller.hello")
  */
 class ExtendedServiceController extends ServiceController
 {

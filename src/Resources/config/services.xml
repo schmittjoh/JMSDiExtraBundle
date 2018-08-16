@@ -35,7 +35,7 @@
             <argument type="service" id="service_container" />
             <argument>jms_di_extra.metadata_driver</argument>
         </service>
-        <service id="jms_di_extra.metadata_driver" alias="jms_di_extra.metadata.driver.configured_controller_injections" />
+        <service id="jms_di_extra.metadata_driver" alias="jms_di_extra.metadata.driver.configured_controller_injections" public="true"/>
 
         <!-- Metadata Factory -->
         <service id="jms_di_extra.metadata.cache.file_cache" class="%jms_di_extra.metadata.cache.file_cache.class%" public="false">

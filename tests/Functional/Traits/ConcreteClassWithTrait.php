@@ -21,7 +21,7 @@ namespace JMS\DiExtraBundle\Tests\Functional\Traits;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("concrete_class_with_trait")
+ * @DI\Service("concrete_class_with_trait", public=true)
  */
 class ConcreteClassWithTrait
 {

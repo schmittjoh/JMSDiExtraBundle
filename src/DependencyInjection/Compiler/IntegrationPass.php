@@ -22,6 +22,7 @@ use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -57,7 +58,7 @@ class IntegrationPass implements CompilerPassInterface
     private function integrateWithDoctrine($container)
     {
         foreach ($container->getDefinitions() as $id => $definition) {
-            if (!$definition instanceof DefinitionDecorator) {
+            if (!$definition instanceof DefinitionDecorator && !$definition instanceof ChildDefinition) {
                 continue;
             }
 

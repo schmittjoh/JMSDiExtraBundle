@@ -22,7 +22,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @DI\Service("controller.invokable")
+ * @DI\Service("controller.invokable", public=true)
  */
 class InvokableServiceController
 {

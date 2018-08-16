@@ -21,7 +21,7 @@ namespace JMS\DiExtraBundle\Tests\Functional\Bundle\LegacyTestBundle\Mailer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("test_mailer")
+ * @DI\Service("test_mailer", public=true)
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
