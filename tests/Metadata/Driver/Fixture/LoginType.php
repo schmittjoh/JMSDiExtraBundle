@@ -19,8 +19,8 @@
 namespace JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture;
 
 use JMS\DiExtraBundle as DI;
-use Security\SecurityContext;
-use Symfony\Component\Form\AbstractType; // Use this alias in order to not have this class picked up by the finder
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker; // Use this alias in order to not have this class picked up by the finder
 
 /**
  * @DI\Annotation\FormType
@@ -31,7 +31,7 @@ class LoginType extends AbstractType
 {
     private $securityContext;
 
-    public function __construct(SecurityContext $context)
+    public function __construct(AuthorizationChecker $context)
     {
         $this->securityContext = $context;
     }
