@@ -14,11 +14,13 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/ruudk/JMSDiExtraBundle"
+            "url": "https://github.com/ruudk/JMSDiExtraBundle",
+            "no-api": true
         },
         {
             "type": "vcs",
-            "url": "https://github.com/ruudk/JMSSecurityExtraBundle"
+            "url": "https://github.com/ruudk/JMSSecurityExtraBundle",
+            "no-api": true
         }
     ],
     "require": {
